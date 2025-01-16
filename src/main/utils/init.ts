@@ -11,7 +11,6 @@ import {
   profilePath,
   profilesDir,
   resourcesFilesDir,
-  subStoreDir,
   themesDir
 } from './dirs'
 import {
@@ -25,11 +24,7 @@ import yaml from 'yaml'
 import { mkdir, writeFile, copyFile, rm, readdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
-import {
-  startPacServer,
-  startSubStoreBackendServer,
-  startSubStoreFrontendServer
-} from '../resolve/server'
+import { startPacServer } from '../resolve/server'
 import { triggerSysProxy } from '../sys/sysproxy'
 import {
   getAppConfig,
@@ -61,9 +56,6 @@ async function initDirs(): Promise<void> {
   }
   if (!existsSync(mihomoTestDir())) {
     await mkdir(mihomoTestDir())
-  }
-  if (!existsSync(subStoreDir())) {
-    await mkdir(subStoreDir())
   }
 }
 
@@ -148,12 +140,10 @@ async function migration(): Promise<void> {
       'mihomo',
       'dns',
       'sniff',
-      'log',
-      'substore'
+      'log'
     ],
     appTheme = 'system',
     envType = [process.platform === 'win32' ? 'powershell' : 'bash'],
-    useSubStore = true,
     showFloatingWindow = false,
     disableTray = false,
     encryptedPassword
@@ -168,10 +158,6 @@ async function migration(): Promise<void> {
     'lan-allowed-ips': lanAllowedIps,
     'lan-disallowed-ips': lanDisallowedIps
   } = await getControledMihomoConfig()
-  // add substore sider card
-  if (useSubStore && !siderOrder.includes('substore')) {
-    await patchAppConfig({ siderOrder: [...siderOrder, 'substore'] })
-  }
   // add default skip auth prefix
   if (!skipAuthPrefixes) {
     await patchControledMihomoConfig({ 'skip-auth-prefixes': ['127.0.0.1/32'] })
@@ -240,8 +226,6 @@ export async function init(): Promise<void> {
   await migration()
   await initFiles()
   await cleanup()
-  await startSubStoreFrontendServer()
-  await startSubStoreBackendServer()
   const { sysProxy } = await getAppConfig()
   try {
     if (sysProxy.enable) {

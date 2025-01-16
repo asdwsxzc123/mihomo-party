@@ -12,7 +12,6 @@ import { useState } from 'react'
 import UpdaterModal from '../updater/updater-modal'
 import { version } from '@renderer/utils/init'
 import { IoIosHelpCircle } from 'react-icons/io'
-import { firstDriver } from '@renderer/App'
 
 const Actions: React.FC = () => {
   const [newVersion, setNewVersion] = useState('')
@@ -30,11 +29,6 @@ const Actions: React.FC = () => {
         />
       )}
       <SettingCard>
-        <SettingItem title="打开引导页面" divider>
-          <Button size="sm" onPress={() => firstDriver.drive()}>
-            打开引导页面
-          </Button>
-        </SettingItem>
         <SettingItem title="检查更新" divider>
           <Button
             size="sm"

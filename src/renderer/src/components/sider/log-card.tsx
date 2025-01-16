@@ -5,6 +5,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import React from 'react'
+import classnames from 'classnames'
 
 interface Props {
   iconOnly?: boolean
@@ -28,7 +29,11 @@ const LogCard: React.FC<Props> = (props) => {
     id: 'log'
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
-
+  console.log(
+    `%c [log-card.tsx]-[32]-[iconOnly]: `,
+    'font-size:13px; background:#e6f7ff; color:#118aff;',
+    iconOnly
+  )
   if (iconOnly) {
     return (
       <div className={`${logCardStatus} flex justify-center`}>
@@ -63,7 +68,11 @@ const LogCard: React.FC<Props> = (props) => {
         ref={setNodeRef}
         {...attributes}
         {...listeners}
-        className={`${match ? 'bg-primary' : 'hover:bg-primary/30'} ${isDragging ? 'scale-[0.97] tap-highlight-transparent' : ''}`}
+        className={classnames({
+          'bg-primary': match,
+          'hover:bg-primary/30': !match,
+          'scale-[0.97] tap-highlight-transparent': isDragging
+        })}
       >
         <CardBody className="pb-1 pt-0 px-0">
           <div className="flex justify-between">

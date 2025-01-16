@@ -8,7 +8,6 @@ export const defaultConfig: IAppConfig = {
   proxyCols: 'auto',
   connectionDirection: 'asc',
   connectionOrderBy: 'time',
-  useSubStore: true,
   proxyDisplayMode: 'simple',
   proxyDisplayOrder: 'default',
   autoCheckUpdate: true,
@@ -29,8 +28,7 @@ export const defaultConfig: IAppConfig = {
     'mihomo',
     'dns',
     'sniff',
-    'log',
-    'substore'
+    'log'
   ],
   siderWidth: 250,
   sysProxy: { enable: false, mode: 'manual' }
