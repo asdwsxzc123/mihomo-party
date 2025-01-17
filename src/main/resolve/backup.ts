@@ -80,6 +80,7 @@ export async function listWebdavBackups(): Promise<string[]> {
     password: webdavPassword,
   })
   const files = await client.getDirectoryContents(webdavDir, { glob: '*.zip' })
+  console.log(`%c [backup.ts]-[83]-[files]: `,'font-size:13px; background:#e6f7ff; color:#118aff;',files);
   if (Array.isArray(files)) {
     return files.map((file) => file.basename)
   } else {

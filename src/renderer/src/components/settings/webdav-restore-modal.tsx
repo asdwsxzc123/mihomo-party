@@ -17,7 +17,7 @@ const WebdavRestoreModal: React.FC<Props> = (props) => {
   const { filenames: names, onClose } = props
   const [filenames, setFilenames] = useState<string[]>(names)
   const [restoring, setRestoring] = useState(false)
-
+console.log(`%c [webdav-restore-modal.tsx]-[20]-[filenames]: `,'font-size:13px; background:#e6f7ff; color:#118aff;',filenames);
   return (
     <Modal
       backdrop="blur"

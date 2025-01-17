@@ -48,7 +48,7 @@ const WebdavConfig: React.FC = () => {
     try {
       setRestoring(true)
       const filenames = await listWebdavBackups()
-      setFilenames(filenames)
+      setFilenames(filenames.reverse())
       setRestoreOpen(true)
     } catch (e) {
       alert(`获取备份列表失败: ${e}`)
