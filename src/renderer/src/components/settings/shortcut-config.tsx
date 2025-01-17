@@ -36,7 +36,7 @@ const keyMap = {
   ScrollLock: 'Scrolllock',
   Pause: 'Pause',
   Insert: 'Insert',
-  Suspend: 'Suspend'
+  Suspend: 'Suspend',
 }
 
 const ShortcutConfig: React.FC = () => {
@@ -50,7 +50,7 @@ const ShortcutConfig: React.FC = () => {
     globalModeShortcut = '',
     directModeShortcut = '',
     quitWithoutCoreShortcut = '',
-    restartAppShortcut = ''
+    restartAppShortcut = '',
   } = appConfig || {}
 
   return (
@@ -150,7 +150,10 @@ const ShortcutInput: React.FC<{
 
   const parseShortcut = (
     event: KeyboardEvent,
-    setKey: { (value: React.SetStateAction<string>): void; (arg0: string): void }
+    setKey: {
+      (value: React.SetStateAction<string>): void
+      (arg0: string): void
+    },
   ): void => {
     event.preventDefault()
     let code = event.code
@@ -194,7 +197,9 @@ const ShortcutInput: React.FC<{
       } else {
         code = ''
       }
-      setKey(`${newValue}${newValue.length > 0 && code.length > 0 ? '+' : ''}${code}`)
+      setKey(
+        `${newValue}${newValue.length > 0 && code.length > 0 ? '+' : ''}${code}`,
+      )
     }
   }
   return (

@@ -6,7 +6,7 @@ import {
   createHeapSnapshot,
   quitApp,
   quitWithoutCore,
-  resetAppConfig
+  resetAppConfig,
 } from '@renderer/utils/ipc'
 import { useState } from 'react'
 import UpdaterModal from '../updater/updater-modal'
@@ -42,7 +42,9 @@ const Actions: React.FC = () => {
                   setChangelog(version.changelog)
                   setOpenUpdate(true)
                 } else {
-                  new window.Notification('当前已是最新版本', { body: '无需更新' })
+                  new window.Notification('当前已是最新版本', {
+                    body: '无需更新',
+                  })
                 }
               } catch (e) {
                 alert(e)

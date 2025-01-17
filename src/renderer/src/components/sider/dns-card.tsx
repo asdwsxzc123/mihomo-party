@@ -19,7 +19,8 @@ const DNSCard: React.FC<Props> = (props) => {
   const location = useLocation()
   const navigate = useNavigate()
   const match = location.pathname.includes('/dns')
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } =
+    useControledMihomoConfig()
   const { dns, tun } = controledMihomoConfig || {}
   const { enable = true } = dns || {}
   const {
@@ -28,9 +29,9 @@ const DNSCard: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'dns'
+    id: 'dns',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
@@ -40,7 +41,9 @@ const DNSCard: React.FC<Props> = (props) => {
 
   if (iconOnly) {
     return (
-      <div className={`${dnsCardStatus} ${!controlDns ? 'hidden' : ''} flex justify-center`}>
+      <div
+        className={`${dnsCardStatus} ${!controlDns ? 'hidden' : ''} flex justify-center`}
+      >
         <Tooltip content="DNS" placement="right">
           <Button
             size="sm"
@@ -64,7 +67,7 @@ const DNSCard: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={`${dnsCardStatus} ${!controlDns ? 'hidden' : ''} dns-card`}
     >

@@ -10,7 +10,7 @@ export let floatingWindow: BrowserWindow | null = null
 
 async function createFloatingWindow(): Promise<void> {
   const floatingWindowState = windowStateKeeper({
-    file: 'floating-window-state.json'
+    file: 'floating-window-state.json',
   })
   const { customTheme = 'default.css' } = await getAppConfig()
   floatingWindow = new BrowserWindow({
@@ -31,8 +31,8 @@ async function createFloatingWindow(): Promise<void> {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       spellcheck: false,
-      sandbox: false
-    }
+      sandbox: false,
+    },
   })
   floatingWindowState.manage(floatingWindow)
   floatingWindow.on('ready-to-show', () => {
@@ -50,7 +50,9 @@ async function createFloatingWindow(): Promise<void> {
     }
   })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    floatingWindow.loadURL(`${process.env['ELECTRON_RENDERER_URL']}/floating.html`)
+    floatingWindow.loadURL(
+      `${process.env['ELECTRON_RENDERER_URL']}/floating.html`,
+    )
   } else {
     floatingWindow.loadFile(join(__dirname, '../renderer/floating.html'))
   }

@@ -5,7 +5,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Snippet
+  Snippet,
 } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { getInterfaces } from '@renderer/utils/ipc'

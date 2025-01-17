@@ -29,9 +29,9 @@ const MihomoCoreCard: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'mihomo'
+    id: 'mihomo',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const [mem, setMem] = useState(0)
@@ -40,9 +40,12 @@ const MihomoCoreCard: React.FC<Props> = (props) => {
     const token = PubSub.subscribe('mihomo-core-changed', () => {
       mutate()
     })
-    window.electron.ipcRenderer.on('mihomoMemory', (_e, info: IMihomoMemoryInfo) => {
-      setMem(info.inuse)
-    })
+    window.electron.ipcRenderer.on(
+      'mihomoMemory',
+      (_e, info: IMihomoMemoryInfo) => {
+        setMem(info.inuse)
+      },
+    )
     return (): void => {
       PubSub.unsubscribe(token)
       window.electron.ipcRenderer.removeAllListeners('mihomoMemory')
@@ -75,7 +78,7 @@ const MihomoCoreCard: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={`${mihomoCoreCardStatus} mihomo-core-card`}
     >

@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { Button, Input, Select, SelectItem, Switch, Tab, Tabs, Tooltip } from '@nextui-org/react'
+import {
+  Button,
+  Input,
+  Select,
+  SelectItem,
+  Switch,
+  Tab,
+  Tabs,
+  Tooltip,
+} from '@nextui-org/react'
 import { BiCopy, BiSolidFileImport } from 'react-icons/bi'
 import useSWR from 'swr'
 import {
@@ -20,7 +29,7 @@ import {
   showFloatingWindow,
   showTrayIcon,
   startMonitor,
-  writeTheme
+  writeTheme,
 } from '@renderer/utils/ipc'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { platform } from '@renderer/utils/init'
@@ -30,9 +39,13 @@ import { MdEditDocument } from 'react-icons/md'
 import CSSEditorModal from './css-editor-modal'
 
 const GeneralConfig: React.FC = () => {
-  const { data: enable, mutate: mutateEnable } = useSWR('checkAutoRun', checkAutoRun)
+  const { data: enable, mutate: mutateEnable } = useSWR(
+    'checkAutoRun',
+    checkAutoRun,
+  )
   const { appConfig, patchAppConfig } = useAppConfig()
-  const [customThemes, setCustomThemes] = useState<{ key: string; label: string }[]>()
+  const [customThemes, setCustomThemes] =
+    useState<{ key: string; label: string }[]>()
   const [openCSSEditor, setOpenCSSEditor] = useState(false)
   const [fetching, setFetching] = useState(false)
   const { setTheme } = useTheme()
@@ -50,7 +63,7 @@ const GeneralConfig: React.FC = () => {
     customTheme = 'default.css',
     envType = [platform === 'win32' ? 'powershell' : 'bash'],
     autoCheckUpdate,
-    appTheme = 'system'
+    appTheme = 'system',
   } = appConfig || {}
 
   useEffect(() => {
@@ -171,7 +184,7 @@ const GeneralConfig: React.FC = () => {
             onSelectionChange={async (v) => {
               try {
                 await patchAppConfig({
-                  envType: Array.from(v) as ('bash' | 'cmd' | 'powershell')[]
+                  envType: Array.from(v) as ('bash' | 'cmd' | 'powershell')[],
                 })
               } catch (e) {
                 alert(e)

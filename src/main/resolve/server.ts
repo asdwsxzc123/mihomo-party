@@ -45,7 +45,9 @@ export async function startPacServer(): Promise<void> {
   pacPort = await findAvailablePort(10000)
   pacServer = http
     .createServer(async (_req, res) => {
-      res.writeHead(200, { 'Content-Type': 'application/x-ns-proxy-autoconfig' })
+      res.writeHead(200, {
+        'Content-Type': 'application/x-ns-proxy-autoconfig',
+      })
       res.end(script)
     })
     .listen(pacPort, host)

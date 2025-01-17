@@ -9,16 +9,29 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 
 const WebdavConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { webdavUrl, webdavUsername, webdavPassword, webdavDir = 'mihomo-party' } = appConfig || {}
+  const {
+    webdavUrl,
+    webdavUsername,
+    webdavPassword,
+    webdavDir = 'mihomo-party',
+  } = appConfig || {}
   const [backuping, setBackuping] = useState(false)
   const [restoring, setRestoring] = useState(false)
   const [filenames, setFilenames] = useState<string[]>([])
   const [restoreOpen, setRestoreOpen] = useState(false)
 
-  const [webdav, setWebdav] = useState({ webdavUrl, webdavUsername, webdavPassword, webdavDir })
-  const setWebdavDebounce = debounce(({ webdavUrl, webdavUsername, webdavPassword, webdavDir }) => {
-    patchAppConfig({ webdavUrl, webdavUsername, webdavPassword, webdavDir })
-  }, 500)
+  const [webdav, setWebdav] = useState({
+    webdavUrl,
+    webdavUsername,
+    webdavPassword,
+    webdavDir,
+  })
+  const setWebdavDebounce = debounce(
+    ({ webdavUrl, webdavUsername, webdavPassword, webdavDir }) => {
+      patchAppConfig({ webdavUrl, webdavUsername, webdavPassword, webdavDir })
+    },
+    500,
+  )
   const handleBackup = async (): Promise<void> => {
     setBackuping(true)
     try {
@@ -46,7 +59,10 @@ const WebdavConfig: React.FC = () => {
   return (
     <>
       {restoreOpen && (
-        <WebdavRestoreModal filenames={filenames} onClose={() => setRestoreOpen(false)} />
+        <WebdavRestoreModal
+          filenames={filenames}
+          onClose={() => setRestoreOpen(false)}
+        />
       )}
       <SettingCard title="WebDAV 备份">
         <SettingItem title="WebDAV 地址" divider>
@@ -95,7 +111,13 @@ const WebdavConfig: React.FC = () => {
           />
         </SettingItem>
         <div className="flex justify0between">
-          <Button isLoading={backuping} fullWidth size="sm" className="mr-1" onPress={handleBackup}>
+          <Button
+            isLoading={backuping}
+            fullWidth
+            size="sm"
+            className="mr-1"
+            onPress={handleBackup}
+          >
             备份
           </Button>
           <Button

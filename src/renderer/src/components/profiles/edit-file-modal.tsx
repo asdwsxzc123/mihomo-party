@@ -1,4 +1,11 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { BaseEditor } from '../base/base-editor'
 import { getProfileStr, setProfileStr } from '@renderer/utils/ipc'
@@ -52,7 +59,11 @@ const EditFileModal: React.FC<Props> = (props) => {
           </div>
         </ModalHeader>
         <ModalBody className="h-full">
-          <BaseEditor language="yaml" value={currData} onChange={(value) => setCurrData(value)} />
+          <BaseEditor
+            language="yaml"
+            value={currData}
+            onChange={(value) => setCurrData(value)}
+          />
         </ModalBody>
         <ModalFooter className="pt-0">
           <Button size="sm" variant="light" onPress={onClose}>

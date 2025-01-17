@@ -5,7 +5,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Code
+  Code,
 } from '@nextui-org/react'
 import ReactMarkdown from 'react-markdown'
 import React, { useState } from 'react'
@@ -44,7 +44,9 @@ const UpdaterModal: React.FC<Props> = (props) => {
             size="sm"
             className="flex app-nodrag"
             onPress={() => {
-              open(`https://github.com/mihomo-party-org/mihomo-party/releases/tag/v${version}`)
+              open(
+                `https://github.com/mihomo-party-org/mihomo-party/releases/tag/v${version}`,
+              )
             }}
           >
             前往下载
@@ -54,10 +56,16 @@ const UpdaterModal: React.FC<Props> = (props) => {
           <ReactMarkdown
             className="markdown-body select-text"
             components={{
-              a: ({ ...props }) => <a target="_blank" className="text-primary" {...props} />,
+              a: ({ ...props }) => (
+                <a target="_blank" className="text-primary" {...props} />
+              ),
               code: ({ children }) => <Code size="sm">{children}</Code>,
-              h3: ({ ...props }) => <h3 className="text-lg font-bold" {...props} />,
-              li: ({ children }) => <li className="list-disc list-inside">{children}</li>
+              h3: ({ ...props }) => (
+                <h3 className="text-lg font-bold" {...props} />
+              ),
+              li: ({ children }) => (
+                <li className="list-disc list-inside">{children}</li>
+              ),
             }}
           >
             {changelog}

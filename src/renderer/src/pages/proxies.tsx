@@ -5,7 +5,7 @@ import {
   getImageDataURL,
   mihomoChangeProxy,
   mihomoCloseAllConnections,
-  mihomoProxyDelay
+  mihomoProxyDelay,
 } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
 import { TbCircleLetterD } from 'react-icons/tb'
@@ -31,7 +31,7 @@ const Proxies: React.FC = () => {
     proxyDisplayOrder = 'default',
     autoCloseConnection = true,
     proxyCols = 'auto',
-    delayTestConcurrency = 50
+    delayTestConcurrency = 50,
   } = appConfig || {}
   const [cols, setCols] = useState(1)
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
@@ -41,11 +41,13 @@ const Proxies: React.FC = () => {
   const { groupCounts, allProxies } = useMemo(() => {
     const groupCounts: number[] = []
     const allProxies: (IMihomoProxy | IMihomoGroup)[][] = []
-    if (groups.length !== searchValue.length) setSearchValue(Array(groups.length).fill(''))
+    if (groups.length !== searchValue.length)
+      setSearchValue(Array(groups.length).fill(''))
     groups.forEach((group, index) => {
       if (isOpen[index]) {
         let groupProxies = group.all.filter(
-          (proxy) => proxy && includesIgnoreCase(proxy.name, searchValue[index])
+          (proxy) =>
+            proxy && includesIgnoreCase(proxy.name, searchValue[index]),
         )
         const count = Math.floor(groupProxies.length / cols)
         groupCounts.push(groupProxies.length % cols === 0 ? count : count + 1)
@@ -55,11 +57,16 @@ const Proxies: React.FC = () => {
             if (b.history.length === 0) return 1
             if (a.history[a.history.length - 1].delay === 0) return 1
             if (b.history[b.history.length - 1].delay === 0) return -1
-            return a.history[a.history.length - 1].delay - b.history[b.history.length - 1].delay
+            return (
+              a.history[a.history.length - 1].delay -
+              b.history[b.history.length - 1].delay
+            )
           })
         }
         if (proxyDisplayOrder === 'name') {
-          groupProxies = groupProxies.sort((a, b) => a.name.localeCompare(b.name))
+          groupProxies = groupProxies.sort((a, b) =>
+            a.name.localeCompare(b.name),
+          )
         }
         allProxies.push(groupProxies)
       } else {
@@ -78,7 +85,10 @@ const Proxies: React.FC = () => {
     mutate()
   }
 
-  const onProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
+  const onProxyDelay = async (
+    proxy: string,
+    url?: string,
+  ): Promise<IMihomoDelay> => {
     return await mihomoProxyDelay(proxy, url)
   }
 
@@ -168,7 +178,7 @@ const Proxies: React.FC = () => {
                     ? 'delay'
                     : proxyDisplayOrder === 'delay'
                       ? 'name'
-                      : 'default'
+                      : 'default',
               })
             }}
           >
@@ -187,7 +197,8 @@ const Proxies: React.FC = () => {
             className="app-nodrag"
             onPress={() => {
               patchAppConfig({
-                proxyDisplayMode: proxyDisplayMode === 'simple' ? 'full' : 'simple'
+                proxyDisplayMode:
+                  proxyDisplayMode === 'simple' ? 'full' : 'simple',
               })
             }}
           >
@@ -250,7 +261,8 @@ const Proxies: React.FC = () => {
                               src={
                                 groups[index].icon.startsWith('<svg')
                                   ? `data:image/svg+xml;utf8,${groups[index].icon}`
-                                  : localStorage.getItem(groups[index].icon) || groups[index].icon
+                                  : localStorage.getItem(groups[index].icon) ||
+                                    groups[index].icon
                               }
                             />
                           ) : null}
@@ -312,12 +324,12 @@ const Proxies: React.FC = () => {
                               }
                               i += Math.floor(
                                 allProxies[index].findIndex(
-                                  (proxy) => proxy.name === groups[index].now
-                                ) / cols
+                                  (proxy) => proxy.name === groups[index].now,
+                                ) / cols,
                               )
                               virtuosoRef.current?.scrollToIndex({
                                 index: Math.floor(i),
-                                align: 'start'
+                                align: 'start',
                               })
                             }}
                           >
@@ -356,13 +368,16 @@ const Proxies: React.FC = () => {
                 <div
                   style={
                     proxyCols !== 'auto'
-                      ? { gridTemplateColumns: `repeat(${proxyCols}, minmax(0, 1fr))` }
+                      ? {
+                          gridTemplateColumns: `repeat(${proxyCols}, minmax(0, 1fr))`,
+                        }
                       : {}
                   }
                   className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}
                 >
                   {Array.from({ length: cols }).map((_, i) => {
-                    if (!allProxies[groupIndex][innerIndex * cols + i]) return null
+                    if (!allProxies[groupIndex][innerIndex * cols + i])
+                      return null
                     return (
                       <ProxyItem
                         key={allProxies[groupIndex][innerIndex * cols + i].name}
@@ -373,8 +388,8 @@ const Proxies: React.FC = () => {
                         group={groups[groupIndex]}
                         proxyDisplayMode={proxyDisplayMode}
                         selected={
-                          allProxies[groupIndex][innerIndex * cols + i]?.name ===
-                          groups[groupIndex].now
+                          allProxies[groupIndex][innerIndex * cols + i]
+                            ?.name === groups[groupIndex].now
                         }
                       />
                     )

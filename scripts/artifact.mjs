@@ -16,18 +16,37 @@ const message = execSync('git log -1 --pretty=%B').toString().trim()
 switch (ARTIFACT_TARGET) {
   case 'windows': {
     const windowsFiles = [
-      path.join(GITHUB_WORKSPACE, `mihomo-party-windows-${version}-x64-setup.exe`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-windows-${version}-x64-portable.7z`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-windows-${version}-ia32-setup.exe`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-windows-${version}-ia32-portable.7z`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-windows-${version}-arm64-setup.exe`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-windows-${version}-arm64-portable.7z`)
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-windows-${version}-x64-setup.exe`,
+      ),
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-windows-${version}-x64-portable.7z`,
+      ),
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-windows-${version}-ia32-setup.exe`,
+      ),
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-windows-${version}-ia32-portable.7z`,
+      ),
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-windows-${version}-arm64-setup.exe`,
+      ),
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-windows-${version}-arm64-portable.7z`,
+      ),
     ]
     const windowsMedia = windowsFiles.map((file, index) => ({
       type: 'document',
-      media: `attach://file${index}`
+      media: `attach://file${index}`,
     }))
-    windowsMedia[windowsMedia.length - 1].caption = `#${hash} #Windows10 #Windows11\n${message}`
+    windowsMedia[windowsMedia.length - 1].caption =
+      `#${hash} #Windows10 #Windows11\n${message}`
     const windowsForm = new FormData()
     windowsForm.append('chat_id', CHAT_ID)
     windowsForm.append('media', JSON.stringify(windowsMedia))
@@ -38,23 +57,33 @@ switch (ARTIFACT_TARGET) {
       `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
       windowsForm,
       {
-        headers: windowsForm.getHeaders()
-      }
+        headers: windowsForm.getHeaders(),
+      },
     )
     break
   }
   case 'windows7': {
     const windows7Files = [
       path.join(GITHUB_WORKSPACE, `mihomo-party-win7-${version}-x64-setup.exe`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-win7-${version}-x64-portable.7z`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-win7-${version}-ia32-setup.exe`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-win7-${version}-ia32-portable.7z`)
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-win7-${version}-x64-portable.7z`,
+      ),
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-win7-${version}-ia32-setup.exe`,
+      ),
+      path.join(
+        GITHUB_WORKSPACE,
+        `mihomo-party-win7-${version}-ia32-portable.7z`,
+      ),
     ]
     const windows7Media = windows7Files.map((file, index) => ({
       type: 'document',
-      media: `attach://file${index}`
+      media: `attach://file${index}`,
     }))
-    windows7Media[windows7Media.length - 1].caption = `#${hash} #Windows7 #Windows8\n${message}`
+    windows7Media[windows7Media.length - 1].caption =
+      `#${hash} #Windows7 #Windows8\n${message}`
     const windows7Form = new FormData()
     windows7Form.append('chat_id', CHAT_ID)
     windows7Form.append('media', JSON.stringify(windows7Media))
@@ -65,19 +94,19 @@ switch (ARTIFACT_TARGET) {
       `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
       windows7Form,
       {
-        headers: windows7Form.getHeaders()
-      }
+        headers: windows7Form.getHeaders(),
+      },
     )
     break
   }
   case 'macos': {
     const macosFiles = [
       path.join(GITHUB_WORKSPACE, `mihomo-party-macos-${version}-arm64.pkg`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-macos-${version}-x64.pkg`)
+      path.join(GITHUB_WORKSPACE, `mihomo-party-macos-${version}-x64.pkg`),
     ]
     const macosMedia = macosFiles.map((file, index) => ({
       type: 'document',
-      media: `attach://file${index}`
+      media: `attach://file${index}`,
     }))
     macosMedia[macosMedia.length - 1].caption = `#${hash} #macOS11+\n${message}`
     const macosForm = new FormData()
@@ -90,21 +119,22 @@ switch (ARTIFACT_TARGET) {
       `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
       macosForm,
       {
-        headers: macosForm.getHeaders()
-      }
+        headers: macosForm.getHeaders(),
+      },
     )
     break
   }
   case 'macos10': {
     const macos10Files = [
       path.join(GITHUB_WORKSPACE, `mihomo-party-catalina-${version}-arm64.pkg`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-catalina-${version}-x64.pkg`)
+      path.join(GITHUB_WORKSPACE, `mihomo-party-catalina-${version}-x64.pkg`),
     ]
     const macos10Media = macos10Files.map((file, index) => ({
       type: 'document',
-      media: `attach://file${index}`
+      media: `attach://file${index}`,
     }))
-    macos10Media[macos10Media.length - 1].caption = `#${hash} #macOS10+\n${message}`
+    macos10Media[macos10Media.length - 1].caption =
+      `#${hash} #macOS10+\n${message}`
     const macos10Form = new FormData()
     macos10Form.append('chat_id', CHAT_ID)
     macos10Form.append('media', JSON.stringify(macos10Media))
@@ -115,8 +145,8 @@ switch (ARTIFACT_TARGET) {
       `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
       macos10Form,
       {
-        headers: macos10Form.getHeaders()
-      }
+        headers: macos10Form.getHeaders(),
+      },
     )
     break
   }
@@ -125,11 +155,11 @@ switch (ARTIFACT_TARGET) {
       path.join(GITHUB_WORKSPACE, `mihomo-party-linux-${version}-aarch64.rpm`),
       path.join(GITHUB_WORKSPACE, `mihomo-party-linux-${version}-arm64.deb`),
       path.join(GITHUB_WORKSPACE, `mihomo-party-linux-${version}-x86_64.rpm`),
-      path.join(GITHUB_WORKSPACE, `mihomo-party-linux-${version}-amd64.deb`)
+      path.join(GITHUB_WORKSPACE, `mihomo-party-linux-${version}-amd64.deb`),
     ]
     const linuxMedia = linuxFiles.map((file, index) => ({
       type: 'document',
-      media: `attach://file${index}`
+      media: `attach://file${index}`,
     }))
     linuxMedia[linuxMedia.length - 1].caption = `#${hash} #Linux\n${message}`
     const linuxForm = new FormData()
@@ -142,8 +172,8 @@ switch (ARTIFACT_TARGET) {
       `http://127.0.0.1:8081/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMediaGroup`,
       linuxForm,
       {
-        headers: linuxForm.getHeaders()
-      }
+        headers: linuxForm.getHeaders(),
+      },
     )
     break
   }

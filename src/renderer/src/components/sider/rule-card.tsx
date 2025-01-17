@@ -1,4 +1,11 @@
-import { Button, Card, CardBody, CardFooter, Chip, Tooltip } from '@nextui-org/react'
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Chip,
+  Tooltip,
+} from '@nextui-org/react'
 import { MdOutlineAltRoute } from 'react-icons/md'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSortable } from '@dnd-kit/sortable'
@@ -25,9 +32,9 @@ const RuleCard: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'rule'
+    id: 'rule',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
 
@@ -56,7 +63,7 @@ const RuleCard: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={`${ruleCardStatus} rule-card`}
     >
@@ -85,11 +92,11 @@ const RuleCard: React.FC<Props> = (props) => {
                 match
                   ? {
                       base: 'border-primary-foreground',
-                      content: 'text-primary-foreground'
+                      content: 'text-primary-foreground',
                     }
                   : {
                       base: 'border-primary',
-                      content: 'text-primary'
+                      content: 'text-primary',
                     }
               }
               size="sm"

@@ -1,5 +1,10 @@
 import { getControledMihomoConfig } from './controledMihomo'
-import { mihomoProfileWorkDir, mihomoWorkDir, profileConfigPath, profilePath } from '../utils/dirs'
+import {
+  mihomoProfileWorkDir,
+  mihomoWorkDir,
+  profileConfigPath,
+  profilePath,
+} from '../utils/dirs'
 import { addProfileUpdater } from '../core/profileUpdater'
 import { readFile, rm, writeFile } from 'fs/promises'
 import { restartCore } from '../core/manager'
@@ -26,9 +31,12 @@ export async function setProfileConfig(config: IProfileConfig): Promise<void> {
   await writeFile(profileConfigPath(), yaml.stringify(config), 'utf-8')
 }
 
-export async function getProfileItem(id: string | undefined): Promise<IProfileItem | undefined> {
+export async function getProfileItem(
+  id: string | undefined,
+): Promise<IProfileItem | undefined> {
   const { items } = await getProfileConfig()
-  if (!id || id === 'default') return { id: 'default', type: 'local', name: '空白订阅' }
+  if (!id || id === 'default')
+    return { id: 'default', type: 'local', name: '空白订阅' }
   return items.find((item) => item.id === id)
 }
 
@@ -57,7 +65,9 @@ export async function updateProfileItem(item: IProfileItem): Promise<void> {
   await setProfileConfig(config)
 }
 
-export async function addProfileItem(item: Partial<IProfileItem>): Promise<void> {
+export async function addProfileItem(
+  item: Partial<IProfileItem>,
+): Promise<void> {
   const newItem = await createProfile(item)
   const config = await getProfileConfig()
   if (await getProfileItem(newItem.id)) {
@@ -99,10 +109,18 @@ export async function removeProfileItem(id: string): Promise<void> {
 
 export async function getCurrentProfileItem(): Promise<IProfileItem> {
   const { current } = await getProfileConfig()
-  return (await getProfileItem(current)) || { id: 'default', type: 'local', name: '空白订阅' }
+  return (
+    (await getProfileItem(current)) || {
+      id: 'default',
+      type: 'local',
+      name: '空白订阅',
+    }
+  )
 }
 
-export async function createProfile(item: Partial<IProfileItem>): Promise<IProfileItem> {
+export async function createProfile(
+  item: Partial<IProfileItem>,
+): Promise<IProfileItem> {
   const id = item.id || new Date().getTime().toString(16)
   const newItem = {
     id,
@@ -112,25 +130,26 @@ export async function createProfile(item: Partial<IProfileItem>): Promise<IProfi
     interval: item.interval || 0,
     override: item.override || [],
     useProxy: item.useProxy || false,
-    updated: new Date().getTime()
+    updated: new Date().getTime(),
   } as IProfileItem
   switch (newItem.type) {
     case 'remote': {
       const { userAgent } = await getAppConfig()
-      const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
+      const { 'mixed-port': mixedPort = 7890 } =
+        await getControledMihomoConfig()
       if (!item.url) throw new Error('Empty URL')
       const res: AxiosResponse = await axios.get(item.url, {
         proxy: newItem.useProxy
           ? {
               protocol: 'http',
               host: '127.0.0.1',
-              port: mixedPort
+              port: mixedPort,
             }
           : false,
         headers: {
-          'User-Agent': userAgent || 'clash.meta'
+          'User-Agent': userAgent || 'clash.meta',
         },
-        responseType: 'text'
+        responseType: 'text',
       })
       const data = res.data
       const headers = res.headers
@@ -166,13 +185,18 @@ export async function getProfileStr(id: string | undefined): Promise<string> {
   }
 }
 
-export async function setProfileStr(id: string, content: string): Promise<void> {
+export async function setProfileStr(
+  id: string,
+  content: string,
+): Promise<void> {
   const { current } = await getProfileConfig()
   await writeFile(profilePath(id), content, 'utf-8')
   if (current === id) await restartCore()
 }
 
-export async function getProfile(id: string | undefined): Promise<IMihomoConfig> {
+export async function getProfile(
+  id: string | undefined,
+): Promise<IMihomoConfig> {
   const profile = await getProfileStr(id)
   let result = yaml.parse(profile, { merge: true }) || {}
   if (typeof result !== 'object') result = {}
@@ -213,7 +237,7 @@ export async function getFileStr(path: string): Promise<string> {
   } else {
     return await readFile(
       join(diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(), path),
-      'utf-8'
+      'utf-8',
     )
   }
 }
@@ -227,7 +251,7 @@ export async function setFileStr(path: string, content: string): Promise<void> {
     await writeFile(
       join(diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(), path),
       content,
-      'utf-8'
+      'utf-8',
     )
   }
 }

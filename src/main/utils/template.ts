@@ -28,10 +28,10 @@ export const defaultConfig: IAppConfig = {
     'mihomo',
     'dns',
     'sniff',
-    'log'
+    'log',
   ],
   siderWidth: 250,
-  sysProxy: { enable: false, mode: 'manual' }
+  sysProxy: { enable: false, mode: 'manual' },
 }
 
 export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
@@ -62,19 +62,32 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     'auto-detect-interface': true,
     'dns-hijack': ['any:53'],
     'route-exclude-address': [],
-    mtu: 1500
+    mtu: 1500,
   },
   dns: {
     enable: true,
     ipv6: false,
     'enhanced-mode': 'fake-ip',
     'fake-ip-range': '198.18.0.1/16',
-    'fake-ip-filter': ['*', '+.lan', '+.local', 'time.*.com', 'ntp.*.com', '+.market.xiaomi.com'],
+    'fake-ip-filter': [
+      '*',
+      '+.lan',
+      '+.local',
+      'time.*.com',
+      'ntp.*.com',
+      '+.market.xiaomi.com',
+    ],
     'use-hosts': false,
     'use-system-hosts': false,
-    nameserver: ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
-    'proxy-server-nameserver': ['https://120.53.53.53/dns-query', 'https://223.5.5.5/dns-query'],
-    'direct-nameserver': []
+    nameserver: [
+      'https://120.53.53.53/dns-query',
+      'https://223.5.5.5/dns-query',
+    ],
+    'proxy-server-nameserver': [
+      'https://120.53.53.53/dns-query',
+      'https://223.5.5.5/dns-query',
+    ],
+    'direct-nameserver': [],
   },
   sniffer: {
     enable: true,
@@ -84,11 +97,11 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
     sniff: {
       HTTP: {
         ports: [80, 443],
-        'override-destination': false
+        'override-destination': false,
       },
       TLS: {
-        ports: [443]
-      }
+        ports: [443],
+      },
     },
     'skip-domain': ['+.push.apple.com'],
     'skip-dst-address': [
@@ -103,34 +116,36 @@ export const defaultControledMihomoConfig: Partial<IMihomoConfig> = {
       '2001:67c:4e8::/48',
       '2001:b28:f23c::/47',
       '2001:b28:f23f::/48',
-      '2a0a:f280:203::/48'
-    ]
+      '2a0a:f280:203::/48',
+    ],
   },
   profile: {
     'store-selected': true,
-    'store-fake-ip': true
+    'store-fake-ip': true,
   },
   'geo-auto-update': false,
   'geo-update-interval': 24,
   'geodata-mode': false,
   'geox-url': {
-    geoip: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat',
-    geosite: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
+    geoip:
+      'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat',
+    geosite:
+      'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
     mmdb: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb',
-    asn: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb'
-  }
+    asn: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb',
+  },
 }
 
 export const defaultProfileConfig: IProfileConfig = {
-  items: []
+  items: [],
 }
 
 export const defaultOverrideConfig: IOverrideConfig = {
-  items: []
+  items: [],
 }
 
 export const defaultProfile: Partial<IMihomoConfig> = {
   proxies: [],
   'proxy-groups': [],
-  rules: []
+  rules: [],
 }

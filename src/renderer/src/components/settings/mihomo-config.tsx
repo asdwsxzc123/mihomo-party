@@ -1,10 +1,21 @@
 import React, { useState } from 'react'
 import SettingCard from '../base/base-setting-card'
 import SettingItem from '../base/base-setting-item'
-import { Button, Input, Select, SelectItem, Switch, Tooltip } from '@nextui-org/react'
+import {
+  Button,
+  Input,
+  Select,
+  SelectItem,
+  Switch,
+  Tooltip,
+} from '@nextui-org/react'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
 import debounce from '@renderer/utils/debounce'
-import { getGistUrl, patchControledMihomoConfig, restartCore } from '@renderer/utils/ipc'
+import {
+  getGistUrl,
+  patchControledMihomoConfig,
+  restartCore,
+} from '@renderer/utils/ipc'
 import { MdDeleteForever } from 'react-icons/md'
 import { BiCopy } from 'react-icons/bi'
 import { IoIosHelpCircle } from 'react-icons/io'
@@ -24,7 +35,7 @@ const MihomoConfig: React.FC = () => {
     delayTestUrl,
     userAgent,
     mihomoCpuPriority = 'PRIORITY_NORMAL',
-    proxyCols = 'auto'
+    proxyCols = 'auto',
   } = appConfig || {}
   const [url, setUrl] = useState(delayTestUrl)
   const [pauseSSIDInput, setPauseSSIDInput] = useState(pauseSSID)
@@ -97,7 +108,9 @@ const MihomoConfig: React.FC = () => {
               try {
                 const url = await getGistUrl()
                 if (url !== '') {
-                  await navigator.clipboard.writeText(`${url}/raw/mihomo-party.yaml`)
+                  await navigator.clipboard.writeText(
+                    `${url}/raw/mihomo-party.yaml`,
+                  )
                 }
               } catch (e) {
                 alert(e)
@@ -127,7 +140,9 @@ const MihomoConfig: React.FC = () => {
           size="sm"
           selectedKeys={new Set([proxyCols])}
           onSelectionChange={async (v) => {
-            await patchAppConfig({ proxyCols: v.currentKey as 'auto' | '1' | '2' | '3' | '4' })
+            await patchAppConfig({
+              proxyCols: v.currentKey as 'auto' | '1' | '2' | '3' | '4',
+            })
           }}
         >
           <SelectItem key="auto">自动</SelectItem>
@@ -147,7 +162,7 @@ const MihomoConfig: React.FC = () => {
             onSelectionChange={async (v) => {
               try {
                 await patchAppConfig({
-                  mihomoCpuPriority: v.currentKey as Priority
+                  mihomoCpuPriority: v.currentKey as Priority,
                 })
                 await restartCore()
               } catch (e) {
@@ -253,7 +268,9 @@ const MihomoConfig: React.FC = () => {
                   if (index === pauseSSIDInput.length) {
                     setPauseSSIDInput([...pauseSSIDInput, v])
                   } else {
-                    setPauseSSIDInput(pauseSSIDInput.map((a, i) => (i === index ? v : a)))
+                    setPauseSSIDInput(
+                      pauseSSIDInput.map((a, i) => (i === index ? v : a)),
+                    )
                   }
                 }}
               />
@@ -263,7 +280,11 @@ const MihomoConfig: React.FC = () => {
                   size="sm"
                   variant="flat"
                   color="warning"
-                  onClick={() => setPauseSSIDInput(pauseSSIDInput.filter((_, i) => i !== index))}
+                  onClick={() =>
+                    setPauseSSIDInput(
+                      pauseSSIDInput.filter((_, i) => i !== index),
+                    )
+                  }
                 >
                   <MdDeleteForever className="text-lg" />
                 </Button>

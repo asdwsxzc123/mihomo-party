@@ -10,7 +10,7 @@ import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
 } from '@nextui-org/react'
 import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'
@@ -36,8 +36,9 @@ const EditInfoModal: React.FC<Props> = (props) => {
         ...values,
         override: values.override?.filter(
           (i) =>
-            overrideItems.find((t) => t.id === i) && !overrideItems.find((t) => t.id === i)?.global
-        )
+            overrideItems.find((t) => t.id === i) &&
+            !overrideItems.find((t) => t.id === i)?.global,
+        ),
       })
       await restartCore()
       onClose()
@@ -131,7 +132,7 @@ const EditInfoModal: React.FC<Props> = (props) => {
                       onPress={() => {
                         setValues({
                           ...values,
-                          override: values.override?.filter((t) => t !== i)
+                          override: values.override?.filter((t) => t !== i),
                         })
                       }}
                     >
@@ -151,12 +152,16 @@ const EditInfoModal: React.FC<Props> = (props) => {
                   onAction={(key) => {
                     setValues({
                       ...values,
-                      override: Array.from(values.override || []).concat(key.toString())
+                      override: Array.from(values.override || []).concat(
+                        key.toString(),
+                      ),
                     })
                   }}
                 >
                   {overrideItems
-                    .filter((i) => !values.override?.includes(i.id) && !i.global)
+                    .filter(
+                      (i) => !values.override?.includes(i.id) && !i.global,
+                    )
                     .map((i) => (
                       <DropdownItem key={i.id}>{i.name}</DropdownItem>
                     ))}

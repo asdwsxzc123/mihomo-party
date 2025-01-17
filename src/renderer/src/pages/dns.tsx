@@ -9,7 +9,8 @@ import { restartCore } from '@renderer/utils/ipc'
 import React, { Key, ReactNode, useState } from 'react'
 
 const DNS: React.FC = () => {
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } =
+    useControledMihomoConfig()
   const { appConfig, patchAppConfig } = useAppConfig()
   const { nameserverPolicy, useNameserverPolicy } = appConfig || {}
   const { dns, hosts } = controledMihomoConfig || {}
@@ -22,19 +23,22 @@ const DNS: React.FC = () => {
       '+.local',
       'time.*.com',
       'ntp.*.com',
-      '+.market.xiaomi.com'
+      '+.market.xiaomi.com',
     ],
     'enhanced-mode': enhancedMode = 'fake-ip',
     'use-hosts': useHosts = false,
     'use-system-hosts': useSystemHosts = false,
     'respect-rules': respectRules = false,
     'default-nameserver': defaultNameserver = ['tls://223.5.5.5'],
-    nameserver = ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
+    nameserver = [
+      'https://doh.pub/dns-query',
+      'https://dns.alidns.com/dns-query',
+    ],
     'proxy-server-nameserver': proxyServerNameserver = [
       'https://doh.pub/dns-query',
-      'https://dns.alidns.com/dns-query'
+      'https://dns.alidns.com/dns-query',
     ],
-    'direct-nameserver': directNameserver = []
+    'direct-nameserver': directNameserver = [],
   } = dns || {}
   const [changed, setChanged] = useState(false)
   const [values, originSetValues] = useState({
@@ -50,11 +54,16 @@ const DNS: React.FC = () => {
     proxyServerNameserver,
     directNameserver,
     useNameserverPolicy,
-    nameserverPolicy: Object.entries(nameserverPolicy || {}).map(([domain, value]) => ({
+    nameserverPolicy: Object.entries(nameserverPolicy || {}).map(
+      ([domain, value]) => ({
+        domain,
+        value,
+      }),
+    ),
+    hosts: Object.entries(hosts || {}).map(([domain, value]) => ({
       domain,
-      value
+      value,
     })),
-    hosts: Object.entries(hosts || {}).map(([domain, value]) => ({ domain, value }))
   })
 
   const setValues = (v: typeof values): void => {
@@ -62,7 +71,11 @@ const DNS: React.FC = () => {
     setChanged(true)
   }
 
-  const handleListChange = (type: string, value: string, index: number): void => {
+  const handleListChange = (
+    type: string,
+    value: string,
+    index: number,
+  ): void => {
     const list = [...values[type]]
     if (value.trim()) {
       if (index < list.length) {
@@ -80,36 +93,44 @@ const DNS: React.FC = () => {
     const currentItems = values[type]
     const showNewLine = currentItems.every((item: string) => item.trim() !== '')
 
-    return [...currentItems, ...(showNewLine ? [''] : [])].map((item, index) => (
-      <div key={index} className="mt-2 flex">
-        <Input
-          fullWidth
-          size="sm"
-          placeholder={placeholder}
-          value={typeof item === 'string' ? item : item.domain}
-          onValueChange={(v) => handleListChange(type, v, index)}
-        />
-        {index < values[type].length && (
-          <Button
-            className="ml-2"
+    return [...currentItems, ...(showNewLine ? [''] : [])].map(
+      (item, index) => (
+        <div key={index} className="mt-2 flex">
+          <Input
+            fullWidth
             size="sm"
-            variant="flat"
-            color="warning"
-            onClick={() => handleListChange(type, '', index)}
-          >
-            <MdDeleteForever className="text-lg" />
-          </Button>
-        )}
-      </div>
-    ))
+            placeholder={placeholder}
+            value={typeof item === 'string' ? item : item.domain}
+            onValueChange={(v) => handleListChange(type, v, index)}
+          />
+          {index < values[type].length && (
+            <Button
+              className="ml-2"
+              size="sm"
+              variant="flat"
+              color="warning"
+              onClick={() => handleListChange(type, '', index)}
+            >
+              <MdDeleteForever className="text-lg" />
+            </Button>
+          )}
+        </div>
+      ),
+    )
   }
 
-  const handleSubkeyChange = (type: string, domain: string, value: string, index: number): void => {
+  const handleSubkeyChange = (
+    type: string,
+    domain: string,
+    value: string,
+    index: number,
+  ): void => {
     const list = [...values[type]]
     const processedValue = value.includes(',')
       ? value.split(',').map((s: string) => s.trim())
       : value.trim()
-    if (domain || processedValue) list[index] = { domain: domain.trim(), value: processedValue }
+    if (domain || processedValue)
+      list[index] = { domain: domain.trim(), value: processedValue }
     else list.splice(index, 1)
     setValues({ ...values, [type]: list })
   }
@@ -117,9 +138,9 @@ const DNS: React.FC = () => {
   const onSave = async (patch: Partial<IMihomoConfig>): Promise<void> => {
     await patchAppConfig({
       nameserverPolicy: Object.fromEntries(
-        values.nameserverPolicy.map(({ domain, value }) => [domain, value])
+        values.nameserverPolicy.map(({ domain, value }) => [domain, value]),
       ),
-      useNameserverPolicy: values.useNameserverPolicy
+      useNameserverPolicy: values.useNameserverPolicy,
     })
     try {
       setChanged(false)
@@ -141,7 +162,7 @@ const DNS: React.FC = () => {
             color="primary"
             onPress={() => {
               const hostsObject = Object.fromEntries(
-                values.hosts.map(({ domain, value }) => [domain, value])
+                values.hosts.map(({ domain, value }) => [domain, value]),
               )
               const dnsConfig = {
                 ipv6: values.ipv6,
@@ -156,16 +177,19 @@ const DNS: React.FC = () => {
                 'proxy-server-nameserver': values.proxyServerNameserver,
                 'direct-nameserver': values.directNameserver,
                 fallback: undefined,
-                'fallback-filter': undefined
+                'fallback-filter': undefined,
               }
               if (values.useNameserverPolicy) {
                 dnsConfig['nameserver-policy'] = Object.fromEntries(
-                  values.nameserverPolicy.map(({ domain, value }) => [domain, value])
+                  values.nameserverPolicy.map(({ domain, value }) => [
+                    domain,
+                    value,
+                  ]),
                 )
               }
               onSave({
                 dns: dnsConfig,
-                hosts: hostsObject
+                hosts: hostsObject,
               })
             }}
           >
@@ -180,7 +204,9 @@ const DNS: React.FC = () => {
             size="sm"
             color="primary"
             selectedKey={values.enhancedMode}
-            onSelectionChange={(key: Key) => setValues({ ...values, enhancedMode: key as DnsMode })}
+            onSelectionChange={(key: Key) =>
+              setValues({ ...values, enhancedMode: key as DnsMode })
+            }
           >
             <Tab key="fake-ip" title="虚假 IP" />
             <Tab key="redir-host" title="真实 IP" />
@@ -232,7 +258,10 @@ const DNS: React.FC = () => {
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
           <h3>代理服务器域名解析</h3>
-          {renderListInputs('proxyServerNameserver', '例：tls://dns.alidns.com')}
+          {renderListInputs(
+            'proxyServerNameserver',
+            '例：tls://dns.alidns.com',
+          )}
         </div>
         <Divider className="my-2" />
         <div className="flex flex-col items-stretch">
@@ -272,7 +301,7 @@ const DNS: React.FC = () => {
                             'nameserverPolicy',
                             v,
                             Array.isArray(value) ? value.join(',') : value,
-                            index
+                            index,
                           )
                         }
                       />
@@ -285,7 +314,12 @@ const DNS: React.FC = () => {
                         placeholder="DNS 服务器"
                         value={Array.isArray(value) ? value.join(',') : value}
                         onValueChange={(v) =>
-                          handleSubkeyChange('nameserverPolicy', domain, v, index)
+                          handleSubkeyChange(
+                            'nameserverPolicy',
+                            domain,
+                            v,
+                            index,
+                          )
                         }
                       />
                       {index < values.nameserverPolicy.length && (
@@ -294,14 +328,21 @@ const DNS: React.FC = () => {
                           color="warning"
                           variant="flat"
                           className="ml-2"
-                          onClick={() => handleSubkeyChange('nameserverPolicy', '', '', index)}
+                          onClick={() =>
+                            handleSubkeyChange(
+                              'nameserverPolicy',
+                              '',
+                              '',
+                              index,
+                            )
+                          }
                         >
                           <MdDeleteForever className="text-lg" />
                         </Button>
                       )}
                     </div>
                   </div>
-                )
+                ),
               )}
             </div>
           </div>
@@ -327,47 +368,53 @@ const DNS: React.FC = () => {
         {values.useHosts && (
           <div className="flex flex-col items-stretch">
             <h3 className="mb-2"></h3>
-            {[...values.hosts, { domain: '', value: '' }].map(({ domain, value }, index) => (
-              <div key={index} className="flex mb-2">
-                <div className="flex-[4]">
-                  <Input
-                    size="sm"
-                    fullWidth
-                    placeholder="域名"
-                    value={domain}
-                    onValueChange={(v) =>
-                      handleSubkeyChange(
-                        'hosts',
-                        v,
-                        Array.isArray(value) ? value.join(',') : value,
-                        index
-                      )
-                    }
-                  />
-                </div>
-                <span className="mx-2">:</span>
-                <div className="flex-[6] flex">
-                  <Input
-                    size="sm"
-                    fullWidth
-                    placeholder="域名或 IP"
-                    value={Array.isArray(value) ? value.join(',') : value}
-                    onValueChange={(v) => handleSubkeyChange('hosts', domain, v, index)}
-                  />
-                  {index < values.hosts.length && (
-                    <Button
+            {[...values.hosts, { domain: '', value: '' }].map(
+              ({ domain, value }, index) => (
+                <div key={index} className="flex mb-2">
+                  <div className="flex-[4]">
+                    <Input
                       size="sm"
-                      color="warning"
-                      variant="flat"
-                      className="ml-2"
-                      onClick={() => handleSubkeyChange('hosts', '', '', index)}
-                    >
-                      <MdDeleteForever className="text-lg" />
-                    </Button>
-                  )}
+                      fullWidth
+                      placeholder="域名"
+                      value={domain}
+                      onValueChange={(v) =>
+                        handleSubkeyChange(
+                          'hosts',
+                          v,
+                          Array.isArray(value) ? value.join(',') : value,
+                          index,
+                        )
+                      }
+                    />
+                  </div>
+                  <span className="mx-2">:</span>
+                  <div className="flex-[6] flex">
+                    <Input
+                      size="sm"
+                      fullWidth
+                      placeholder="域名或 IP"
+                      value={Array.isArray(value) ? value.join(',') : value}
+                      onValueChange={(v) =>
+                        handleSubkeyChange('hosts', domain, v, index)
+                      }
+                    />
+                    {index < values.hosts.length && (
+                      <Button
+                        size="sm"
+                        color="warning"
+                        variant="flat"
+                        className="ml-2"
+                        onClick={() =>
+                          handleSubkeyChange('hosts', '', '', index)
+                        }
+                      >
+                        <MdDeleteForever className="text-lg" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ),
+            )}
           </div>
         )}
       </SettingCard>

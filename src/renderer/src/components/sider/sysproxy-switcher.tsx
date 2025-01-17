@@ -26,9 +26,9 @@ const SysproxySwitcher: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'sysproxy'
+    id: 'sysproxy',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
@@ -68,7 +68,7 @@ const SysproxySwitcher: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={`${sysproxyCardStatus} sysproxy-card`}
     >

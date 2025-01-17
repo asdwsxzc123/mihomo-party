@@ -8,13 +8,16 @@ interface Props {
   index: number
   info: IMihomoConnectionDetail
   selected: IMihomoConnectionDetail | undefined
-  setSelected: React.Dispatch<React.SetStateAction<IMihomoConnectionDetail | undefined>>
+  setSelected: React.Dispatch<
+    React.SetStateAction<IMihomoConnectionDetail | undefined>
+  >
   setIsDetailModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   close: (id: string) => void
 }
 
 const ConnectionItem: React.FC<Props> = (props) => {
-  const { index, info, close, selected, setSelected, setIsDetailModalOpen } = props
+  const { index, info, close, selected, setSelected, setIsDetailModalOpen } =
+    props
 
   useEffect(() => {
     if (selected?.id === info.id) {
@@ -74,7 +77,8 @@ const ConnectionItem: React.FC<Props> = (props) => {
               </Chip>
               {info.uploadSpeed !== 0 || info.downloadSpeed !== 0 ? (
                 <Chip color="primary" size="sm" radius="sm" variant="bordered">
-                  ↑ {calcTraffic(info.uploadSpeed || 0)}/s ↓ {calcTraffic(info.downloadSpeed || 0)}
+                  ↑ {calcTraffic(info.uploadSpeed || 0)}/s ↓{' '}
+                  {calcTraffic(info.downloadSpeed || 0)}
                   /s
                 </Chip>
               ) : null}
@@ -89,7 +93,11 @@ const ConnectionItem: React.FC<Props> = (props) => {
               close(info.id)
             }}
           >
-            {info.isActive ? <CgClose className="text-lg" /> : <CgTrash className="text-lg" />}
+            {info.isActive ? (
+              <CgClose className="text-lg" />
+            ) : (
+              <CgTrash className="text-lg" />
+            )}
           </Button>
         </div>
       </Card>

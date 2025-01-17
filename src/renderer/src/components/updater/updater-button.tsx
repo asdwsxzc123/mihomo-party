@@ -20,8 +20,8 @@ const UpdaterButton: React.FC<Props> = (props) => {
     autoCheckUpdate ? 'checkUpdate' : undefined,
     autoCheckUpdate ? checkUpdate : (): undefined => {},
     {
-      refreshInterval: 1000 * 60 * 10
-    }
+      refreshInterval: 1000 * 60 * 10,
+    },
   )
   if (!latest) return null
 

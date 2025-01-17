@@ -1,4 +1,11 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { BaseEditor } from '../base/base-editor'
 import { getFileStr, setFileStr } from '@renderer/utils/ipc'

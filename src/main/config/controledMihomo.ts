@@ -8,18 +8,27 @@ import { deepMerge } from '../utils/merge'
 
 let controledMihomoConfig: Partial<IMihomoConfig> // mihomo.yaml
 
-export async function getControledMihomoConfig(force = false): Promise<Partial<IMihomoConfig>> {
+export async function getControledMihomoConfig(
+  force = false,
+): Promise<Partial<IMihomoConfig>> {
   if (force || !controledMihomoConfig) {
     const data = await readFile(controledMihomoConfigPath(), 'utf-8')
-    controledMihomoConfig = yaml.parse(data, { merge: true }) || defaultControledMihomoConfig
+    controledMihomoConfig =
+      yaml.parse(data, { merge: true }) || defaultControledMihomoConfig
   }
   if (typeof controledMihomoConfig !== 'object')
     controledMihomoConfig = defaultControledMihomoConfig
   return controledMihomoConfig
 }
 
-export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>): Promise<void> {
-  const { useNameserverPolicy, controlDns = true, controlSniff = true } = await getAppConfig()
+export async function patchControledMihomoConfig(
+  patch: Partial<IMihomoConfig>,
+): Promise<void> {
+  const {
+    useNameserverPolicy,
+    controlDns = true,
+    controlSniff = true,
+  } = await getAppConfig()
   if (!controlDns) {
     delete controledMihomoConfig.dns
     delete controledMihomoConfig.hosts
@@ -42,7 +51,8 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
   }
   if (patch.dns?.['nameserver-policy']) {
     controledMihomoConfig.dns = controledMihomoConfig.dns || {}
-    controledMihomoConfig.dns['nameserver-policy'] = patch.dns['nameserver-policy']
+    controledMihomoConfig.dns['nameserver-policy'] =
+      patch.dns['nameserver-policy']
   }
   controledMihomoConfig = deepMerge(controledMihomoConfig, patch)
   if (!useNameserverPolicy) {
@@ -52,5 +62,9 @@ export async function patchControledMihomoConfig(patch: Partial<IMihomoConfig>):
     delete controledMihomoConfig?.tun?.device
   }
   await generateProfile()
-  await writeFile(controledMihomoConfigPath(), yaml.stringify(controledMihomoConfig), 'utf-8')
+  await writeFile(
+    controledMihomoConfigPath(),
+    yaml.stringify(controledMihomoConfig),
+    'utf-8',
+  )
 }

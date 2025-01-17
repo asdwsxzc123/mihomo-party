@@ -6,7 +6,7 @@ import {
   addProfileItem as add,
   removeProfileItem as remove,
   updateProfileItem as update,
-  changeCurrentProfile as change
+  changeCurrentProfile as change,
 } from '@renderer/utils/ipc'
 
 interface ProfileConfigContextType {
@@ -19,11 +19,16 @@ interface ProfileConfigContextType {
   changeCurrentProfile: (id: string) => Promise<void>
 }
 
-const ProfileConfigContext = createContext<ProfileConfigContextType | undefined>(undefined)
+const ProfileConfigContext = createContext<
+  ProfileConfigContextType | undefined
+>(undefined)
 
-export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: profileConfig, mutate: mutateProfileConfig } = useSWR('getProfileConfig', () =>
-    getProfileConfig()
+export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const { data: profileConfig, mutate: mutateProfileConfig } = useSWR(
+    'getProfileConfig',
+    () => getProfileConfig(),
   )
 
   const setProfileConfig = async (config: IProfileConfig): Promise<void> => {
@@ -99,7 +104,7 @@ export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ child
         addProfileItem,
         removeProfileItem,
         updateProfileItem,
-        changeCurrentProfile
+        changeCurrentProfile,
       }}
     >
       {children}
@@ -110,7 +115,9 @@ export const ProfileConfigProvider: React.FC<{ children: ReactNode }> = ({ child
 export const useProfileConfig = (): ProfileConfigContextType => {
   const context = useContext(ProfileConfigContext)
   if (context === undefined) {
-    throw new Error('useProfileConfig must be used within a ProfileConfigProvider')
+    throw new Error(
+      'useProfileConfig must be used within a ProfileConfigProvider',
+    )
   }
   return context
 }

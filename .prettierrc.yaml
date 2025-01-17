@@ -1,4 +1,18 @@
 singleQuote: true
 semi: false
-printWidth: 100
-trailingComma: none
+printWidth: 80
+tabWidth: 2
+# useTabs: true
+quoteProps: 'as-needed'
+# jsxSingleQuote: true
+trailingComma: 'all'
+bracketSpacing: true
+jsxBracketSameLine: true
+arrowParens: 'always'
+requirePragma: false
+insertPragma: false
+proseWrap: 'preserve'
+htmlWhitespaceSensitivity: 'ignore'
+vueIndentScriptAndStyle: false
+endOfLine: 'lf'
+embeddedLanguageFormatting: 'auto'

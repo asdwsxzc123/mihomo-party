@@ -9,7 +9,7 @@ import {
   overrideDir,
   profileConfigPath,
   profilesDir,
-  themesDir
+  themesDir,
 } from '../utils/dirs'
 
 export async function webdavBackup(): Promise<boolean> {
@@ -18,7 +18,7 @@ export async function webdavBackup(): Promise<boolean> {
     webdavUrl = '',
     webdavUsername = '',
     webdavPassword = '',
-    webdavDir = 'mihomo-party'
+    webdavDir = 'mihomo-party',
   } = await getAppConfig()
   const zip = new AdmZip()
 
@@ -34,7 +34,7 @@ export async function webdavBackup(): Promise<boolean> {
 
   const client = createClient(webdavUrl, {
     username: webdavUsername,
-    password: webdavPassword
+    password: webdavPassword,
   })
   try {
     await client.createDirectory(webdavDir)
@@ -42,7 +42,10 @@ export async function webdavBackup(): Promise<boolean> {
     // ignore
   }
 
-  return await client.putFileContents(`${webdavDir}/${zipFileName}`, zip.toBuffer())
+  return await client.putFileContents(
+    `${webdavDir}/${zipFileName}`,
+    zip.toBuffer(),
+  )
 }
 
 export async function webdavRestore(filename: string): Promise<void> {
@@ -51,12 +54,12 @@ export async function webdavRestore(filename: string): Promise<void> {
     webdavUrl = '',
     webdavUsername = '',
     webdavPassword = '',
-    webdavDir = 'mihomo-party'
+    webdavDir = 'mihomo-party',
   } = await getAppConfig()
 
   const client = createClient(webdavUrl, {
     username: webdavUsername,
-    password: webdavPassword
+    password: webdavPassword,
   })
   const zipData = await client.getFileContents(`${webdavDir}/${filename}`)
   const zip = new AdmZip(zipData as Buffer)
@@ -69,12 +72,12 @@ export async function listWebdavBackups(): Promise<string[]> {
     webdavUrl = '',
     webdavUsername = '',
     webdavPassword = '',
-    webdavDir = 'mihomo-party'
+    webdavDir = 'mihomo-party',
   } = await getAppConfig()
 
   const client = createClient(webdavUrl, {
     username: webdavUsername,
-    password: webdavPassword
+    password: webdavPassword,
   })
   const files = await client.getDirectoryContents(webdavDir, { glob: '*.zip' })
   if (Array.isArray(files)) {
@@ -90,12 +93,12 @@ export async function webdavDelete(filename: string): Promise<void> {
     webdavUrl = '',
     webdavUsername = '',
     webdavPassword = '',
-    webdavDir = 'mihomo-party'
+    webdavDir = 'mihomo-party',
   } = await getAppConfig()
 
   const client = createClient(webdavUrl, {
     username: webdavUsername,
-    password: webdavPassword
+    password: webdavPassword,
   })
   await client.deleteFile(`${webdavDir}/${filename}`)
 }

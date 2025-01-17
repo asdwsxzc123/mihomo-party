@@ -24,15 +24,15 @@ const LogCard: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'log'
+    id: 'log',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   console.log(
     `%c [log-card.tsx]-[32]-[iconOnly]: `,
     'font-size:13px; background:#e6f7ff; color:#118aff;',
-    iconOnly
+    iconOnly,
   )
   if (iconOnly) {
     return (
@@ -59,7 +59,7 @@ const LogCard: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={logCardStatus}
     >
@@ -71,7 +71,7 @@ const LogCard: React.FC<Props> = (props) => {
         className={classnames({
           'bg-primary': match,
           'hover:bg-primary/30': !match,
-          'scale-[0.97] tap-highlight-transparent': isDragging
+          'scale-[0.97] tap-highlight-transparent': isDragging,
         })}
       >
         <CardBody className="pb-1 pt-0 px-0">

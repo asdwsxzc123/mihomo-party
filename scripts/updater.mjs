@@ -7,7 +7,7 @@ const { version } = JSON.parse(pkg)
 const downloadUrl = `https://github.com/mihomo-party-org/mihomo-party/releases/download/v${version}`
 const latest = {
   version,
-  changelog
+  changelog,
 }
 
 changelog += '\n### 下载地址：\n\n#### Windows10/11：\n\n'

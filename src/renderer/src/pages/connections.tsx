@@ -1,7 +1,19 @@
 import BasePage from '@renderer/components/base/base-page'
-import { mihomoCloseAllConnections, mihomoCloseConnection } from '@renderer/utils/ipc'
+import {
+  mihomoCloseAllConnections,
+  mihomoCloseConnection,
+} from '@renderer/utils/ipc'
 import { Key, useEffect, useMemo, useState } from 'react'
-import { Badge, Button, Divider, Input, Select, SelectItem, Tab, Tabs } from '@nextui-org/react'
+import {
+  Badge,
+  Button,
+  Divider,
+  Input,
+  Select,
+  SelectItem,
+  Tab,
+  Tabs,
+} from '@nextui-org/react'
 import { calcTraffic } from '@renderer/utils/calc'
 import ConnectionItem from '@renderer/components/connections/connection-item'
 import { Virtuoso } from 'react-virtuoso'
@@ -18,11 +30,18 @@ let cachedConnections: IMihomoConnectionDetail[] = []
 const Connections: React.FC = () => {
   const [filter, setFilter] = useState('')
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { connectionDirection = 'asc', connectionOrderBy = 'time' } = appConfig || {}
-  const [connectionsInfo, setConnectionsInfo] = useState<IMihomoConnectionsInfo>()
-  const [allConnections, setAllConnections] = useState<IMihomoConnectionDetail[]>(cachedConnections)
-  const [activeConnections, setActiveConnections] = useState<IMihomoConnectionDetail[]>([])
-  const [closedConnections, setClosedConnections] = useState<IMihomoConnectionDetail[]>([])
+  const { connectionDirection = 'asc', connectionOrderBy = 'time' } =
+    appConfig || {}
+  const [connectionsInfo, setConnectionsInfo] =
+    useState<IMihomoConnectionsInfo>()
+  const [allConnections, setAllConnections] =
+    useState<IMihomoConnectionDetail[]>(cachedConnections)
+  const [activeConnections, setActiveConnections] = useState<
+    IMihomoConnectionDetail[]
+  >([])
+  const [closedConnections, setClosedConnections] = useState<
+    IMihomoConnectionDetail[]
+  >([])
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [selected, setSelected] = useState<IMihomoConnectionDetail>()
   const [tab, setTab] = useState('active')
@@ -65,7 +84,13 @@ const Connections: React.FC = () => {
       const raw = JSON.stringify(connection)
       return includesIgnoreCase(raw, filter)
     })
-  }, [activeConnections, closedConnections, filter, connectionDirection, connectionOrderBy])
+  }, [
+    activeConnections,
+    closedConnections,
+    filter,
+    connectionDirection,
+    connectionOrderBy,
+  ])
 
   const closeAllConnections = (): void => {
     tab === 'active' ? mihomoCloseAllConnections() : trashAllClosedConnection()
@@ -77,7 +102,9 @@ const Connections: React.FC = () => {
 
   const trashAllClosedConnection = (): void => {
     const trashIds = closedConnections.map((conn) => conn.id)
-    setAllConnections((allConns) => allConns.filter((conn) => !trashIds.includes(conn.id)))
+    setAllConnections((allConns) =>
+      allConns.filter((conn) => !trashIds.includes(conn.id)),
+    )
     setClosedConnections([])
 
     cachedConnections = allConnections
@@ -85,46 +112,57 @@ const Connections: React.FC = () => {
 
   const trashClosedConnection = (id: string): void => {
     setAllConnections((allConns) => allConns.filter((conn) => conn.id != id))
-    setClosedConnections((closedConns) => closedConns.filter((conn) => conn.id != id))
+    setClosedConnections((closedConns) =>
+      closedConns.filter((conn) => conn.id != id),
+    )
 
     cachedConnections = allConnections
   }
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('mihomoConnections', (_e, info: IMihomoConnectionsInfo) => {
-      setConnectionsInfo(info)
+    window.electron.ipcRenderer.on(
+      'mihomoConnections',
+      (_e, info: IMihomoConnectionsInfo) => {
+        setConnectionsInfo(info)
 
-      if (!info.connections) return
-      const allConns = unionWith(activeConnections, allConnections, (a, b) => a.id === b.id)
+        if (!info.connections) return
+        const allConns = unionWith(
+          activeConnections,
+          allConnections,
+          (a, b) => a.id === b.id,
+        )
 
-      const activeConns = info.connections.map((conn) => {
-        const preConn = activeConnections.find((c) => c.id === conn.id)
-        const downloadSpeed = preConn ? conn.download - preConn.download : 0
-        const uploadSpeed = preConn ? conn.upload - preConn.upload : 0
-        return {
-          ...conn,
-          isActive: true,
-          downloadSpeed: downloadSpeed,
-          uploadSpeed: uploadSpeed
-        }
-      })
-      const closedConns = differenceWith(allConns, activeConns, (a, b) => a.id === b.id).map(
-        (conn) => {
+        const activeConns = info.connections.map((conn) => {
+          const preConn = activeConnections.find((c) => c.id === conn.id)
+          const downloadSpeed = preConn ? conn.download - preConn.download : 0
+          const uploadSpeed = preConn ? conn.upload - preConn.upload : 0
+          return {
+            ...conn,
+            isActive: true,
+            downloadSpeed: downloadSpeed,
+            uploadSpeed: uploadSpeed,
+          }
+        })
+        const closedConns = differenceWith(
+          allConns,
+          activeConns,
+          (a, b) => a.id === b.id,
+        ).map((conn) => {
           return {
             ...conn,
             isActive: false,
             downloadSpeed: 0,
-            uploadSpeed: 0
+            uploadSpeed: 0,
           }
-        }
-      )
+        })
 
-      setActiveConnections(activeConns)
-      setClosedConnections(closedConns)
-      setAllConnections(allConns.slice(-(activeConns.length + 200)))
+        setActiveConnections(activeConns)
+        setClosedConnections(closedConns)
+        setAllConnections(allConns.slice(-(activeConns.length + 200)))
 
-      cachedConnections = allConnections
-    })
+        cachedConnections = allConnections
+      },
+    )
 
     return (): void => {
       window.electron.ipcRenderer.removeAllListeners('mihomoConnections')
@@ -167,14 +205,21 @@ const Connections: React.FC = () => {
                 }
               }}
             >
-              {tab === 'active' ? <CgClose className="text-lg" /> : <CgTrash className="text-lg" />}
+              {tab === 'active' ? (
+                <CgClose className="text-lg" />
+              ) : (
+                <CgTrash className="text-lg" />
+              )}
             </Button>
           </Badge>
         </div>
       }
     >
       {isDetailModalOpen && selected && (
-        <ConnectionDetailModal onClose={() => setIsDetailModalOpen(false)} connection={selected} />
+        <ConnectionDetailModal
+          onClose={() => setIsDetailModalOpen(false)}
+          connection={selected}
+        />
       )}
       <div className="overflow-x-auto sticky top-0 z-40">
         <div className="flex p-2 gap-2">
@@ -240,7 +285,7 @@ const Connections: React.FC = () => {
                   | 'upload'
                   | 'download'
                   | 'uploadSpeed'
-                  | 'downloadSpeed'
+                  | 'downloadSpeed',
               })
             }}
           >
@@ -256,7 +301,8 @@ const Connections: React.FC = () => {
             className="bg-content2"
             onPress={async () => {
               patchAppConfig({
-                connectionDirection: connectionDirection === 'asc' ? 'desc' : 'asc'
+                connectionDirection:
+                  connectionDirection === 'asc' ? 'desc' : 'asc',
               })
             }}
           >

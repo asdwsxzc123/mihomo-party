@@ -6,7 +6,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Input
+  Input,
 } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import ProfileItem from '@renderer/components/profiles/profile-item'
@@ -20,7 +20,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent
+  DragEndEvent,
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { FaPlus } from 'react-icons/fa6'
@@ -34,7 +34,7 @@ const Profiles: React.FC = () => {
     updateProfileItem,
     removeProfileItem,
     changeCurrentProfile,
-    mutateProfileConfig
+    mutateProfileConfig,
   } = useProfileConfig()
   const { current, items = [] } = profileConfig || {}
   const [sortedItems, setSortedItems] = useState(items)
@@ -87,7 +87,11 @@ const Profiles: React.FC = () => {
           try {
             const path = window.api.webUtils.getPathForFile(file)
             const content = await readTextFile(path)
-            await addProfileItem({ name: file.name, type: 'local', file: content })
+            await addProfileItem({
+              name: file.name,
+              type: 'local',
+              file: content,
+            })
           } catch (e) {
             alert(e)
           }
@@ -133,7 +137,9 @@ const Profiles: React.FC = () => {
             setUpdating(false)
           }}
         >
-          <IoMdRefresh className={`text-lg ${updating ? 'animate-spin' : ''}`} />
+          <IoMdRefresh
+            className={`text-lg ${updating ? 'animate-spin' : ''}`}
+          />
         </Button>
       }
     >
@@ -180,7 +186,12 @@ const Profiles: React.FC = () => {
           </Button>
           <Dropdown>
             <DropdownTrigger>
-              <Button className="ml-2 new-profile" size="sm" isIconOnly color="primary">
+              <Button
+                className="ml-2 new-profile"
+                size="sm"
+                isIconOnly
+                color="primary"
+              >
                 <FaPlus />
               </Button>
             </DropdownTrigger>
@@ -191,8 +202,16 @@ const Profiles: React.FC = () => {
                     const files = await getFilePath(['yml', 'yaml'])
                     if (files?.length) {
                       const content = await readTextFile(files[0])
-                      const fileName = files[0].split('/').pop()?.split('\\').pop()
-                      await addProfileItem({ name: fileName, type: 'local', file: content })
+                      const fileName = files[0]
+                        .split('/')
+                        .pop()
+                        ?.split('\\')
+                        .pop()
+                      await addProfileItem({
+                        name: fileName,
+                        type: 'local',
+                        file: content,
+                      })
                     }
                   } catch (e) {
                     alert(e)
@@ -201,7 +220,7 @@ const Profiles: React.FC = () => {
                   await addProfileItem({
                     name: '新建订阅',
                     type: 'local',
-                    file: 'proxies: []\nproxy-groups: []\nrules: []'
+                    file: 'proxies: []\nproxy-groups: []\nrules: []',
                   })
                 }
               }}
@@ -213,7 +232,11 @@ const Profiles: React.FC = () => {
         </div>
         <Divider />
       </div>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={onDragEnd}
+      >
         <div
           className={`${fileOver ? 'blur-sm' : ''} grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 m-2`}
         >

@@ -19,7 +19,8 @@ const FloatingApp: React.FC = () => {
   const fastest = 0.1
 
   const spinDuration = useMemo(() => {
-    let duration = upload + download === 0 ? slowest : 409600 / (upload + download)
+    let duration =
+      upload + download === 0 ? slowest : 409600 / (upload + download)
     if (duration > slowest) {
       duration = slowest
     }
@@ -30,10 +31,13 @@ const FloatingApp: React.FC = () => {
   }, [upload, download])
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('mihomoTraffic', async (_e, info: IMihomoTrafficInfo) => {
-      setUpload(info.up)
-      setDownload(info.down)
-    })
+    window.electron.ipcRenderer.on(
+      'mihomoTraffic',
+      async (_e, info: IMihomoTrafficInfo) => {
+        setUpload(info.up)
+        setDownload(info.down)
+      },
+    )
     return (): void => {
       window.electron.ipcRenderer.removeAllListeners('mihomoTraffic')
     }
@@ -51,7 +55,11 @@ const FloatingApp: React.FC = () => {
             onClick={() => {
               triggerMainWindow()
             }}
-            style={spinFloatingIcon ? { animation: `spin ${spinDuration}s linear infinite` } : {}}
+            style={
+              spinFloatingIcon
+                ? { animation: `spin ${spinDuration}s linear infinite` }
+                : {}
+            }
             className={`app-nodrag cursor-pointer floating-thumb ${tunEnabled ? 'bg-secondary' : sysProxyEnabled ? 'bg-primary' : 'bg-default'} hover:opacity-hover rounded-full h-[calc(100%-4px)] aspect-square`}
           >
             <MihomoIcon className="floating-icon text-primary-foreground h-full leading-full text-[22px] mx-auto" />

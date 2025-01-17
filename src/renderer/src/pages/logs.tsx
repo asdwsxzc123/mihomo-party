@@ -20,7 +20,7 @@ const cachedLogs: {
     if (this.trigger !== null) {
       this.trigger(this.log)
     }
-  }
+  },
 }
 
 window.electron.ipcRenderer.on('mihomoLogs', (_e, log: IMihomoLogInfo) => {
@@ -43,7 +43,10 @@ const Logs: React.FC = () => {
   const filteredLogs = useMemo(() => {
     if (filter === '') return logs
     return logs.filter((log) => {
-      return includesIgnoreCase(log.payload, filter) || includesIgnoreCase(log.type, filter)
+      return (
+        includesIgnoreCase(log.payload, filter) ||
+        includesIgnoreCase(log.type, filter)
+      )
     })
   }, [logs, filter])
 
@@ -53,7 +56,7 @@ const Logs: React.FC = () => {
       index: filteredLogs.length - 1,
       behavior: 'smooth',
       align: 'end',
-      offset: 0
+      offset: 0,
     })
   }, [filteredLogs, trace])
 

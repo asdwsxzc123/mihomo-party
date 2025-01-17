@@ -6,7 +6,7 @@ import {
   ModalFooter,
   Button,
   Input,
-  Switch
+  Switch,
 } from '@nextui-org/react'
 import React, { useState } from 'react'
 import SettingItem from '../base/base-setting-item'

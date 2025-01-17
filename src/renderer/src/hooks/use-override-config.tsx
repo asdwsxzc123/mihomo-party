@@ -5,7 +5,7 @@ import {
   setOverrideConfig as set,
   addOverrideItem as add,
   removeOverrideItem as remove,
-  updateOverrideItem as update
+  updateOverrideItem as update,
 } from '@renderer/utils/ipc'
 
 interface OverrideConfigContextType {
@@ -17,11 +17,16 @@ interface OverrideConfigContextType {
   removeOverrideItem: (id: string) => Promise<void>
 }
 
-const OverrideConfigContext = createContext<OverrideConfigContextType | undefined>(undefined)
+const OverrideConfigContext = createContext<
+  OverrideConfigContextType | undefined
+>(undefined)
 
-export const OverrideConfigProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: overrideConfig, mutate: mutateOverrideConfig } = useSWR('getOverrideConfig', () =>
-    getOverrideConfig()
+export const OverrideConfigProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const { data: overrideConfig, mutate: mutateOverrideConfig } = useSWR(
+    'getOverrideConfig',
+    () => getOverrideConfig(),
   )
 
   const setOverrideConfig = async (config: IOverrideConfig): Promise<void> => {
@@ -34,7 +39,9 @@ export const OverrideConfigProvider: React.FC<{ children: ReactNode }> = ({ chil
     }
   }
 
-  const addOverrideItem = async (item: Partial<IOverrideItem>): Promise<void> => {
+  const addOverrideItem = async (
+    item: Partial<IOverrideItem>,
+  ): Promise<void> => {
     try {
       await add(item)
     } catch (e) {
@@ -72,7 +79,7 @@ export const OverrideConfigProvider: React.FC<{ children: ReactNode }> = ({ chil
         mutateOverrideConfig,
         addOverrideItem,
         removeOverrideItem,
-        updateOverrideItem
+        updateOverrideItem,
       }}
     >
       {children}
@@ -83,7 +90,9 @@ export const OverrideConfigProvider: React.FC<{ children: ReactNode }> = ({ chil
 export const useOverrideConfig = (): OverrideConfigContextType => {
   const context = useContext(OverrideConfigContext)
   if (context === undefined) {
-    throw new Error('useOverrideConfig must be used within an OverrideConfigProvider')
+    throw new Error(
+      'useOverrideConfig must be used within an OverrideConfigProvider',
+    )
   }
   return context
 }

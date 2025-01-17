@@ -15,11 +15,13 @@ interface Props {
 const SniffCard: React.FC<Props> = (props) => {
   const { appConfig } = useAppConfig()
   const { iconOnly } = props
-  const { sniffCardStatus = 'col-span-1', controlSniff = true } = appConfig || {}
+  const { sniffCardStatus = 'col-span-1', controlSniff = true } =
+    appConfig || {}
   const location = useLocation()
   const navigate = useNavigate()
   const match = location.pathname.includes('/sniffer')
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } =
+    useControledMihomoConfig()
   const { sniffer } = controledMihomoConfig || {}
   const { enable } = sniffer || {}
   const {
@@ -28,9 +30,9 @@ const SniffCard: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'sniff'
+    id: 'sniff',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const onChange = async (enable: boolean): Promise<void> => {
@@ -40,7 +42,9 @@ const SniffCard: React.FC<Props> = (props) => {
 
   if (iconOnly) {
     return (
-      <div className={`${sniffCardStatus} ${!controlSniff ? 'hidden' : ''} flex justify-center`}>
+      <div
+        className={`${sniffCardStatus} ${!controlSniff ? 'hidden' : ''} flex justify-center`}
+      >
         <Tooltip content="域名嗅探" placement="right">
           <Button
             size="sm"
@@ -64,7 +68,7 @@ const SniffCard: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={`${sniffCardStatus} ${!controlSniff ? 'hidden' : ''} sniff-card`}
     >

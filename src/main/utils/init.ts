@@ -11,14 +11,14 @@ import {
   profilePath,
   profilesDir,
   resourcesFilesDir,
-  themesDir
+  themesDir,
 } from './dirs'
 import {
   defaultConfig,
   defaultControledMihomoConfig,
   defaultOverrideConfig,
   defaultProfile,
-  defaultProfileConfig
+  defaultProfileConfig,
 } from './template'
 import yaml from 'yaml'
 import { mkdir, writeFile, copyFile, rm, readdir } from 'fs/promises'
@@ -30,7 +30,7 @@ import {
   getAppConfig,
   getControledMihomoConfig,
   patchAppConfig,
-  patchControledMihomoConfig
+  patchControledMihomoConfig,
 } from '../config'
 import { app } from 'electron'
 import { startSSIDCheck } from '../sys/ssid'
@@ -73,7 +73,10 @@ async function initConfig(): Promise<void> {
     await writeFile(profilePath('default'), yaml.stringify(defaultProfile))
   }
   if (!existsSync(controledMihomoConfigPath())) {
-    await writeFile(controledMihomoConfigPath(), yaml.stringify(defaultControledMihomoConfig))
+    await writeFile(
+      controledMihomoConfigPath(),
+      yaml.stringify(defaultControledMihomoConfig),
+    )
   }
 }
 
@@ -94,7 +97,7 @@ async function initFiles(): Promise<void> {
     copy('geoip.metadb'),
     copy('geoip.dat'),
     copy('geosite.dat'),
-    copy('ASN.mmdb')
+    copy('ASN.mmdb'),
   ])
 }
 
@@ -102,7 +105,11 @@ async function cleanup(): Promise<void> {
   // update cache
   const files = await readdir(dataDir())
   for (const file of files) {
-    if (file.endsWith('.exe') || file.endsWith('.pkg') || file.endsWith('.7z')) {
+    if (
+      file.endsWith('.exe') ||
+      file.endsWith('.pkg') ||
+      file.endsWith('.7z')
+    ) {
       try {
         await rm(path.join(dataDir(), file))
       } catch {
@@ -140,13 +147,13 @@ async function migration(): Promise<void> {
       'mihomo',
       'dns',
       'sniff',
-      'log'
+      'log',
     ],
     appTheme = 'system',
     envType = [process.platform === 'win32' ? 'powershell' : 'bash'],
     showFloatingWindow = false,
     disableTray = false,
-    encryptedPassword
+    encryptedPassword,
   } = await getAppConfig()
   const {
     'external-controller-pipe': externalControllerPipe,
@@ -156,7 +163,7 @@ async function migration(): Promise<void> {
     authentication,
     'bind-address': bindAddress,
     'lan-allowed-ips': lanAllowedIps,
-    'lan-disallowed-ips': lanDisallowedIps
+    'lan-disallowed-ips': lanDisallowedIps,
   } = await getControledMihomoConfig()
   // add default skip auth prefix
   if (!skipAuthPrefixes) {
@@ -172,7 +179,9 @@ async function migration(): Promise<void> {
   }
   // add default lan allowed ips
   if (!lanAllowedIps) {
-    await patchControledMihomoConfig({ 'lan-allowed-ips': ['0.0.0.0/0', '::/0'] })
+    await patchControledMihomoConfig({
+      'lan-allowed-ips': ['0.0.0.0/0', '::/0'],
+    })
   }
   // add default lan disallowed ips
   if (!lanDisallowedIps) {
@@ -193,7 +202,7 @@ async function migration(): Promise<void> {
   // use named pipe
   if (externalControllerPipe) {
     await patchControledMihomoConfig({
-      'external-controller-pipe': undefined
+      'external-controller-pipe': undefined,
     })
   }
   if (externalController === undefined) {
@@ -211,8 +220,12 @@ async function migration(): Promise<void> {
 function initDeeplink(): void {
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
-      app.setAsDefaultProtocolClient('clash', process.execPath, [path.resolve(process.argv[1])])
-      app.setAsDefaultProtocolClient('mihomo', process.execPath, [path.resolve(process.argv[1])])
+      app.setAsDefaultProtocolClient('clash', process.execPath, [
+        path.resolve(process.argv[1]),
+      ])
+      app.setAsDefaultProtocolClient('mihomo', process.execPath, [
+        path.resolve(process.argv[1]),
+      ])
     }
   } else {
     app.setAsDefaultProtocolClient('clash')

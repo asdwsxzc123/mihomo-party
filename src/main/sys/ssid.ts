@@ -63,7 +63,7 @@ export async function startSSIDCheck(): Promise<void> {
 async function getSSIDByAirport(): Promise<string | undefined> {
   const execPromise = promisify(exec)
   const { stdout } = await execPromise(
-    '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I'
+    '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I',
   )
   if (stdout.trim().startsWith('WARNING')) {
     throw new Error('airport cannot be used')
@@ -80,7 +80,9 @@ async function getSSIDByNetworksetup(): Promise<string | undefined> {
   const execPromise = promisify(exec)
   if (net.isOnline()) {
     const service = await getDefaultDevice()
-    const { stdout } = await execPromise(`networksetup -listpreferredwirelessnetworks ${service}`)
+    const { stdout } = await execPromise(
+      `networksetup -listpreferredwirelessnetworks ${service}`,
+    )
     if (stdout.trim().startsWith('Preferred networks on')) {
       if (stdout.split('\n').length > 1) {
         return stdout.split('\n')[1].trim()
@@ -104,7 +106,7 @@ async function getSSIDByNetsh(): Promise<string | undefined> {
 async function getSSIDByIwconfig(): Promise<string | undefined> {
   const execPromise = promisify(exec)
   const { stdout } = await execPromise(
-    `iwconfig 2>/dev/null | grep 'ESSID' | awk -F'"' '{print $2}'`
+    `iwconfig 2>/dev/null | grep 'ESSID' | awk -F'"' '{print $2}'`,
   )
   if (stdout.trim() !== '') {
     return stdout.trim()

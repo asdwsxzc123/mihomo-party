@@ -63,6 +63,6 @@ init().then(() => {
           </BaseErrorBoundary>
         </NextThemesProvider>
       </NextUIProvider>
-    </React.StrictMode>
+    </React.StrictMode>,
   )
 })

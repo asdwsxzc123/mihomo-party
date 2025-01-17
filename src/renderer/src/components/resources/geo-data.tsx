@@ -7,17 +7,20 @@ import { useState } from 'react'
 import { IoMdRefresh } from 'react-icons/io'
 
 const GeoData: React.FC = () => {
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } =
+    useControledMihomoConfig()
   const {
     'geox-url': geoxUrl = {
-      geoip: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat',
-      geosite: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
+      geoip:
+        'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat',
+      geosite:
+        'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
       mmdb: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb',
-      asn: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb'
+      asn: 'https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb',
     },
     'geodata-mode': geoMode = false,
     'geo-auto-update': geoAutoUpdate = false,
-    'geo-update-interval': geoUpdateInterval = 24
+    'geo-update-interval': geoUpdateInterval = 24,
   } = controledMihomoConfig || {}
   const [geoipInput, setGeoIpInput] = useState(geoxUrl.geoip)
   const [geositeInput, setGeositeInput] = useState(geoxUrl.geosite)
@@ -35,7 +38,9 @@ const GeoData: React.FC = () => {
               color="primary"
               className="mr-2"
               onPress={() => {
-                patchControledMihomoConfig({ 'geox-url': { ...geoxUrl, geoip: geoipInput } })
+                patchControledMihomoConfig({
+                  'geox-url': { ...geoxUrl, geoip: geoipInput },
+                })
               }}
             >
               确认
@@ -52,13 +57,19 @@ const GeoData: React.FC = () => {
               color="primary"
               className="mr-2"
               onPress={() => {
-                patchControledMihomoConfig({ 'geox-url': { ...geoxUrl, geosite: geositeInput } })
+                patchControledMihomoConfig({
+                  'geox-url': { ...geoxUrl, geosite: geositeInput },
+                })
               }}
             >
               确认
             </Button>
           )}
-          <Input size="sm" value={geositeInput} onValueChange={setGeositeInput} />
+          <Input
+            size="sm"
+            value={geositeInput}
+            onValueChange={setGeositeInput}
+          />
         </div>
       </SettingItem>
       <SettingItem title="MMDB 数据库" divider>
@@ -69,7 +80,9 @@ const GeoData: React.FC = () => {
               color="primary"
               className="mr-2"
               onPress={() => {
-                patchControledMihomoConfig({ 'geox-url': { ...geoxUrl, mmdb: mmdbInput } })
+                patchControledMihomoConfig({
+                  'geox-url': { ...geoxUrl, mmdb: mmdbInput },
+                })
               }}
             >
               确认
@@ -86,7 +99,9 @@ const GeoData: React.FC = () => {
               color="primary"
               className="mr-2"
               onPress={() => {
-                patchControledMihomoConfig({ 'geox-url': { ...geoxUrl, asn: asnInput } })
+                patchControledMihomoConfig({
+                  'geox-url': { ...geoxUrl, asn: asnInput },
+                })
               }}
             >
               确认
@@ -127,7 +142,9 @@ const GeoData: React.FC = () => {
               }
             }}
           >
-            <IoMdRefresh className={`text-lg ${updating ? 'animate-spin' : ''}`} />
+            <IoMdRefresh
+              className={`text-lg ${updating ? 'animate-spin' : ''}`}
+            />
           </Button>
         }
         divider={geoAutoUpdate}

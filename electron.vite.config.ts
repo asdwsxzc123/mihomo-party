@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://github.com/vdesjs/vite-plugin-monaco-editor/issues/21#issuecomment-1827562674
 import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
 const isObjectWithDefaultFunction = (
-  module: unknown
+  module: unknown,
 ): module is { default: typeof monacoEditorPluginModule } =>
   module != null &&
   typeof module === 'object' &&
@@ -16,24 +16,24 @@ const monacoEditorPlugin = isObjectWithDefaultFunction(monacoEditorPluginModule)
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
   },
   renderer: {
     build: {
       rollupOptions: {
         input: {
           index: resolve('src/renderer/index.html'),
-          floating: resolve('src/renderer/floating.html')
-        }
-      }
+          floating: resolve('src/renderer/floating.html'),
+        },
+      },
     },
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
-      }
+        '@renderer': resolve('src/renderer/src'),
+      },
     },
     plugins: [
       react(),
@@ -43,10 +43,10 @@ export default defineConfig({
         customWorkers: [
           {
             label: 'yaml',
-            entry: 'monaco-yaml/yaml.worker'
-          }
-        ]
-      })
-    ]
-  }
+            entry: 'monaco-yaml/yaml.worker',
+          },
+        ],
+      }),
+    ],
+  },
 })

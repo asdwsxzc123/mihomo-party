@@ -21,5 +21,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         </BaseErrorBoundary>
       </NextThemesProvider>
     </NextUIProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 )

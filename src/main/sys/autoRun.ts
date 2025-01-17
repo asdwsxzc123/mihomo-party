@@ -54,7 +54,7 @@ export async function checkAutoRun(): Promise<boolean> {
     const execPromise = promisify(exec)
     try {
       const { stdout } = await execPromise(
-        `chcp 437 && %SystemRoot%\\System32\\schtasks.exe /query /tn "${appName}"`
+        `chcp 437 && %SystemRoot%\\System32\\schtasks.exe /query /tn "${appName}"`,
       )
       return stdout.includes(appName)
     } catch (e) {
@@ -65,13 +65,17 @@ export async function checkAutoRun(): Promise<boolean> {
   if (process.platform === 'darwin') {
     const execPromise = promisify(exec)
     const { stdout } = await execPromise(
-      `osascript -e 'tell application "System Events" to get the name of every login item'`
+      `osascript -e 'tell application "System Events" to get the name of every login item'`,
     )
-    return stdout.includes(exePath().split('.app')[0].replace('/Applications/', ''))
+    return stdout.includes(
+      exePath().split('.app')[0].replace('/Applications/', ''),
+    )
   }
 
   if (process.platform === 'linux') {
-    return existsSync(path.join(homeDir, '.config', 'autostart', `${appName}.desktop`))
+    return existsSync(
+      path.join(homeDir, '.config', 'autostart', `${appName}.desktop`),
+    )
   }
   return false
 }
@@ -82,13 +86,13 @@ export async function enableAutoRun(): Promise<void> {
     const taskFilePath = path.join(taskDir(), `${appName}.xml`)
     await writeFile(taskFilePath, Buffer.from(`\ufeff${taskXml}`, 'utf-16le'))
     await execPromise(
-      `%SystemRoot%\\System32\\schtasks.exe /create /tn "${appName}" /xml "${taskFilePath}" /f`
+      `%SystemRoot%\\System32\\schtasks.exe /create /tn "${appName}" /xml "${taskFilePath}" /f`,
     )
   }
   if (process.platform === 'darwin') {
     const execPromise = promisify(exec)
     await execPromise(
-      `osascript -e 'tell application "System Events" to make login item at end with properties {path:"${exePath().split('.app')[0]}.app", hidden:false}'`
+      `osascript -e 'tell application "System Events" to make login item at end with properties {path:"${exePath().split('.app')[0]}.app", hidden:false}'`,
     )
   }
   if (process.platform === 'linux') {
@@ -105,7 +109,10 @@ Categories=Utility;
 `
 
     if (existsSync(`/usr/share/applications/${appName}.desktop`)) {
-      desktop = await readFile(`/usr/share/applications/${appName}.desktop`, 'utf8')
+      desktop = await readFile(
+        `/usr/share/applications/${appName}.desktop`,
+        'utf8',
+      )
     }
     const autostartDir = path.join(homeDir, '.config', 'autostart')
     if (!existsSync(autostartDir)) {
@@ -119,16 +126,23 @@ Categories=Utility;
 export async function disableAutoRun(): Promise<void> {
   if (process.platform === 'win32') {
     const execPromise = promisify(exec)
-    await execPromise(`%SystemRoot%\\System32\\schtasks.exe /delete /tn "${appName}" /f`)
+    await execPromise(
+      `%SystemRoot%\\System32\\schtasks.exe /delete /tn "${appName}" /f`,
+    )
   }
   if (process.platform === 'darwin') {
     const execPromise = promisify(exec)
     await execPromise(
-      `osascript -e 'tell application "System Events" to delete login item "${exePath().split('.app')[0].replace('/Applications/', '')}"'`
+      `osascript -e 'tell application "System Events" to delete login item "${exePath().split('.app')[0].replace('/Applications/', '')}"'`,
     )
   }
   if (process.platform === 'linux') {
-    const desktopFilePath = path.join(homeDir, '.config', 'autostart', `${appName}.desktop`)
+    const desktopFilePath = path.join(
+      homeDir,
+      '.config',
+      'autostart',
+      `${appName}.desktop`,
+    )
     await rm(desktopFilePath)
   }
 }

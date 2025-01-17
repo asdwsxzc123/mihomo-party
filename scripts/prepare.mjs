@@ -27,14 +27,14 @@ const MIHOMO_ALPHA_MAP = {
   'darwin-x64': 'mihomo-darwin-amd64-compatible',
   'darwin-arm64': 'mihomo-darwin-arm64',
   'linux-x64': 'mihomo-linux-amd64-compatible',
-  'linux-arm64': 'mihomo-linux-arm64'
+  'linux-arm64': 'mihomo-linux-arm64',
 }
 
 // Fetch the latest alpha release version from the version.txt file
 async function getLatestAlphaVersion() {
   try {
     const response = await fetch(MIHOMO_ALPHA_VERSION_URL, {
-      method: 'GET'
+      method: 'GET',
     })
     let v = await response.text()
     MIHOMO_ALPHA_VERSION = v.trim() // Trim to remove extra whitespaces
@@ -58,14 +58,14 @@ const MIHOMO_MAP = {
   'darwin-x64': 'mihomo-darwin-amd64-compatible',
   'darwin-arm64': 'mihomo-darwin-arm64',
   'linux-x64': 'mihomo-linux-amd64-compatible',
-  'linux-arm64': 'mihomo-linux-arm64'
+  'linux-arm64': 'mihomo-linux-arm64',
 }
 
 // Fetch the latest release version from the version.txt file
 async function getLatestReleaseVersion() {
   try {
     const response = await fetch(MIHOMO_VERSION_URL, {
-      method: 'GET'
+      method: 'GET',
     })
     let v = await response.text()
     MIHOMO_VERSION = v.trim() // Trim to remove extra whitespaces
@@ -103,7 +103,7 @@ function MihomoAlpha() {
     targetFile: `mihomo-alpha${isWin ? '.exe' : ''}`,
     exeFile,
     zipFile,
-    downloadURL
+    downloadURL,
   }
 }
 
@@ -120,7 +120,7 @@ function mihomo() {
     targetFile: `mihomo${isWin ? '.exe' : ''}`,
     exeFile,
     zipFile,
-    downloadURL
+    downloadURL,
   }
 }
 /**
@@ -159,7 +159,7 @@ async function resolveSidecar(binInfo) {
       fs.mkdirSync(tempDir, { recursive: true })
       await extract({
         cwd: tempDir,
-        file: tempZip
+        file: tempZip,
       })
       const files = fs.readdirSync(tempDir)
       console.log(`[DEBUG]: "${name}" files in tempDir:`, files)
@@ -228,7 +228,7 @@ async function resolveResource(binInfo) {
 async function downloadFile(url, path) {
   const response = await fetch(url, {
     method: 'GET',
-    headers: { 'Content-Type': 'application/octet-stream' }
+    headers: { 'Content-Type': 'application/octet-stream' },
   })
   const buffer = await response.arrayBuffer()
   fs.writeFileSync(path, new Uint8Array(buffer))
@@ -239,42 +239,42 @@ async function downloadFile(url, path) {
 const resolveMmdb = () =>
   resolveResource({
     file: 'country.mmdb',
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb`
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb`,
   })
 const resolveMetadb = () =>
   resolveResource({
     file: 'geoip.metadb',
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb`
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb`,
   })
 const resolveGeosite = () =>
   resolveResource({
     file: 'geosite.dat',
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat`
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat`,
   })
 const resolveGeoIP = () =>
   resolveResource({
     file: 'geoip.dat',
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat`
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat`,
   })
 const resolveASN = () =>
   resolveResource({
     file: 'ASN.mmdb',
-    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb`
+    downloadURL: `https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb`,
   })
 const resolveEnableLoopback = () =>
   resolveResource({
     file: 'enableLoopback.exe',
-    downloadURL: `https://github.com/Kuingsmile/uwp-tool/releases/download/latest/enableLoopback.exe`
+    downloadURL: `https://github.com/Kuingsmile/uwp-tool/releases/download/latest/enableLoopback.exe`,
   })
 const resolveSysproxy = () =>
   resolveResource({
     file: 'sysproxy.exe',
-    downloadURL: `https://github.com/mihomo-party-org/sysproxy/releases/download/${arch}/sysproxy.exe`
+    downloadURL: `https://github.com/mihomo-party-org/sysproxy/releases/download/${arch}/sysproxy.exe`,
   })
 const resolveRunner = () =>
   resolveResource({
     file: 'mihomo-party-run.exe',
-    downloadURL: `https://github.com/mihomo-party-org/mihomo-party-run/releases/download/${arch}/mihomo-party-run.exe`
+    downloadURL: `https://github.com/mihomo-party-org/mihomo-party-run/releases/download/${arch}/mihomo-party-run.exe`,
   })
 
 const resolveMonitor = async () => {
@@ -285,7 +285,7 @@ const resolveMonitor = async () => {
   }
   await downloadFile(
     `https://github.com/mihomo-party-org/mihomo-party-run/releases/download/monitor/${arch}.zip`,
-    tempZip
+    tempZip,
   )
   const zip = new AdmZip(tempZip)
   const resDir = path.join(cwd, 'extra', 'files')
@@ -301,17 +301,24 @@ const resolveMonitor = async () => {
 const resolve7zip = () =>
   resolveResource({
     file: '7za.exe',
-    downloadURL: `https://github.com/develar/7zip-bin/raw/master/win/${arch}/7za.exe`
+    downloadURL: `https://github.com/develar/7zip-bin/raw/master/win/${arch}/7za.exe`,
   })
 const resolveFont = async () => {
-  const targetPath = path.join(cwd, 'src', 'renderer', 'src', 'assets', 'NotoColorEmoji.ttf')
+  const targetPath = path.join(
+    cwd,
+    'src',
+    'renderer',
+    'src',
+    'assets',
+    'NotoColorEmoji.ttf',
+  )
 
   if (fs.existsSync(targetPath)) {
     return
   }
   await downloadFile(
     'https://github.com/googlefonts/noto-emoji/raw/main/fonts/NotoColorEmoji.ttf',
-    targetPath
+    targetPath,
   )
 
   console.log(`[INFO]: NotoColorEmoji.ttf finished`)
@@ -320,13 +327,14 @@ const resolveFont = async () => {
 const tasks = [
   {
     name: 'mihomo-alpha',
-    func: () => getLatestAlphaVersion().then(() => resolveSidecar(MihomoAlpha())),
-    retry: 5
+    func: () =>
+      getLatestAlphaVersion().then(() => resolveSidecar(MihomoAlpha())),
+    retry: 5,
   },
   {
     name: 'mihomo',
     func: () => getLatestReleaseVersion().then(() => resolveSidecar(mihomo())),
-    retry: 5
+    retry: 5,
   },
   { name: 'mmdb', func: resolveMmdb, retry: 5 },
   { name: 'metadb', func: resolveMetadb, retry: 5 },
@@ -336,38 +344,38 @@ const tasks = [
   {
     name: 'font',
     func: resolveFont,
-    retry: 5
+    retry: 5,
   },
   {
     name: 'enableLoopback',
     func: resolveEnableLoopback,
     retry: 5,
-    winOnly: true
+    winOnly: true,
   },
   {
     name: 'sysproxy',
     func: resolveSysproxy,
     retry: 5,
-    winOnly: true
+    winOnly: true,
   },
   {
     name: 'runner',
     func: resolveRunner,
     retry: 5,
-    winOnly: true
+    winOnly: true,
   },
   {
     name: 'monitor',
     func: resolveMonitor,
     retry: 5,
-    winOnly: true
+    winOnly: true,
   },
   {
     name: '7zip',
     func: resolve7zip,
     retry: 5,
-    winOnly: true
-  }
+    winOnly: true,
+  },
 ]
 
 async function runTask() {

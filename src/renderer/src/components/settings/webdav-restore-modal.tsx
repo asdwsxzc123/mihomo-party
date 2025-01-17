@@ -1,4 +1,11 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from '@nextui-org/react'
 import { relaunchApp, webdavDelete, webdavRestore } from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import { MdDeleteForever } from 'react-icons/md'
@@ -55,7 +62,9 @@ const WebdavRestoreModal: React.FC<Props> = (props) => {
                   onClick={async () => {
                     try {
                       await webdavDelete(filename)
-                      setFilenames(filenames.filter((name) => name !== filename))
+                      setFilenames(
+                        filenames.filter((name) => name !== filename),
+                      )
                     } catch (e) {
                       alert(`删除失败: ${e}`)
                     }

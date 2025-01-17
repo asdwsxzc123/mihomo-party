@@ -8,7 +8,8 @@ import React, { ReactNode, useState } from 'react'
 import { MdDeleteForever } from 'react-icons/md'
 
 const Sniffer: React.FC = () => {
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } =
+    useControledMihomoConfig()
   const { sniffer } = controledMihomoConfig || {}
   const {
     'parse-pure-ip': parsePureIP = true,
@@ -17,7 +18,7 @@ const Sniffer: React.FC = () => {
     sniff = {
       HTTP: { ports: [80, 443], 'override-destination': false },
       TLS: { ports: [443] },
-      QUIC: { ports: [] }
+      QUIC: { ports: [] },
     },
     'skip-domain': skipDomain = ['+.push.apple.com'],
     'force-domain': forceDomain = [],
@@ -33,9 +34,9 @@ const Sniffer: React.FC = () => {
       '2001:67c:4e8::/48',
       '2001:b28:f23c::/47',
       '2001:b28:f23f::/48',
-      '2a0a:f280:203::/48'
+      '2a0a:f280:203::/48',
     ],
-    'skip-src-address': skipSrcAddress = []
+    'skip-src-address': skipSrcAddress = [],
   } = sniffer || {}
   const [changed, setChanged] = useState(false)
   const [values, originSetValues] = useState({
@@ -46,7 +47,7 @@ const Sniffer: React.FC = () => {
     skipDomain,
     forceDomain,
     skipDstAddress,
-    skipSrcAddress
+    skipSrcAddress,
   })
   const setValues = (v: typeof values): void => {
     originSetValues(v)
@@ -63,19 +64,26 @@ const Sniffer: React.FC = () => {
     }
   }
 
-  const handleSniffPortChange = (protocol: keyof typeof sniff, value: string): void => {
+  const handleSniffPortChange = (
+    protocol: keyof typeof sniff,
+    value: string,
+  ): void => {
     setValues({
       ...values,
       sniff: {
         ...values.sniff,
         [protocol]: {
           ...values.sniff[protocol],
-          ports: value.split(',').map((port) => port.trim())
-        }
-      }
+          ports: value.split(',').map((port) => port.trim()),
+        },
+      },
     })
   }
-  const handleListChange = (type: string, value: string, index: number): void => {
+  const handleListChange = (
+    type: string,
+    value: string,
+    index: number,
+  ): void => {
     const list = [...values[type]]
     if (value.trim()) {
       if (index < list.length) {
@@ -92,28 +100,30 @@ const Sniffer: React.FC = () => {
     const currentItems = values[type]
     const showNewLine = currentItems.every((item: string) => item.trim() !== '')
 
-    return [...currentItems, ...(showNewLine ? [''] : [])].map((item, index) => (
-      <div key={index} className="mt-2 flex">
-        <Input
-          fullWidth
-          size="sm"
-          placeholder={placeholder}
-          value={typeof item === 'string' ? item : item.domain}
-          onValueChange={(v) => handleListChange(type, v, index)}
-        />
-        {index < values[type].length && (
-          <Button
-            className="ml-2"
+    return [...currentItems, ...(showNewLine ? [''] : [])].map(
+      (item, index) => (
+        <div key={index} className="mt-2 flex">
+          <Input
+            fullWidth
             size="sm"
-            variant="flat"
-            color="warning"
-            onClick={() => handleListChange(type, '', index)}
-          >
-            <MdDeleteForever className="text-lg" />
-          </Button>
-        )}
-      </div>
-    ))
+            placeholder={placeholder}
+            value={typeof item === 'string' ? item : item.domain}
+            onValueChange={(v) => handleListChange(type, v, index)}
+          />
+          {index < values[type].length && (
+            <Button
+              className="ml-2"
+              size="sm"
+              variant="flat"
+              color="warning"
+              onClick={() => handleListChange(type, '', index)}
+            >
+              <MdDeleteForever className="text-lg" />
+            </Button>
+          )}
+        </div>
+      ),
+    )
   }
 
   return (
@@ -133,8 +143,8 @@ const Sniffer: React.FC = () => {
                   'override-destination': values.overrideDestination,
                   sniff: values.sniff,
                   'skip-domain': values.skipDomain,
-                  'force-domain': values.forceDomain
-                }
+                  'force-domain': values.forceDomain,
+                },
               })
             }
           >
@@ -157,9 +167,9 @@ const Sniffer: React.FC = () => {
                   HTTP: {
                     ...values.sniff.HTTP,
                     'override-destination': v,
-                    ports: values.sniff.HTTP?.ports || [80, 443]
-                  }
-                }
+                    ports: values.sniff.HTTP?.ports || [80, 443],
+                  },
+                },
               })
             }}
           />

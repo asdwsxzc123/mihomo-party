@@ -1,4 +1,11 @@
-import { Button, Divider, Input, Select, SelectItem, Switch } from '@nextui-org/react'
+import {
+  Button,
+  Divider,
+  Input,
+  Select,
+  SelectItem,
+  Switch,
+} from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
@@ -8,20 +15,25 @@ import { platform } from '@renderer/utils/init'
 import { FaNetworkWired } from 'react-icons/fa'
 import { IoMdCloudDownload } from 'react-icons/io'
 import PubSub from 'pubsub-js'
-import { mihomoUpgrade, restartCore, triggerSysProxy } from '@renderer/utils/ipc'
+import {
+  mihomoUpgrade,
+  restartCore,
+  triggerSysProxy,
+} from '@renderer/utils/ipc'
 import React, { useState } from 'react'
 import InterfaceModal from '@renderer/components/mihomo/interface-modal'
 import { MdDeleteForever } from 'react-icons/md'
 
 const CoreMap = {
   mihomo: '稳定版',
-  'mihomo-alpha': '预览版'
+  'mihomo-alpha': '预览版',
 }
 
 const Mihomo: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const { core = 'mihomo', maxLogDays = 7, sysProxy } = appConfig || {}
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } =
+    useControledMihomoConfig()
   const {
     ipv6,
     'external-controller': externalController = '',
@@ -40,25 +52,31 @@ const Mihomo: React.FC = () => {
     port: httpPort = 7892,
     'redir-port': redirPort = 0,
     'tproxy-port': tproxyPort = 0,
-    profile = {}
+    profile = {},
   } = controledMihomoConfig || {}
-  const { 'store-selected': storeSelected, 'store-fake-ip': storeFakeIp } = profile
+  const { 'store-selected': storeSelected, 'store-fake-ip': storeFakeIp } =
+    profile
 
   const [mixedPortInput, setMixedPortInput] = useState(mixedPort)
   const [socksPortInput, setSocksPortInput] = useState(socksPort)
   const [httpPortInput, setHttpPortInput] = useState(httpPort)
   const [redirPortInput, setRedirPortInput] = useState(redirPort)
   const [tproxyPortInput, setTproxyPortInput] = useState(tproxyPort)
-  const [externalControllerInput, setExternalControllerInput] = useState(externalController)
+  const [externalControllerInput, setExternalControllerInput] =
+    useState(externalController)
   const [secretInput, setSecretInput] = useState(secret)
   const [lanAllowedIpsInput, setLanAllowedIpsInput] = useState(lanAllowedIps)
-  const [lanDisallowedIpsInput, setLanDisallowedIpsInput] = useState(lanDisallowedIps)
+  const [lanDisallowedIpsInput, setLanDisallowedIpsInput] =
+    useState(lanDisallowedIps)
   const [authenticationInput, setAuthenticationInput] = useState(authentication)
-  const [skipAuthPrefixesInput, setSkipAuthPrefixesInput] = useState(skipAuthPrefixes)
+  const [skipAuthPrefixesInput, setSkipAuthPrefixesInput] =
+    useState(skipAuthPrefixes)
   const [upgrading, setUpgrading] = useState(false)
   const [lanOpen, setLanOpen] = useState(false)
 
-  const onChangeNeedRestart = async (patch: Partial<IMihomoConfig>): Promise<void> => {
+  const onChangeNeedRestart = async (
+    patch: Partial<IMihomoConfig>,
+  ): Promise<void> => {
     await patchControledMihomoConfig(patch)
     await restartCore()
   }
@@ -86,11 +104,14 @@ const Mihomo: React.FC = () => {
                     }, 2000)
                     if (platform !== 'win32') {
                       new Notification('内核权限丢失', {
-                        body: '内核升级成功，若要使用虚拟网卡（Tun），请到虚拟网卡页面重新手动授权内核'
+                        body: '内核升级成功，若要使用虚拟网卡（Tun），请到虚拟网卡页面重新手动授权内核',
                       })
                     }
                   } catch (e) {
-                    if (typeof e === 'string' && e.includes('already using latest version')) {
+                    if (
+                      typeof e === 'string' &&
+                      e.includes('already using latest version')
+                    ) {
                       new Notification('已经是最新版本')
                     } else {
                       alert(e)
@@ -112,7 +133,9 @@ const Mihomo: React.FC = () => {
               selectedKeys={new Set([core])}
               onSelectionChange={async (v) => {
                 try {
-                  await patchAppConfig({ core: v.currentKey as 'mihomo' | 'mihomo-alpha' })
+                  await patchAppConfig({
+                    core: v.currentKey as 'mihomo' | 'mihomo-alpha',
+                  })
                   await restartCore()
                 } catch (e) {
                   alert(e)
@@ -122,7 +145,9 @@ const Mihomo: React.FC = () => {
               }}
             >
               <SelectItem key="mihomo">{CoreMap['mihomo']}</SelectItem>
-              <SelectItem key="mihomo-alpha">{CoreMap['mihomo-alpha']}</SelectItem>
+              <SelectItem key="mihomo-alpha">
+                {CoreMap['mihomo-alpha']}
+              </SelectItem>
             </Select>
           </SettingItem>
           <SettingItem title="混合端口" divider>
@@ -281,7 +306,7 @@ const Mihomo: React.FC = () => {
                   className="mr-2"
                   onPress={() => {
                     onChangeNeedRestart({
-                      'external-controller': externalControllerInput
+                      'external-controller': externalControllerInput,
                     })
                   }}
                 >
@@ -366,7 +391,9 @@ const Mihomo: React.FC = () => {
                     size="sm"
                     color="primary"
                     onPress={() => {
-                      onChangeNeedRestart({ 'lan-allowed-ips': lanAllowedIpsInput })
+                      onChangeNeedRestart({
+                        'lan-allowed-ips': lanAllowedIpsInput,
+                      })
                     }}
                   >
                     确认
@@ -387,7 +414,9 @@ const Mihomo: React.FC = () => {
                             setLanAllowedIpsInput([...lanAllowedIpsInput, v])
                           } else {
                             setLanAllowedIpsInput(
-                              lanAllowedIpsInput.map((a, i) => (i === index ? v : a))
+                              lanAllowedIpsInput.map((a, i) =>
+                                i === index ? v : a,
+                              ),
                             )
                           }
                         }}
@@ -399,7 +428,9 @@ const Mihomo: React.FC = () => {
                           variant="flat"
                           color="warning"
                           onClick={() =>
-                            setLanAllowedIpsInput(lanAllowedIpsInput.filter((_, i) => i !== index))
+                            setLanAllowedIpsInput(
+                              lanAllowedIpsInput.filter((_, i) => i !== index),
+                            )
                           }
                         >
                           <MdDeleteForever className="text-lg" />
@@ -411,12 +442,15 @@ const Mihomo: React.FC = () => {
               </div>
               <Divider className="mb-2" />
               <SettingItem title="禁止连接的 IP 段">
-                {lanDisallowedIpsInput.join('') !== lanDisallowedIps.join('') && (
+                {lanDisallowedIpsInput.join('') !==
+                  lanDisallowedIps.join('') && (
                   <Button
                     size="sm"
                     color="primary"
                     onPress={() => {
-                      onChangeNeedRestart({ 'lan-disallowed-ips': lanDisallowedIpsInput })
+                      onChangeNeedRestart({
+                        'lan-disallowed-ips': lanDisallowedIpsInput,
+                      })
                     }}
                   >
                     确认
@@ -434,10 +468,15 @@ const Mihomo: React.FC = () => {
                         value={ipcidr || ''}
                         onValueChange={(v) => {
                           if (index === lanDisallowedIpsInput.length) {
-                            setLanDisallowedIpsInput([...lanDisallowedIpsInput, v])
+                            setLanDisallowedIpsInput([
+                              ...lanDisallowedIpsInput,
+                              v,
+                            ])
                           } else {
                             setLanDisallowedIpsInput(
-                              lanDisallowedIpsInput.map((a, i) => (i === index ? v : a))
+                              lanDisallowedIpsInput.map((a, i) =>
+                                i === index ? v : a,
+                              ),
                             )
                           }
                         }}
@@ -450,7 +489,9 @@ const Mihomo: React.FC = () => {
                           color="warning"
                           onClick={() =>
                             setLanDisallowedIpsInput(
-                              lanDisallowedIpsInput.filter((_, i) => i !== index)
+                              lanDisallowedIpsInput.filter(
+                                (_, i) => i !== index,
+                              ),
                             )
                           }
                         >
@@ -490,12 +531,15 @@ const Mihomo: React.FC = () => {
                       value={user || ''}
                       onValueChange={(v) => {
                         if (index === authenticationInput.length) {
-                          setAuthenticationInput([...authenticationInput, `${v}:${pass || ''}`])
+                          setAuthenticationInput([
+                            ...authenticationInput,
+                            `${v}:${pass || ''}`,
+                          ])
                         } else {
                           setAuthenticationInput(
                             authenticationInput.map((a, i) =>
-                              i === index ? `${v}:${pass || ''}` : a
-                            )
+                              i === index ? `${v}:${pass || ''}` : a,
+                            ),
                           )
                         }
                       }}
@@ -510,12 +554,15 @@ const Mihomo: React.FC = () => {
                       value={pass || ''}
                       onValueChange={(v) => {
                         if (index === authenticationInput.length) {
-                          setAuthenticationInput([...authenticationInput, `${user || ''}:${v}`])
+                          setAuthenticationInput([
+                            ...authenticationInput,
+                            `${user || ''}:${v}`,
+                          ])
                         } else {
                           setAuthenticationInput(
                             authenticationInput.map((a, i) =>
-                              i === index ? `${user || ''}:${v}` : a
-                            )
+                              i === index ? `${user || ''}:${v}` : a,
+                            ),
                           )
                         }
                       }}
@@ -527,7 +574,9 @@ const Mihomo: React.FC = () => {
                         variant="flat"
                         color="warning"
                         onClick={() =>
-                          setAuthenticationInput(authenticationInput.filter((_, i) => i !== index))
+                          setAuthenticationInput(
+                            authenticationInput.filter((_, i) => i !== index),
+                          )
                         }
                       >
                         <MdDeleteForever className="text-lg" />
@@ -545,7 +594,9 @@ const Mihomo: React.FC = () => {
                 size="sm"
                 color="primary"
                 onPress={() => {
-                  onChangeNeedRestart({ 'skip-auth-prefixes': skipAuthPrefixesInput })
+                  onChangeNeedRestart({
+                    'skip-auth-prefixes': skipAuthPrefixesInput,
+                  })
                 }}
               >
                 确认
@@ -567,7 +618,9 @@ const Mihomo: React.FC = () => {
                         setSkipAuthPrefixesInput([...skipAuthPrefixesInput, v])
                       } else {
                         setSkipAuthPrefixesInput(
-                          skipAuthPrefixesInput.map((a, i) => (i === index ? v : a))
+                          skipAuthPrefixesInput.map((a, i) =>
+                            i === index ? v : a,
+                          ),
                         )
                       }
                     }}
@@ -580,7 +633,7 @@ const Mihomo: React.FC = () => {
                       color="warning"
                       onClick={() =>
                         setSkipAuthPrefixesInput(
-                          skipAuthPrefixesInput.filter((_, i) => i !== index)
+                          skipAuthPrefixesInput.filter((_, i) => i !== index),
                         )
                       }
                     >
@@ -663,7 +716,9 @@ const Mihomo: React.FC = () => {
               size="sm"
               selectedKeys={new Set([findProcessMode])}
               onSelectionChange={(v) => {
-                onChangeNeedRestart({ 'find-process-mode': v.currentKey as FindProcessMode })
+                onChangeNeedRestart({
+                  'find-process-mode': v.currentKey as FindProcessMode,
+                })
               }}
             >
               <SelectItem key="strict">自动</SelectItem>

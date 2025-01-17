@@ -15,7 +15,7 @@ const titleMap = {
   mihomoCoreCardStatus: '内核',
   dnsCardStatus: 'DNS',
   sniffCardStatus: '域名嗅探',
-  logCardStatus: '日志'
+  logCardStatus: '日志',
 }
 const SiderConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
@@ -31,7 +31,7 @@ const SiderConfig: React.FC = () => {
     mihomoCoreCardStatus = 'col-span-2',
     dnsCardStatus = 'col-span-1',
     sniffCardStatus = 'col-span-1',
-    logCardStatus = 'col-span-1'
+    logCardStatus = 'col-span-1',
   } = appConfig || {}
 
   const cardStatus = {
@@ -46,14 +46,18 @@ const SiderConfig: React.FC = () => {
     mihomoCoreCardStatus,
     dnsCardStatus,
     sniffCardStatus,
-    logCardStatus
+    logCardStatus,
   }
 
   return (
     <SettingCard title="侧边栏设置">
       {Object.keys(cardStatus).map((key, index, array) => {
         return (
-          <SettingItem title={titleMap[key]} key={key} divider={index !== array.length - 1}>
+          <SettingItem
+            title={titleMap[key]}
+            key={key}
+            divider={index !== array.length - 1}
+          >
             <RadioGroup
               orientation="horizontal"
               value={cardStatus[key]}

@@ -1,4 +1,11 @@
-import { Button, Card, CardBody, CardFooter, Chip, Tooltip } from '@nextui-org/react'
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Chip,
+  Tooltip,
+} from '@nextui-org/react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { LuGroup } from 'react-icons/lu'
@@ -25,9 +32,9 @@ const ProxyCard: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'proxy'
+    id: 'proxy',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
 
@@ -56,7 +63,7 @@ const ProxyCard: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={`${proxyCardStatus} proxy-card`}
     >
@@ -84,11 +91,11 @@ const ProxyCard: React.FC<Props> = (props) => {
                 match
                   ? {
                       base: 'border-primary-foreground',
-                      content: 'text-primary-foreground'
+                      content: 'text-primary-foreground',
                     }
                   : {
                       base: 'border-primary',
-                      content: 'text-primary'
+                      content: 'text-primary',
                     }
               }
               size="sm"

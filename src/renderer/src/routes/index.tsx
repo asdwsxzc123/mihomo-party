@@ -15,60 +15,60 @@ import Sniffer from '@renderer/pages/sniffer'
 const routes = [
   {
     path: '/mihomo',
-    element: <Mihomo />
+    element: <Mihomo />,
   },
   {
     path: '/sysproxy',
-    element: <Sysproxy />
+    element: <Sysproxy />,
   },
   {
     path: '/tun',
-    element: <Tun />
+    element: <Tun />,
   },
   {
     path: '/proxies',
-    element: <Proxies />
+    element: <Proxies />,
   },
   {
     path: '/rules',
-    element: <Rules />
+    element: <Rules />,
   },
   {
     path: '/resources',
-    element: <Resources />
+    element: <Resources />,
   },
   {
     path: '/dns',
-    element: <DNS />
+    element: <DNS />,
   },
   {
     path: '/sniffer',
-    element: <Sniffer />
+    element: <Sniffer />,
   },
   {
     path: '/logs',
-    element: <Logs />
+    element: <Logs />,
   },
   {
     path: '/connections',
-    element: <Connections />
+    element: <Connections />,
   },
   {
     path: '/override',
-    element: <Override />
+    element: <Override />,
   },
   {
     path: '/profiles',
-    element: <Profiles />
+    element: <Profiles />,
   },
   {
     path: '/settings',
-    element: <Settings />
+    element: <Settings />,
   },
   {
     path: '/',
-    element: <Navigate to="/proxies" />
-  }
+    element: <Navigate to="/proxies" />,
+  },
 ]
 
 export default routes

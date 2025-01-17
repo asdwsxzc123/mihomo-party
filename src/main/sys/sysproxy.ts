@@ -11,7 +11,14 @@ let defaultBypass: string[]
 let triggerSysProxyTimer: NodeJS.Timeout | null = null
 
 if (process.platform === 'linux')
-  defaultBypass = ['localhost', '127.0.0.1', '192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '::1']
+  defaultBypass = [
+    'localhost',
+    '127.0.0.1',
+    '192.168.0.0/16',
+    '10.0.0.0/8',
+    '172.16.0.0/12',
+    '::1',
+  ]
 if (process.platform === 'darwin')
   defaultBypass = [
     '127.0.0.1',
@@ -21,7 +28,7 @@ if (process.platform === 'darwin')
     'localhost',
     '*.local',
     '*.crashlytics.com',
-    '<local>'
+    '<local>',
   ]
 if (process.platform === 'win32')
   defaultBypass = [
@@ -45,7 +52,7 @@ if (process.platform === 'win32')
     '172.29.*',
     '172.30.*',
     '172.31.*',
-    '<local>'
+    '<local>',
   ]
 
 export async function triggerSysProxy(enable: boolean): Promise<void> {
@@ -72,10 +79,10 @@ async function enableSysProxy(): Promise<void> {
     case 'auto': {
       if (process.platform === 'win32') {
         try {
-          await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
-            'pac',
-            `http://${host || '127.0.0.1'}:${pacPort}/pac`
-          ])
+          await execFilePromise(
+            path.join(resourcesFilesDir(), 'sysproxy.exe'),
+            ['pac', `http://${host || '127.0.0.1'}:${pacPort}/pac`],
+          )
         } catch {
           triggerAutoProxy(true, `http://${host || '127.0.0.1'}:${pacPort}/pac`)
         }
@@ -89,11 +96,10 @@ async function enableSysProxy(): Promise<void> {
     case 'manual': {
       if (process.platform === 'win32') {
         try {
-          await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
-            'global',
-            `${host || '127.0.0.1'}:${port}`,
-            bypass.join(';')
-          ])
+          await execFilePromise(
+            path.join(resourcesFilesDir(), 'sysproxy.exe'),
+            ['global', `${host || '127.0.0.1'}:${port}`, bypass.join(';')],
+          )
         } catch {
           triggerManualProxy(true, host || '127.0.0.1', port, bypass.join(','))
         }
@@ -110,7 +116,10 @@ async function disableSysProxy(): Promise<void> {
   const execFilePromise = promisify(execFile)
   if (process.platform === 'win32') {
     try {
-      await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), ['set', '1'])
+      await execFilePromise(path.join(resourcesFilesDir(), 'sysproxy.exe'), [
+        'set',
+        '1',
+      ])
     } catch {
       triggerAutoProxy(false, '')
       triggerManualProxy(false, '', 0, '')
