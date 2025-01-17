@@ -27,8 +27,7 @@ import {
 } from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../sys/sysproxy'
-import { quitWithoutCore, restartCore } from '../core/manager'
-import { floatingWindow, triggerFloatingWindow } from './floatingWindow'
+import { restartCore } from '../core/manager'
 
 export let tray: Tray | null = null
 
@@ -40,13 +39,11 @@ export const buildContextMenu = async (): Promise<Menu> => {
     autoCloseConnection,
     proxyInTray = true,
     triggerSysProxyShortcut = '',
-    showFloatingWindowShortcut = '',
     showWindowShortcut = '',
     triggerTunShortcut = '',
     ruleModeShortcut = '',
     globalModeShortcut = '',
     directModeShortcut = '',
-    quitWithoutCoreShortcut = '',
     restartAppShortcut = '',
   } = await getAppConfig()
   let groupsMenu: Electron.MenuItemConstructorOptions[] = []
@@ -103,15 +100,6 @@ export const buildContextMenu = async (): Promise<Menu> => {
       },
     },
     {
-      id: 'show-floating',
-      accelerator: showFloatingWindowShortcut,
-      label: floatingWindow?.isVisible() ? '关闭悬浮窗' : '显示悬浮窗',
-      type: 'normal',
-      click: async (): Promise<void> => {
-        await triggerFloatingWindow()
-      },
-    },
-    {
       id: 'rule',
       label: '规则模式',
       accelerator: ruleModeShortcut,
@@ -165,7 +153,6 @@ export const buildContextMenu = async (): Promise<Menu> => {
           await triggerSysProxy(enable)
           await patchAppConfig({ sysProxy: { enable } })
           mainWindow?.webContents.send('appConfigUpdated')
-          floatingWindow?.webContents.send('appConfigUpdated')
         } catch (e) {
           // ignore
         } finally {
@@ -190,7 +177,6 @@ export const buildContextMenu = async (): Promise<Menu> => {
             await patchControledMihomoConfig({ tun: { enable } })
           }
           mainWindow?.webContents.send('controledMihomoConfigUpdated')
-          floatingWindow?.webContents.send('controledMihomoConfigUpdated')
           await restartCore()
         } catch {
           // ignore
@@ -269,13 +255,6 @@ export const buildContextMenu = async (): Promise<Menu> => {
           },
         },
     { type: 'separator' },
-    {
-      id: 'quitWithoutCore',
-      label: '轻量模式',
-      type: 'normal',
-      accelerator: quitWithoutCoreShortcut,
-      click: quitWithoutCore,
-    },
     {
       id: 'restart',
       label: '重启应用',

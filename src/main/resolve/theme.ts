@@ -5,11 +5,6 @@ import axios from 'axios'
 import AdmZip from 'adm-zip'
 import { getControledMihomoConfig } from '../config'
 import { existsSync } from 'fs'
-import { mainWindow } from '..'
-import { floatingWindow } from './floatingWindow'
-
-let insertedCSSKeyMain: string | undefined = undefined
-let insertedCSSKeyFloating: string | undefined = undefined
 
 export async function resolveThemes(): Promise<
   { key: string; label: string }[]
@@ -76,16 +71,3 @@ export async function writeTheme(theme: string, css: string): Promise<void> {
   await writeFile(path.join(themesDir(), theme), css)
 }
 
-export async function applyTheme(theme: string): Promise<void> {
-  const css = await readTheme(theme)
-  await mainWindow?.webContents.removeInsertedCSS(insertedCSSKeyMain || '')
-  insertedCSSKeyMain = await mainWindow?.webContents.insertCSS(css)
-  try {
-    await floatingWindow?.webContents.removeInsertedCSS(
-      insertedCSSKeyFloating || '',
-    )
-    insertedCSSKeyFloating = await floatingWindow?.webContents.insertCSS(css)
-  } catch {
-    // ignore
-  }
-}

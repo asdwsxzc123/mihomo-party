@@ -4,8 +4,7 @@ import SettingItem from '../base/base-setting-item'
 import {
   checkUpdate,
   createHeapSnapshot,
-  quitApp,
-  quitWithoutCore,
+  openDevTools,
   resetAppConfig,
 } from '@renderer/utils/ipc'
 import { useState } from 'react'
@@ -87,23 +86,11 @@ const Actions: React.FC = () => {
           </Button>
         </SettingItem>
         <SettingItem
-          title="轻量模式"
-          actions={
-            <Tooltip content="完全退出软件，只保留内核进程">
-              <Button isIconOnly size="sm" variant="light">
-                <IoIosHelpCircle className="text-lg" />
-              </Button>
-            </Tooltip>
-          }
+          title="开发者工具"
           divider
         >
-          <Button size="sm" onPress={quitWithoutCore}>
-            轻量模式
-          </Button>
-        </SettingItem>
-        <SettingItem title="退出应用" divider>
-          <Button size="sm" onPress={quitApp}>
-            退出应用
+          <Button size="sm" onPress={openDevTools}>
+            开发者工具
           </Button>
         </SettingItem>
         <SettingItem title="应用版本">

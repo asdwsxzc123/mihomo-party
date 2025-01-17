@@ -515,17 +515,6 @@ export async function triggerMainWindow(): Promise<void> {
   )
 }
 
-export async function showFloatingWindow(): Promise<void> {
-  return ipcErrorWrapper(
-    await window.electron.ipcRenderer.invoke('showFloatingWindow'),
-  )
-}
-
-export async function closeFloatingWindow(): Promise<void> {
-  return ipcErrorWrapper(
-    await window.electron.ipcRenderer.invoke('closeFloatingWindow'),
-  )
-}
 
 export async function showContextMenu(): Promise<void> {
   return ipcErrorWrapper(
@@ -567,57 +556,7 @@ export async function getImageDataURL(url: string): Promise<string> {
   )
 }
 
-export async function resolveThemes(): Promise<
-  { key: string; label: string; content: string }[]
-> {
-  return ipcErrorWrapper(
-    await window.electron.ipcRenderer.invoke('resolveThemes'),
-  )
-}
 
-export async function fetchThemes(): Promise<void> {
-  return ipcErrorWrapper(
-    await window.electron.ipcRenderer.invoke('fetchThemes'),
-  )
-}
-
-export async function importThemes(files: string[]): Promise<void> {
-  return ipcErrorWrapper(
-    await window.electron.ipcRenderer.invoke('importThemes', files),
-  )
-}
-
-export async function readTheme(theme: string): Promise<string> {
-  return ipcErrorWrapper(
-    await window.electron.ipcRenderer.invoke('readTheme', theme),
-  )
-}
-
-export async function writeTheme(theme: string, css: string): Promise<void> {
-  return ipcErrorWrapper(
-    await window.electron.ipcRenderer.invoke('writeTheme', theme, css),
-  )
-}
-
-let applyThemeRunning = false
-const waitList: string[] = []
-export async function applyTheme(theme: string): Promise<void> {
-  if (applyThemeRunning) {
-    waitList.push(theme)
-    return
-  }
-  applyThemeRunning = true
-  try {
-    return await ipcErrorWrapper(
-      window.electron.ipcRenderer.invoke('applyTheme', theme),
-    )
-  } finally {
-    applyThemeRunning = false
-    if (waitList.length > 0) {
-      await applyTheme(waitList.shift() || '')
-    }
-  }
-}
 
 export async function registerShortcut(
   oldShortcut: string,

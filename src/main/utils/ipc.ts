@@ -77,25 +77,12 @@ import {
   showMainWindow,
   triggerMainWindow,
 } from '..'
-import {
-  applyTheme,
-  fetchThemes,
-  importThemes,
-  readTheme,
-  resolveThemes,
-  writeTheme,
-} from '../resolve/theme'
 import { logDir } from './dirs'
 import path from 'path'
 import v8 from 'v8'
 import { getGistUrl } from '../resolve/gistApi'
 import { getImageDataURL } from './image'
 import { startMonitor } from '../resolve/trafficMonitor'
-import {
-  closeFloatingWindow,
-  showContextMenu,
-  showFloatingWindow,
-} from '../resolve/floatingWindow'
 
 function ipcErrorWrapper<T>( // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (...args: any[]) => Promise<T>, // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -286,13 +273,7 @@ export function registerIpcMainHandlers(): void {
   ipcMain.handle('showMainWindow', showMainWindow)
   ipcMain.handle('closeMainWindow', closeMainWindow)
   ipcMain.handle('triggerMainWindow', triggerMainWindow)
-  ipcMain.handle('showFloatingWindow', () =>
-    ipcErrorWrapper(showFloatingWindow)(),
-  )
-  ipcMain.handle('closeFloatingWindow', () =>
-    ipcErrorWrapper(closeFloatingWindow)(),
-  )
-  ipcMain.handle('showContextMenu', () => ipcErrorWrapper(showContextMenu)())
+  // ipcMain.handle('showContextMenu', () => ipcErrorWrapper(showContextMenu)())
   ipcMain.handle('openFile', (_e, type, id, ext) => openFile(type, id, ext))
   ipcMain.handle('openDevTools', () => {
     mainWindow?.webContents.openDevTools()
@@ -302,18 +283,6 @@ export function registerIpcMainHandlers(): void {
   })
   ipcMain.handle('getImageDataURL', (_e, url) =>
     ipcErrorWrapper(getImageDataURL)(url),
-  )
-  ipcMain.handle('resolveThemes', () => ipcErrorWrapper(resolveThemes)())
-  ipcMain.handle('fetchThemes', () => ipcErrorWrapper(fetchThemes)())
-  ipcMain.handle('importThemes', (_e, file) =>
-    ipcErrorWrapper(importThemes)(file),
-  )
-  ipcMain.handle('readTheme', (_e, theme) => ipcErrorWrapper(readTheme)(theme))
-  ipcMain.handle('writeTheme', (_e, theme, css) =>
-    ipcErrorWrapper(writeTheme)(theme, css),
-  )
-  ipcMain.handle('applyTheme', (_e, theme) =>
-    ipcErrorWrapper(applyTheme)(theme),
   )
   ipcMain.handle('copyEnv', (_e, type) => ipcErrorWrapper(copyEnv)(type))
   ipcMain.handle('alert', (_e, msg) => {

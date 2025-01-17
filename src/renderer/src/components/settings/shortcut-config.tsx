@@ -43,13 +43,11 @@ const ShortcutConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     showWindowShortcut = '',
-    showFloatingWindowShortcut = '',
     triggerSysProxyShortcut = '',
     triggerTunShortcut = '',
     ruleModeShortcut = '',
     globalModeShortcut = '',
     directModeShortcut = '',
-    quitWithoutCoreShortcut = '',
     restartAppShortcut = '',
   } = appConfig || {}
 
@@ -61,15 +59,6 @@ const ShortcutConfig: React.FC = () => {
             value={showWindowShortcut}
             patchAppConfig={patchAppConfig}
             action="showWindowShortcut"
-          />
-        </div>
-      </SettingItem>
-      <SettingItem title="打开/关闭悬浮窗" divider>
-        <div className="flex justify-end w-[60%]">
-          <ShortcutInput
-            value={showFloatingWindowShortcut}
-            patchAppConfig={patchAppConfig}
-            action="showFloatingWindowShortcut"
           />
         </div>
       </SettingItem>
@@ -115,15 +104,6 @@ const ShortcutConfig: React.FC = () => {
             value={directModeShortcut}
             patchAppConfig={patchAppConfig}
             action="directModeShortcut"
-          />
-        </div>
-      </SettingItem>
-      <SettingItem title="轻量模式" divider>
-        <div className="flex justify-end w-[60%]">
-          <ShortcutInput
-            value={quitWithoutCoreShortcut}
-            patchAppConfig={patchAppConfig}
-            action="quitWithoutCoreShortcut"
           />
         </div>
       </SettingItem>

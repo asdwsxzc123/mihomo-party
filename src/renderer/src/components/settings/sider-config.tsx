@@ -9,12 +9,9 @@ const titleMap = {
   profileCardStatus: '订阅管理',
   proxyCardStatus: '代理组',
   ruleCardStatus: '规则',
-  resourceCardStatus: '外部资源',
   overrideCardStatus: '覆写',
   connectionCardStatus: '连接',
   mihomoCoreCardStatus: '内核',
-  dnsCardStatus: 'DNS',
-  sniffCardStatus: '域名嗅探',
   logCardStatus: '日志',
 }
 const SiderConfig: React.FC = () => {
@@ -25,12 +22,9 @@ const SiderConfig: React.FC = () => {
     profileCardStatus = 'col-span-2',
     proxyCardStatus = 'col-span-1',
     ruleCardStatus = 'col-span-1',
-    resourceCardStatus = 'col-span-1',
     overrideCardStatus = 'col-span-1',
     connectionCardStatus = 'col-span-2',
     mihomoCoreCardStatus = 'col-span-2',
-    dnsCardStatus = 'col-span-1',
-    sniffCardStatus = 'col-span-1',
     logCardStatus = 'col-span-1',
   } = appConfig || {}
 
@@ -40,12 +34,9 @@ const SiderConfig: React.FC = () => {
     profileCardStatus,
     proxyCardStatus,
     ruleCardStatus,
-    resourceCardStatus,
     overrideCardStatus,
     connectionCardStatus,
     mihomoCoreCardStatus,
-    dnsCardStatus,
-    sniffCardStatus,
     logCardStatus,
   }
 

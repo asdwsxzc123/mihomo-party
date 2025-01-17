@@ -25,7 +25,6 @@ import { existsSync, writeFileSync } from 'fs'
 import { exePath, taskDir } from './utils/dirs'
 import path from 'path'
 import { startMonitor } from './resolve/trafficMonitor'
-import { showFloatingWindow } from './resolve/floatingWindow'
 import iconv from 'iconv-lite'
 
 let quitTimeout: NodeJS.Timeout | null = null
@@ -167,13 +166,9 @@ app.whenReady().then(async () => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-  const { showFloatingWindow: showFloating = false, disableTray = false } =
-    await getAppConfig()
+  const { disableTray = false } = await getAppConfig()
   registerIpcMainHandlers()
   await createWindow()
-  if (showFloating) {
-    showFloatingWindow()
-  }
   if (!disableTray) {
     await createTray()
   }

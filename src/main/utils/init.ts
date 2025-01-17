@@ -135,23 +135,8 @@ async function cleanup(): Promise<void> {
 
 async function migration(): Promise<void> {
   const {
-    siderOrder = [
-      'sysproxy',
-      'tun',
-      'profile',
-      'proxy',
-      'rule',
-      'resource',
-      'override',
-      'connection',
-      'mihomo',
-      'dns',
-      'sniff',
-      'log',
-    ],
     appTheme = 'system',
     envType = [process.platform === 'win32' ? 'powershell' : 'bash'],
-    showFloatingWindow = false,
     disableTray = false,
     encryptedPassword,
   } = await getAppConfig()
@@ -208,7 +193,7 @@ async function migration(): Promise<void> {
   if (externalController === undefined) {
     await patchControledMihomoConfig({ 'external-controller': '' })
   }
-  if (!showFloatingWindow && disableTray) {
+  if (disableTray) {
     await patchAppConfig({ disableTray: false })
   }
   // remove password

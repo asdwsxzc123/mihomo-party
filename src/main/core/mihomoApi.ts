@@ -5,7 +5,6 @@ import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 import { getRuntimeConfig } from './factory'
-import { floatingWindow } from '../resolve/floatingWindow'
 import { mihomoIpcPath } from './manager'
 
 let axiosIns: AxiosInstance = null!
@@ -227,7 +226,6 @@ const mihomoTraffic = async (): Promise<void> => {
             `${calcTraffic(json.down)}/s`.padStart(9),
         )
       }
-      floatingWindow?.webContents.send('mihomoTraffic', json)
     } catch {
       // ignore
     }

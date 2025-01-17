@@ -19,16 +19,13 @@ import { SortableContext } from '@dnd-kit/sortable'
 import ProfileCard from '@renderer/components/sider/profile-card'
 import ProxyCard from '@renderer/components/sider/proxy-card'
 import RuleCard from '@renderer/components/sider/rule-card'
-import DNSCard from '@renderer/components/sider/dns-card'
-import SniffCard from '@renderer/components/sider/sniff-card'
 import OverrideCard from '@renderer/components/sider/override-card'
 import ConnCard from '@renderer/components/sider/conn-card'
 import LogCard from '@renderer/components/sider/log-card'
 import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
-import ResourceCard from '@renderer/components/sider/resource-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { applyTheme, setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
+import {  setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 import MihomoIcon from './components/base/mihomo-icon'
@@ -39,7 +36,6 @@ const App: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     appTheme = 'system',
-    customTheme,
     useWindowFrame = false,
     siderWidth = 250,
     siderOrder = [
@@ -99,11 +95,6 @@ const App: React.FC = () => {
     setTitlebar()
   }, [appTheme, systemTheme])
 
-  useEffect(() => {
-    applyTheme(customTheme || 'default.css').then(() => {
-      setTitlebar()
-    })
-  }, [customTheme])
 
   useEffect(() => {
     window.addEventListener('mouseup', onResizeEnd)
@@ -156,11 +147,8 @@ const App: React.FC = () => {
     proxy: ProxyCard,
     mihomo: MihomoCoreCard,
     connection: ConnCard,
-    dns: DNSCard,
-    sniff: SniffCard,
     log: LogCard,
     rule: RuleCard,
-    resource: ResourceCard,
     override: OverrideCard
   }
 
