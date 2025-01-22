@@ -23,6 +23,8 @@ const UpdaterButton: React.FC<Props> = (props) => {
       refreshInterval: 1000 * 60 * 10,
     },
   )
+  // 删除更新逻辑
+  if (appConfig) return null
   if (!latest) return null
 
   return (
