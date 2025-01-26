@@ -1,6 +1,12 @@
 import axios from 'axios'
-import yaml from 'yaml'
+import { exec, execSync, spawn } from 'child_process'
 import { app, shell } from 'electron'
+import { existsSync } from 'fs'
+import { copyFile, rm, writeFile } from 'fs/promises'
+import os from 'os'
+import path from 'path'
+import { promisify } from 'util'
+import yaml from 'yaml'
 import { getControledMihomoConfig } from '../config'
 import {
   dataDir,
@@ -9,17 +15,11 @@ import {
   isPortable,
   resourcesFilesDir,
 } from '../utils/dirs'
-import { copyFile, rm, writeFile } from 'fs/promises'
-import path from 'path'
-import { existsSync } from 'fs'
-import os from 'os'
-import { exec, execSync, spawn } from 'child_process'
-import { promisify } from 'util'
 
 export async function checkUpdate(): Promise<IAppVersion | undefined> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
   const res = await axios.get(
-    'https://github.com/mihomo-party-org/mihomo-party/releases/latest/download/latest.yml',
+    'https://github.com/asdwsxzc123/mihomo-part/releases/latest/download/latest.yml',
     {
       headers: { 'Content-Type': 'application/octet-stream' },
       proxy: {
@@ -41,7 +41,7 @@ export async function checkUpdate(): Promise<IAppVersion | undefined> {
 
 export async function downloadAndInstallUpdate(version: string): Promise<void> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
-  const baseUrl = `https://github.com/mihomo-party-org/mihomo-party/releases/download/v${version}/`
+  const baseUrl = `https://github.com/asdwsxzc123/mihomo-part/releases/download/v${version}/`
   const fileMap = {
     'win32-x64': `mihomo-party-windows-${version}-x64-setup.exe`,
     'win32-ia32': `mihomo-party-windows-${version}-ia32-setup.exe`,
