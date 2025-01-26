@@ -291,6 +291,7 @@ export async function createTray(): Promise<void> {
   }
   if (process.platform === 'win32') {
     tray = new Tray(icoIcon)
+    setTrayIcon()
   }
   tray?.setToolTip('Mihomo Party')
   tray?.setIgnoreDoubleClickEvents(true)
@@ -312,20 +313,7 @@ export async function createTray(): Promise<void> {
   }
   if (process.platform === 'win32') {
     ipcMain.on('updateTrayMenu', async () => {
-      const { sysProxy } = await getAppConfig()
-      const { tun } = await getControledMihomoConfig()
-      // 1. tun开启 绿色
-      // 2. sys开启 = 橘色
-      // 3. 都没开启 = 白色
-      if (!tun?.enable && !sysProxy.enable) {
-        tray?.setImage(icoIcon)
-      } else {
-        if (tun?.enable) {
-          tray?.setImage(subStoreIcon)
-        } else if (sysProxy.enable) {
-          tray?.setImage(templateIcon)
-        }
-      }
+      setTrayIcon()
     })
     tray?.addListener('click', () => {
       triggerMainWindow()
@@ -343,7 +331,22 @@ export async function createTray(): Promise<void> {
     })
   }
 }
-
+async function setTrayIcon(): Promise<void> {
+  const { sysProxy } = await getAppConfig()
+  const { tun } = await getControledMihomoConfig()
+  // 1. tun开启 绿色
+  // 2. sys开启 = 橘色
+  // 3. 都没开启 = 白色
+  if (!tun?.enable && !sysProxy.enable) {
+    tray?.setImage(icoIcon)
+  } else {
+    if (tun?.enable) {
+      tray?.setImage(subStoreIcon)
+    } else if (sysProxy.enable) {
+      tray?.setImage(templateIcon)
+    }
+  }
+}
 async function updateTrayMenu(): Promise<void> {
   const menu = await buildContextMenu()
   tray?.popUpContextMenu(menu) // 弹出菜单
