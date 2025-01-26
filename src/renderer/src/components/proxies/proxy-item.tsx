@@ -23,7 +23,6 @@ const ProxyItem: React.FC<Props> = (props) => {
     onSelect,
     onProxyDelay,
   } = props
-
   const delay = useMemo(() => {
     if (proxy.history.length > 0) {
       return proxy.history[proxy.history.length - 1].delay

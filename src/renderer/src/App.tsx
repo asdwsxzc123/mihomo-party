@@ -1,11 +1,16 @@
 import { useTheme } from 'next-themes'
 import { useEffect, useRef, useState } from 'react'
-import { NavigateFunction, useLocation, useNavigate, useRoutes } from 'react-router-dom'
+import {
+  NavigateFunction,
+  useLocation,
+  useNavigate,
+  useRoutes,
+} from 'react-router-dom'
 import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switcher'
 import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
 import TunSwitcher from '@renderer/components/sider/tun-switcher'
 import { Button, Divider } from '@nextui-org/react'
-import { IoSettings } from 'react-icons/io5'
+import { IoSettings, IoCloudUploadOutline } from 'react-icons/io5'
 import routes from '@renderer/routes'
 import {
   DndContext,
@@ -13,7 +18,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent
+  DragEndEvent,
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import ProfileCard from '@renderer/components/sider/profile-card'
@@ -25,7 +30,13 @@ import LogCard from '@renderer/components/sider/log-card'
 import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import {  setNativeTheme, setTitleBarOverlay } from '@renderer/utils/ipc'
+import {
+  listWebdavBackups,
+  setNativeTheme,
+  setTitleBarOverlay,
+  webdavBackup,
+  webdavDelete,
+} from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
 import MihomoIcon from './components/base/mihomo-icon'
@@ -50,14 +61,15 @@ const App: React.FC = () => {
       'mihomo',
       'dns',
       'sniff',
-      'log'
-    ]
+      'log',
+    ],
   } = appConfig || {}
   const narrowWidth = platform === 'darwin' ? 70 : 60
   const [order, setOrder] = useState(siderOrder)
   const [siderWidthValue, setSiderWidthValue] = useState(siderWidth)
   const siderWidthValueRef = useRef(siderWidthValue)
   const [resizing, setResizing] = useState(false)
+  const [backUpIng, setBackUpIng] = useState(false)
   const resizingRef = useRef(resizing)
   const sensors = useSensors(useSensor(PointerSensor))
   const { setTheme, systemTheme } = useTheme()
@@ -69,8 +81,12 @@ const App: React.FC = () => {
       const options = { height: 48 } as TitleBarOverlayOptions
       try {
         if (platform !== 'darwin') {
-          options.color = window.getComputedStyle(document.documentElement).backgroundColor
-          options.symbolColor = window.getComputedStyle(document.documentElement).color
+          options.color = window.getComputedStyle(
+            document.documentElement,
+          ).backgroundColor
+          options.symbolColor = window.getComputedStyle(
+            document.documentElement,
+          ).color
         }
         setTitleBarOverlay(options)
       } catch (e) {
@@ -94,7 +110,6 @@ const App: React.FC = () => {
     setTheme(appTheme)
     setTitlebar()
   }, [appTheme, systemTheme])
-
 
   useEffect(() => {
     window.addEventListener('mouseup', onResizeEnd)
@@ -137,7 +152,7 @@ const App: React.FC = () => {
     log: 'logs',
     rule: 'rules',
     resource: 'resources',
-    override: 'override'
+    override: 'override',
   }
 
   const componentMap = {
@@ -149,9 +164,8 @@ const App: React.FC = () => {
     connection: ConnCard,
     log: LogCard,
     rule: RuleCard,
-    override: OverrideCard
+    override: OverrideCard,
   }
-
   return (
     <div
       onMouseMove={(e) => {
@@ -166,8 +180,7 @@ const App: React.FC = () => {
           setSiderWidthValue(e.clientX)
         }
       }}
-      className={`w-full h-[100vh] flex ${resizing ? 'cursor-ew-resize' : ''}`}
-    >
+      className={`w-full h-[100vh] flex ${resizing ? 'cursor-ew-resize' : ''}`}>
       {siderWidthValue === narrowWidth ? (
         <div style={{ width: `${narrowWidth}px` }} className="side h-full">
           <div className="app-drag flex justify-center items-center z-40 bg-transparent h-[49px]">
@@ -190,12 +203,15 @@ const App: React.FC = () => {
               size="sm"
               className="app-nodrag"
               isIconOnly
-              color={location.pathname.includes('/settings') ? 'primary' : 'default'}
-              variant={location.pathname.includes('/settings') ? 'solid' : 'light'}
+              color={
+                location.pathname.includes('/settings') ? 'primary' : 'default'
+              }
+              variant={
+                location.pathname.includes('/settings') ? 'solid' : 'light'
+              }
               onPress={() => {
                 navigate('/settings')
-              }}
-            >
+              }}>
               <IoSettings className="text-[20px]" />
             </Button>
           </div>
@@ -203,27 +219,49 @@ const App: React.FC = () => {
       ) : (
         <div
           style={{ width: `${siderWidthValue}px` }}
-          className="side h-full overflow-y-auto no-scrollbar"
-        >
+          className="side h-full overflow-y-auto no-scrollbar">
           <div className="app-drag sticky top-0 z-40 backdrop-blur bg-transparent h-[49px]">
             <div
-              className={`flex justify-between p-2 ${!useWindowFrame && platform === 'darwin' ? 'ml-[60px]' : ''}`}
-            >
+              className={`flex justify-between p-2 ${!useWindowFrame && platform === 'darwin' ? 'ml-[60px]' : ''}`}>
               <div className="flex ml-1">
                 <MihomoIcon className="h-[32px] leading-[32px] text-lg mx-[1px]" />
-                <h3 className="text-lg font-bold leading-[32px]">mihomo Party</h3>
+                <h3 className="text-lg font-bold leading-[32px]">
+                  mihomo Party
+                </h3>
               </div>
               <UpdaterButton />
               <Button
                 size="sm"
                 className="app-nodrag"
                 isIconOnly
-                color={location.pathname.includes('/settings') ? 'primary' : 'default'}
-                variant={location.pathname.includes('/settings') ? 'solid' : 'light'}
+                isLoading={backUpIng}
+                onPress={async () => {
+                  setBackUpIng(true)
+                  await webdavBackup()
+                  const list = await listWebdavBackups()
+                  if (list.length > 1) await webdavDelete(list.shift() as string)
+                  setBackUpIng(false)
+                  new window.Notification('备份成功', {
+                    body: '备份文件已上传至 WebDAV',
+                  })
+                }}>
+                <IoCloudUploadOutline className="text-[20px]" />
+              </Button>
+              <Button
+                size="sm"
+                className="app-nodrag"
+                isIconOnly
+                color={
+                  location.pathname.includes('/settings')
+                    ? 'primary'
+                    : 'default'
+                }
+                variant={
+                  location.pathname.includes('/settings') ? 'solid' : 'light'
+                }
                 onPress={() => {
                   navigate('/settings')
-                }}
-              >
+                }}>
                 <IoSettings className="text-[20px]" />
               </Button>
             </div>
@@ -231,7 +269,10 @@ const App: React.FC = () => {
           <div className="mt-2 mx-2">
             <OutboundModeSwitcher />
           </div>
-          <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={onDragEnd}>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragEnd={onDragEnd}>
             <div className="grid grid-cols-2 gap-2 m-2">
               <SortableContext items={order}>
                 {order.map((key: string) => {
@@ -255,15 +296,14 @@ const App: React.FC = () => {
           left: `${siderWidthValue - 2}px`,
           width: '5px',
           height: '100vh',
-          cursor: 'ew-resize'
+          cursor: 'ew-resize',
         }}
         className={resizing ? 'bg-primary' : ''}
       />
       <Divider orientation="vertical" />
       <div
         style={{ width: `calc(100% - ${siderWidthValue + 1}px)` }}
-        className="main grow h-full overflow-y-auto"
-      >
+        className="main grow h-full overflow-y-auto">
         {page}
       </div>
     </div>

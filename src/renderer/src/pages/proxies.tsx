@@ -76,7 +76,6 @@ const Proxies: React.FC = () => {
     })
     return { groupCounts, allProxies }
   }, [groups, isOpen, proxyDisplayOrder, cols, searchValue])
-
   const onChangeProxy = async (group: string, proxy: string): Promise<void> => {
     await mihomoChangeProxy(group, proxy)
     if (autoCloseConnection) {
@@ -180,8 +179,7 @@ const Proxies: React.FC = () => {
                       ? 'name'
                       : 'default',
               })
-            }}
-          >
+            }}>
             {proxyDisplayOrder === 'default' ? (
               <TbCircleLetterD className="text-lg" title="默认" />
             ) : proxyDisplayOrder === 'delay' ? (
@@ -200,8 +198,7 @@ const Proxies: React.FC = () => {
                 proxyDisplayMode:
                   proxyDisplayMode === 'simple' ? 'full' : 'simple',
               })
-            }}
-          >
+            }}>
             {proxyDisplayMode === 'full' ? (
               <CgDetailsMore className="text-lg" title="详细信息" />
             ) : (
@@ -209,8 +206,7 @@ const Proxies: React.FC = () => {
             )}
           </Button>
         </>
-      }
-    >
+      }>
       {mode === 'direct' ? (
         <div className="h-full w-full flex justify-center items-center">
           <div className="flex flex-col items-center">
@@ -237,8 +233,7 @@ const Proxies: React.FC = () => {
               }
               return groups[index] ? (
                 <div
-                  className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
-                >
+                  className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}>
                   <Card
                     isPressable
                     fullWidth
@@ -248,8 +243,7 @@ const Proxies: React.FC = () => {
                         newOpen[index] = !prev[index]
                         return newOpen
                       })
-                    }}
-                  >
+                    }}>
                     <CardBody className="w-full">
                       <div className="flex justify-between">
                         <div className="flex text-ellipsis overflow-hidden whitespace-nowrap">
@@ -269,15 +263,13 @@ const Proxies: React.FC = () => {
                           <div className="text-ellipsis overflow-hidden whitespace-nowrap">
                             <div
                               title={groups[index].name}
-                              className="inline flag-emoji h-[32px] text-md leading-[32px]"
-                            >
+                              className="inline flag-emoji h-[32px] text-md leading-[32px]">
                               {groups[index].name}
                             </div>
                             {proxyDisplayMode === 'full' && (
                               <div
                                 title={groups[index].type}
-                                className="inline ml-2 text-sm text-foreground-500"
-                              >
+                                className="inline ml-2 text-sm text-foreground-500">
                                 {groups[index].type}
                               </div>
                             )}
@@ -331,8 +323,7 @@ const Proxies: React.FC = () => {
                                 index: Math.floor(i),
                                 align: 'start',
                               })
-                            }}
-                          >
+                            }}>
                             <FaLocationCrosshairs className="text-lg text-foreground-500" />
                           </Button>
                           <Button
@@ -343,8 +334,7 @@ const Proxies: React.FC = () => {
                             isIconOnly
                             onPress={() => {
                               onGroupDelay(index)
-                            }}
-                          >
+                            }}>
                             <MdOutlineSpeed className="text-lg text-foreground-500" />
                           </Button>
                           <IoIosArrowBack
@@ -373,8 +363,7 @@ const Proxies: React.FC = () => {
                         }
                       : {}
                   }
-                  className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}
-                >
+                  className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}>
                   {Array.from({ length: cols }).map((_, i) => {
                     if (!allProxies[groupIndex][innerIndex * cols + i])
                       return null

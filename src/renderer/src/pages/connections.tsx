@@ -24,14 +24,17 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { HiSortAscending, HiSortDescending } from 'react-icons/hi'
 import { includesIgnoreCase } from '@renderer/utils/includes'
 import { differenceWith, unionWith } from 'lodash'
+import { useGroups } from '@renderer/hooks/use-groups'
 
 let cachedConnections: IMihomoConnectionDetail[] = []
 
 const Connections: React.FC = () => {
   const [filter, setFilter] = useState('')
+  const { groups = [] } = useGroups()
   const { appConfig, patchAppConfig } = useAppConfig()
   const { connectionDirection = 'asc', connectionOrderBy = 'time' } =
     appConfig || {}
+  const [filterKey, setFilterKey] = useState('all')
   const [connectionsInfo, setConnectionsInfo] =
     useState<IMihomoConnectionsInfo>()
   const [allConnections, setAllConnections] =
@@ -47,7 +50,7 @@ const Connections: React.FC = () => {
   const [tab, setTab] = useState('active')
 
   const filteredConnections = useMemo(() => {
-    const connections = tab === 'active' ? activeConnections : closedConnections
+    let connections = tab === 'active' ? activeConnections : closedConnections
     if (connectionOrderBy) {
       connections.sort((a, b) => {
         if (connectionDirection === 'asc') {
@@ -79,6 +82,11 @@ const Connections: React.FC = () => {
         }
       })
     }
+    if (filterKey && filterKey !== 'all') {
+      connections = connections.filter((conn) => {
+        return conn.chains[conn.chains.length - 1] === filterKey
+      })
+    }
     if (filter === '') return connections
     return connections?.filter((connection) => {
       const raw = JSON.stringify(connection)
@@ -90,6 +98,7 @@ const Connections: React.FC = () => {
     filter,
     connectionDirection,
     connectionOrderBy,
+    filterKey,
   ])
 
   const closeAllConnections = (): void => {
@@ -119,6 +128,9 @@ const Connections: React.FC = () => {
     cachedConnections = allConnections
   }
 
+  const onFilterClick = (searchKey: string): void => {
+    setFilterKey(searchKey)
+  }
   useEffect(() => {
     window.electron.ipcRenderer.on(
       'mihomoConnections',
@@ -187,8 +199,7 @@ const Connections: React.FC = () => {
             color="primary"
             variant="flat"
             showOutline={false}
-            content={`${filteredConnections.length}`}
-          >
+            content={`${filteredConnections.length}`}>
             <Button
               className="app-nodrag ml-1"
               title="关闭全部连接"
@@ -203,8 +214,7 @@ const Connections: React.FC = () => {
                     closeConnection(conn.id)
                   })
                 }
-              }}
-            >
+              }}>
               {tab === 'active' ? (
                 <CgClose className="text-lg" />
               ) : (
@@ -213,8 +223,7 @@ const Connections: React.FC = () => {
             </Button>
           </Badge>
         </div>
-      }
-    >
+      }>
       {isDetailModalOpen && selected && (
         <ConnectionDetailModal
           onClose={() => setIsDetailModalOpen(false)}
@@ -231,8 +240,7 @@ const Connections: React.FC = () => {
             className="w-fit h-[32px]"
             onSelectionChange={(key: Key) => {
               setTab(key as string)
-            }}
-          >
+            }}>
             <Tab
               key="active"
               title={
@@ -242,8 +250,7 @@ const Connections: React.FC = () => {
                   shape="circle"
                   variant="flat"
                   content={activeConnections.length}
-                  showOutline={false}
-                >
+                  showOutline={false}>
                   <span className="p-1">活动中</span>
                 </Badge>
               }
@@ -257,8 +264,7 @@ const Connections: React.FC = () => {
                   shape="circle"
                   variant="flat"
                   content={closedConnections.length}
-                  showOutline={false}
-                >
+                  showOutline={false}>
                   <span className="p-1">已关闭</span>
                 </Badge>
               }
@@ -272,7 +278,26 @@ const Connections: React.FC = () => {
             isClearable
             onValueChange={setFilter}
           />
-
+          {/* TODO: 添加代理查询条件 */}
+          <Select
+            classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
+            size="sm"
+            className="w-[180px] min-w-[120px]"
+            selectedKeys={[filterKey]}
+            onSelectionChange={async (v) => {
+              setFilterKey(v.currentKey as string)
+            }}>
+            <>
+              <SelectItem key={'all'} className="w-[180px] min-w-[120px]">
+                所有代理组
+              </SelectItem>
+              {groups.map((i) => (
+                <SelectItem key={i.name} className="w-[180px] min-w-[120px]">
+                  {i.name}
+                </SelectItem>
+              ))}
+            </>
+          </Select>
           <Select
             classNames={{ trigger: 'data-[hover=true]:bg-default-200' }}
             size="sm"
@@ -287,8 +312,7 @@ const Connections: React.FC = () => {
                   | 'uploadSpeed'
                   | 'downloadSpeed',
               })
-            }}
-          >
+            }}>
             <SelectItem key="upload">上传量</SelectItem>
             <SelectItem key="download">下载量</SelectItem>
             <SelectItem key="uploadSpeed">上传速度</SelectItem>
@@ -304,8 +328,7 @@ const Connections: React.FC = () => {
                 connectionDirection:
                   connectionDirection === 'asc' ? 'desc' : 'asc',
               })
-            }}
-          >
+            }}>
             {connectionDirection === 'asc' ? (
               <HiSortAscending className="text-lg" />
             ) : (
@@ -327,6 +350,7 @@ const Connections: React.FC = () => {
               index={i}
               key={connection.id}
               info={connection}
+              onFilterClick={onFilterClick}
             />
           )}
         />

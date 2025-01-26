@@ -29,11 +29,6 @@ const LogCard: React.FC<Props> = (props) => {
     id: 'log',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
-  console.log(
-    `%c [log-card.tsx]-[32]-[iconOnly]: `,
-    'font-size:13px; background:#e6f7ff; color:#118aff;',
-    iconOnly,
-  )
   if (iconOnly) {
     return (
       <div className={`${logCardStatus} flex justify-center`}>
