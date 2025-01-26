@@ -1,35 +1,27 @@
-import { useTheme } from 'next-themes'
-import { useEffect, useRef, useState } from 'react'
 import {
-  NavigateFunction,
-  useLocation,
-  useNavigate,
-  useRoutes,
-} from 'react-router-dom'
-import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switcher'
-import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
-import TunSwitcher from '@renderer/components/sider/tun-switcher'
-import { Button, Divider } from '@nextui-org/react'
-import { IoSettings, IoCloudUploadOutline } from 'react-icons/io5'
-import routes from '@renderer/routes'
-import {
-  DndContext,
   closestCorners,
+  DndContext,
+  DragEndEvent,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
-import ProfileCard from '@renderer/components/sider/profile-card'
-import ProxyCard from '@renderer/components/sider/proxy-card'
-import RuleCard from '@renderer/components/sider/rule-card'
-import OverrideCard from '@renderer/components/sider/override-card'
+import { Button, Divider, Tooltip } from '@nextui-org/react'
 import ConnCard from '@renderer/components/sider/conn-card'
 import LogCard from '@renderer/components/sider/log-card'
 import MihomoCoreCard from '@renderer/components/sider/mihomo-core-card'
+import OutboundModeSwitcher from '@renderer/components/sider/outbound-mode-switcher'
+import OverrideCard from '@renderer/components/sider/override-card'
+import ProfileCard from '@renderer/components/sider/profile-card'
+import ProxyCard from '@renderer/components/sider/proxy-card'
+import RuleCard from '@renderer/components/sider/rule-card'
+import SysproxySwitcher from '@renderer/components/sider/sysproxy-switcher'
+import TunSwitcher from '@renderer/components/sider/tun-switcher'
 import UpdaterButton from '@renderer/components/updater/updater-button'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
+import routes from '@renderer/routes'
+import { platform } from '@renderer/utils/init'
 import {
   listWebdavBackups,
   setNativeTheme,
@@ -37,8 +29,16 @@ import {
   webdavBackup,
   webdavDelete,
 } from '@renderer/utils/ipc'
-import { platform } from '@renderer/utils/init'
 import { TitleBarOverlayOptions } from 'electron'
+import { useTheme } from 'next-themes'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { IoCloudUploadOutline, IoSettings } from 'react-icons/io5'
+import {
+  NavigateFunction,
+  useLocation,
+  useNavigate,
+  useRoutes,
+} from 'react-router-dom'
 import MihomoIcon from './components/base/mihomo-icon'
 
 let navigate: NavigateFunction
@@ -49,6 +49,10 @@ const App: React.FC = () => {
     appTheme = 'system',
     useWindowFrame = false,
     siderWidth = 250,
+    webdavUrl,
+    webdavUsername,
+    webdavPassword,
+    webdavDir,
     siderOrder = [
       'sysproxy',
       'tun',
@@ -94,7 +98,10 @@ const App: React.FC = () => {
       }
     }
   }
-
+  const hasWebDVA = useMemo(
+    () => webdavUrl && webdavUsername && webdavPassword && webdavDir,
+    [webdavUrl, webdavUsername, webdavPassword, webdavDir],
+  )
   useEffect(() => {
     setOrder(siderOrder)
     setSiderWidthValue(siderWidth)
@@ -230,23 +237,28 @@ const App: React.FC = () => {
                 </h3>
               </div>
               <UpdaterButton />
-              <Button
-                size="sm"
-                className="app-nodrag"
-                isIconOnly
-                isLoading={backUpIng}
-                onPress={async () => {
-                  setBackUpIng(true)
-                  await webdavBackup()
-                  const list = await listWebdavBackups()
-                  if (list.length > 1) await webdavDelete(list.shift() as string)
-                  setBackUpIng(false)
-                  new window.Notification('备份成功', {
-                    body: '备份文件已上传至 WebDAV',
-                  })
-                }}>
-                <IoCloudUploadOutline className="text-[20px]" />
-              </Button>
+              {hasWebDVA && (
+                <Tooltip content="WebDAV 备份">
+                  <Button
+                    size="sm"
+                    className="app-nodrag"
+                    isIconOnly
+                    isLoading={backUpIng}
+                    onPress={async () => {
+                      setBackUpIng(true)
+                      await webdavBackup()
+                      const list = await listWebdavBackups()
+                      if (list.length > 1)
+                        await webdavDelete(list.shift() as string)
+                      setBackUpIng(false)
+                      new window.Notification('备份成功', {
+                        body: '备份文件已上传至 WebDAV',
+                      })
+                    }}>
+                    <IoCloudUploadOutline className="text-[20px]" />
+                  </Button>
+                </Tooltip>
+              )}
               <Button
                 size="sm"
                 className="app-nodrag"
