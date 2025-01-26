@@ -6,9 +6,9 @@ import {
   patchAppConfig,
   patchControledMihomoConfig,
 } from '../config'
-import { triggerSysProxy } from '../sys/sysproxy'
-import { patchMihomoConfig } from '../core/mihomoApi'
 import { quitWithoutCore, restartCore } from '../core/manager'
+import { patchMihomoConfig } from '../core/mihomoApi'
+import { triggerSysProxy } from '../sys/sysproxy'
 
 export async function registerShortcut(
   oldShortcut: string,
@@ -35,9 +35,9 @@ export async function registerShortcut(
         try {
           await triggerSysProxy(!enable)
           await patchAppConfig({ sysProxy: { enable: !enable } })
-          new Notification({
-            title: `系统代理已${!enable ? '开启' : '关闭'}`,
-          }).show()
+          // new Notification({
+          //   title: `系统代理已${!enable ? '开启' : '关闭'}`,
+          // }).show()
           mainWindow?.webContents.send('appConfigUpdated')
         } catch {
           // ignore

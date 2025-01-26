@@ -258,6 +258,7 @@ interface IAppConfig {
   autoCheckUpdate: boolean
   silentStart: boolean
   autoCloseConnection: boolean
+  /** 系统代理 */
   sysProxy: ISysProxyConfig
   maxLogDays: number
   userAgent?: string
@@ -402,6 +403,7 @@ interface IMihomoConfig {
     mmdb?: string
     asn?: string
   }
+  /** tun的开启关闭 */
   tun: IMihomoTunConfig
   dns: IMihomoDNSConfig
   sniffer: IMihomoSnifferConfig

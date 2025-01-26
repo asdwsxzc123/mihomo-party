@@ -1,22 +1,4 @@
 import {
-  changeCurrentProfile,
-  getAppConfig,
-  getControledMihomoConfig,
-  getProfileConfig,
-  patchAppConfig,
-  patchControledMihomoConfig,
-} from '../config'
-import icoIcon from '../../../resources/icon.ico?asset'
-import pngIcon from '../../../resources/icon.png?asset'
-import templateIcon from '../../../resources/iconTemplate.png?asset'
-import {
-  mihomoChangeProxy,
-  mihomoCloseAllConnections,
-  mihomoGroups,
-  patchMihomoConfig,
-} from '../core/mihomoApi'
-import { mainWindow, showMainWindow, triggerMainWindow } from '..'
-import {
   app,
   clipboard,
   ipcMain,
@@ -25,9 +7,28 @@ import {
   shell,
   Tray,
 } from 'electron'
-import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
-import { triggerSysProxy } from '../sys/sysproxy'
+import { mainWindow, showMainWindow, triggerMainWindow } from '..'
+import icoIcon from '../../../resources/icon.ico?asset'
+import pngIcon from '../../../resources/icon.png?asset'
+import templateIcon from '../../../resources/iconTemplate.png?asset'
+import subStoreIcon from '../../../resources/subStoreIcon.png?asset'
+import {
+  changeCurrentProfile,
+  getAppConfig,
+  getControledMihomoConfig,
+  getProfileConfig,
+  patchAppConfig,
+  patchControledMihomoConfig,
+} from '../config'
 import { restartCore } from '../core/manager'
+import {
+  mihomoChangeProxy,
+  mihomoCloseAllConnections,
+  mihomoGroups,
+  patchMihomoConfig,
+} from '../core/mihomoApi'
+import { triggerSysProxy } from '../sys/sysproxy'
+import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 
 export let tray: Tray | null = null
 
@@ -310,6 +311,22 @@ export async function createTray(): Promise<void> {
     })
   }
   if (process.platform === 'win32') {
+    ipcMain.on('updateTrayMenu', async () => {
+      const { sysProxy } = await getAppConfig()
+      const { tun } = await getControledMihomoConfig()
+      // 1. tun开启 绿色
+      // 2. sys开启 = 橘色
+      // 3. 都没开启 = 白色
+      if (!tun?.enable && !sysProxy.enable) {
+        tray?.setImage(icoIcon)
+      } else {
+        if (tun?.enable) {
+          tray?.setImage(subStoreIcon)
+        } else if (sysProxy.enable) {
+          tray?.setImage(templateIcon)
+        }
+      }
+    })
     tray?.addListener('click', () => {
       triggerMainWindow()
     })
