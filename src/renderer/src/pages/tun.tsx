@@ -3,7 +3,11 @@ import BasePage from '@renderer/components/base/base-page'
 import SettingCard from '@renderer/components/base/base-setting-card'
 import SettingItem from '@renderer/components/base/base-setting-item'
 import { useControledMihomoConfig } from '@renderer/hooks/use-controled-mihomo-config'
-import { manualGrantCorePermition, restartCore, setupFirewall } from '@renderer/utils/ipc'
+import {
+  manualGrantCorePermition,
+  restartCore,
+  setupFirewall,
+} from '@renderer/utils/ipc'
 import { platform } from '@renderer/utils/init'
 import React, { Key, useState } from 'react'
 import BasePasswordModal from '@renderer/components/base/base-password-modal'
@@ -11,7 +15,8 @@ import { useAppConfig } from '@renderer/hooks/use-app-config'
 import { MdDeleteForever } from 'react-icons/md'
 
 const Tun: React.FC = () => {
-  const { controledMihomoConfig, patchControledMihomoConfig } = useControledMihomoConfig()
+  const { controledMihomoConfig, patchControledMihomoConfig } =
+    useControledMihomoConfig()
   const { appConfig, patchAppConfig } = useAppConfig()
   const { autoSetDNS = true } = appConfig || {}
   const { tun } = controledMihomoConfig || {}
@@ -26,7 +31,7 @@ const Tun: React.FC = () => {
     'dns-hijack': dnsHijack = ['any:53'],
     'route-exclude-address': routeExcludeAddress = [],
     'strict-route': strictRoute = false,
-    mtu = 1500
+    mtu = 1500,
   } = tun || {}
   const [changed, setChanged] = useState(false)
   const [values, originSetValues] = useState({
@@ -38,7 +43,7 @@ const Tun: React.FC = () => {
     dnsHijack,
     strictRoute,
     routeExcludeAddress,
-    mtu
+    mtu,
   })
   const setValues = (v: typeof values): void => {
     originSetValues(v)
@@ -103,8 +108,8 @@ const Tun: React.FC = () => {
                     'dns-hijack': values.dnsHijack,
                     'strict-route': values.strictRoute,
                     'route-exclude-address': values.routeExcludeAddress,
-                    mtu: values.mtu
-                  }
+                    mtu: values.mtu,
+                  },
                 })
               }
             >
@@ -177,7 +182,9 @@ const Tun: React.FC = () => {
               size="sm"
               color="primary"
               selectedKey={values.stack}
-              onSelectionChange={(key: Key) => setValues({ ...values, stack: key as TunStack })}
+              onSelectionChange={(key: Key) =>
+                setValues({ ...values, stack: key as TunStack })
+              }
             >
               <Tab key="gvisor" title="gVisor" />
               <Tab key="mixed" title="Mixed" />

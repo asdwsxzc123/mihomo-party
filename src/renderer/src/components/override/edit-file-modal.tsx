@@ -1,4 +1,11 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { BaseEditor } from '../base/base-editor'
 import { getOverride, restartCore, setOverride } from '@renderer/utils/ipc'
@@ -12,7 +19,9 @@ const EditFileModal: React.FC<Props> = (props) => {
   const [currData, setCurrData] = useState('')
 
   const getContent = async (): Promise<void> => {
-    setCurrData(await getOverride(id, language === 'javascript' ? 'js' : 'yaml'))
+    setCurrData(
+      await getOverride(id, language === 'javascript' ? 'js' : 'yaml'),
+    )
   }
 
   useEffect(() => {
@@ -49,7 +58,11 @@ const EditFileModal: React.FC<Props> = (props) => {
             color="primary"
             onPress={async () => {
               try {
-                await setOverride(id, language === 'javascript' ? 'js' : 'yaml', currData)
+                await setOverride(
+                  id,
+                  language === 'javascript' ? 'js' : 'yaml',
+                  currData,
+                )
                 await restartCore()
                 onClose()
               } catch (e) {

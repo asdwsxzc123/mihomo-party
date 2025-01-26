@@ -36,21 +36,19 @@ const keyMap = {
   ScrollLock: 'Scrolllock',
   Pause: 'Pause',
   Insert: 'Insert',
-  Suspend: 'Suspend'
+  Suspend: 'Suspend',
 }
 
 const ShortcutConfig: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const {
     showWindowShortcut = '',
-    showFloatingWindowShortcut = '',
     triggerSysProxyShortcut = '',
     triggerTunShortcut = '',
     ruleModeShortcut = '',
     globalModeShortcut = '',
     directModeShortcut = '',
-    quitWithoutCoreShortcut = '',
-    restartAppShortcut = ''
+    restartAppShortcut = '',
   } = appConfig || {}
 
   return (
@@ -61,15 +59,6 @@ const ShortcutConfig: React.FC = () => {
             value={showWindowShortcut}
             patchAppConfig={patchAppConfig}
             action="showWindowShortcut"
-          />
-        </div>
-      </SettingItem>
-      <SettingItem title="打开/关闭悬浮窗" divider>
-        <div className="flex justify-end w-[60%]">
-          <ShortcutInput
-            value={showFloatingWindowShortcut}
-            patchAppConfig={patchAppConfig}
-            action="showFloatingWindowShortcut"
           />
         </div>
       </SettingItem>
@@ -118,15 +107,6 @@ const ShortcutConfig: React.FC = () => {
           />
         </div>
       </SettingItem>
-      <SettingItem title="轻量模式" divider>
-        <div className="flex justify-end w-[60%]">
-          <ShortcutInput
-            value={quitWithoutCoreShortcut}
-            patchAppConfig={patchAppConfig}
-            action="quitWithoutCoreShortcut"
-          />
-        </div>
-      </SettingItem>
       <SettingItem title="重启应用">
         <div className="flex justify-end w-[60%]">
           <ShortcutInput
@@ -150,7 +130,10 @@ const ShortcutInput: React.FC<{
 
   const parseShortcut = (
     event: KeyboardEvent,
-    setKey: { (value: React.SetStateAction<string>): void; (arg0: string): void }
+    setKey: {
+      (value: React.SetStateAction<string>): void
+      (arg0: string): void
+    },
   ): void => {
     event.preventDefault()
     let code = event.code
@@ -194,7 +177,9 @@ const ShortcutInput: React.FC<{
       } else {
         code = ''
       }
-      setKey(`${newValue}${newValue.length > 0 && code.length > 0 ? '+' : ''}${code}`)
+      setKey(
+        `${newValue}${newValue.length > 0 && code.length > 0 ? '+' : ''}${code}`,
+      )
     }
   }
   return (

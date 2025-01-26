@@ -4,17 +4,16 @@ import {
   getAppConfig,
   getControledMihomoConfig,
   patchAppConfig,
-  patchControledMihomoConfig
+  patchControledMihomoConfig,
 } from '../config'
 import { triggerSysProxy } from '../sys/sysproxy'
 import { patchMihomoConfig } from '../core/mihomoApi'
 import { quitWithoutCore, restartCore } from '../core/manager'
-import { floatingWindow, triggerFloatingWindow } from './floatingWindow'
 
 export async function registerShortcut(
   oldShortcut: string,
   newShortcut: string,
-  action: string
+  action: string,
 ): Promise<boolean> {
   if (oldShortcut !== '') {
     globalShortcut.unregister(oldShortcut)
@@ -28,24 +27,18 @@ export async function registerShortcut(
         triggerMainWindow()
       })
     }
-    case 'showFloatingWindowShortcut': {
-      return globalShortcut.register(newShortcut, async () => {
-        await triggerFloatingWindow()
-      })
-    }
     case 'triggerSysProxyShortcut': {
       return globalShortcut.register(newShortcut, async () => {
         const {
-          sysProxy: { enable }
+          sysProxy: { enable },
         } = await getAppConfig()
         try {
           await triggerSysProxy(!enable)
           await patchAppConfig({ sysProxy: { enable: !enable } })
           new Notification({
-            title: `系统代理已${!enable ? '开启' : '关闭'}`
+            title: `系统代理已${!enable ? '开启' : '关闭'}`,
           }).show()
           mainWindow?.webContents.send('appConfigUpdated')
-          floatingWindow?.webContents.send('appConfigUpdated')
         } catch {
           // ignore
         } finally {
@@ -59,16 +52,18 @@ export async function registerShortcut(
         const enable = tun?.enable ?? false
         try {
           if (!enable) {
-            await patchControledMihomoConfig({ tun: { enable: !enable }, dns: { enable: true } })
+            await patchControledMihomoConfig({
+              tun: { enable: !enable },
+              dns: { enable: true },
+            })
           } else {
             await patchControledMihomoConfig({ tun: { enable: !enable } })
           }
           await restartCore()
           new Notification({
-            title: `虚拟网卡已${!enable ? '开启' : '关闭'}`
+            title: `虚拟网卡已${!enable ? '开启' : '关闭'}`,
           }).show()
           mainWindow?.webContents.send('controledMihomoConfigUpdated')
-          floatingWindow?.webContents.send('appConfigUpdated')
         } catch {
           // ignore
         } finally {
@@ -81,7 +76,7 @@ export async function registerShortcut(
         await patchControledMihomoConfig({ mode: 'rule' })
         await patchMihomoConfig({ mode: 'rule' })
         new Notification({
-          title: '已切换至规则模式'
+          title: '已切换至规则模式',
         }).show()
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         ipcMain.emit('updateTrayMenu')
@@ -92,7 +87,7 @@ export async function registerShortcut(
         await patchControledMihomoConfig({ mode: 'global' })
         await patchMihomoConfig({ mode: 'global' })
         new Notification({
-          title: '已切换至全局模式'
+          title: '已切换至全局模式',
         }).show()
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         ipcMain.emit('updateTrayMenu')
@@ -103,7 +98,7 @@ export async function registerShortcut(
         await patchControledMihomoConfig({ mode: 'direct' })
         await patchMihomoConfig({ mode: 'direct' })
         new Notification({
-          title: '已切换至直连模式'
+          title: '已切换至直连模式',
         }).show()
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         ipcMain.emit('updateTrayMenu')
@@ -126,7 +121,6 @@ export async function registerShortcut(
 
 export async function initShortcut(): Promise<void> {
   const {
-    showFloatingWindowShortcut,
     showWindowShortcut,
     triggerSysProxyShortcut,
     triggerTunShortcut,
@@ -134,7 +128,7 @@ export async function initShortcut(): Promise<void> {
     globalModeShortcut,
     directModeShortcut,
     quitWithoutCoreShortcut,
-    restartAppShortcut
+    restartAppShortcut,
   } = await getAppConfig()
   if (showWindowShortcut) {
     try {
@@ -143,16 +137,13 @@ export async function initShortcut(): Promise<void> {
       // ignore
     }
   }
-  if (showFloatingWindowShortcut) {
-    try {
-      await registerShortcut('', showFloatingWindowShortcut, 'showFloatingWindowShortcut')
-    } catch {
-      // ignore
-    }
-  }
   if (triggerSysProxyShortcut) {
     try {
-      await registerShortcut('', triggerSysProxyShortcut, 'triggerSysProxyShortcut')
+      await registerShortcut(
+        '',
+        triggerSysProxyShortcut,
+        'triggerSysProxyShortcut',
+      )
     } catch {
       // ignore
     }
@@ -187,7 +178,11 @@ export async function initShortcut(): Promise<void> {
   }
   if (quitWithoutCoreShortcut) {
     try {
-      await registerShortcut('', quitWithoutCoreShortcut, 'quitWithoutCoreShortcut')
+      await registerShortcut(
+        '',
+        quitWithoutCoreShortcut,
+        'quitWithoutCoreShortcut',
+      )
     } catch {
       // ignore
     }

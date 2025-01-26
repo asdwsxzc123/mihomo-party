@@ -35,49 +35,49 @@ const monacoInitialization = (): void => {
             '\\+rules': {
               type: 'array',
               $ref: '#/definitions/rules',
-              description: '“+”开头表示将内容插入到原数组前面'
+              description: '“+”开头表示将内容插入到原数组前面',
             },
             'rules\\+': {
               type: 'array',
               $ref: '#/definitions/rules',
-              description: '“+”结尾表示将内容追加到原数组后面'
+              description: '“+”结尾表示将内容追加到原数组后面',
             },
             '\\+proxies': {
               type: 'array',
               $ref: '#/definitions/proxies',
-              description: '“+”开头表示将内容插入到原数组前面'
+              description: '“+”开头表示将内容插入到原数组前面',
             },
             'proxies\\+': {
               type: 'array',
               $ref: '#/definitions/proxies',
-              description: '“+”结尾表示将内容追加到原数组后面'
+              description: '“+”结尾表示将内容追加到原数组后面',
             },
             '\\+proxy-groups': {
               type: 'array',
               $ref: '#/definitions/proxy-groups',
-              description: '“+”开头表示将内容插入到原数组前面'
+              description: '“+”开头表示将内容插入到原数组前面',
             },
             'proxy-groups\\+': {
               type: 'array',
               $ref: '#/definitions/proxy-groups',
-              description: '“+”结尾表示将内容追加到原数组后面'
+              description: '“+”结尾表示将内容追加到原数组后面',
             },
             '^\\+': {
               type: 'array',
-              description: '“+”开头表示将内容插入到原数组前面'
+              description: '“+”开头表示将内容插入到原数组前面',
             },
             '\\+$': {
               type: 'array',
-              description: '“+”结尾表示将内容追加到原数组后面'
+              description: '“+”结尾表示将内容追加到原数组后面',
             },
             '!$': {
               type: 'object',
-              description: '“!”结尾表示强制覆盖该项而不进行递归合并'
-            }
-          }
-        }
-      }
-    ]
+              description: '“!”结尾表示强制覆盖该项而不进行递归合并',
+            },
+          },
+        },
+      },
+    ],
   })
   // configure PAC definition
   monaco.languages.typescript.javascriptDefaults.addExtraLib(pac, 'pac.d.ts')
@@ -95,10 +95,14 @@ export const BaseEditor: React.FC<Props> = (props) => {
     monacoInitialization()
   }
 
-  const editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor): void => {
+  const editorDidMount = (
+    editor: monaco.editor.IStandaloneCodeEditor,
+  ): void => {
     editorRef.current = editor
 
-    const uri = monaco.Uri.parse(`${nanoid()}.${language === 'yaml' ? 'clash' : ''}.${language}`)
+    const uri = monaco.Uri.parse(
+      `${nanoid()}.${language === 'yaml' ? 'clash' : ''}.${language}`,
+    )
     const model = monaco.editor.createModel(value, language, uri)
     editorRef.current?.setModel(model)
   }
@@ -125,7 +129,7 @@ export const BaseEditor: React.FC<Props> = (props) => {
       options={{
         tabSize: ['yaml', 'javascript', 'json'].includes(language) ? 2 : 4, // 根据语言类型设置缩进大小
         minimap: {
-          enabled: document.documentElement.clientWidth >= 1500 // 超过一定宽度显示 minimap 滚动条
+          enabled: document.documentElement.clientWidth >= 1500, // 超过一定宽度显示 minimap 滚动条
         },
         mouseWheelZoom: true, // 按住 Ctrl 滚轮调节缩放比例
         readOnly: readOnly, // 只读模式
@@ -133,11 +137,11 @@ export const BaseEditor: React.FC<Props> = (props) => {
         quickSuggestions: {
           strings: true, // 字符串类型的建议
           comments: true, // 注释类型的建议
-          other: true // 其他类型的建议
+          other: true, // 其他类型的建议
         },
         fontFamily: `Fira Code, JetBrains Mono, Roboto Mono, "Source Code Pro", Consolas, Menlo, Monaco, monospace, "Courier New", "Apple Color Emoji", "Noto Color Emoji"`,
         fontLigatures: true, // 连字符
-        smoothScrolling: true // 平滑滚动
+        smoothScrolling: true, // 平滑滚动
       }}
       editorWillMount={editorWillMount}
       editorDidMount={editorDidMount}

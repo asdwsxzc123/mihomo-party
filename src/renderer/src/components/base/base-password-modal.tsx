@@ -5,7 +5,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Input
+  Input,
 } from '@nextui-org/react'
 import React, { useState } from 'react'
 
@@ -19,11 +19,21 @@ const BasePasswordModal: React.FC<Props> = (props) => {
   const [password, setPassword] = useState('')
 
   return (
-    <Modal backdrop="blur" classNames={{ backdrop: 'top-[48px]' }} hideCloseButton isOpen={true}>
+    <Modal
+      backdrop="blur"
+      classNames={{ backdrop: 'top-[48px]' }}
+      hideCloseButton
+      isOpen={true}
+    >
       <ModalContent>
         <ModalHeader className="flex app-drag">请输入root密码</ModalHeader>
         <ModalBody>
-          <Input fullWidth type="password" value={password} onValueChange={setPassword} />
+          <Input
+            fullWidth
+            type="password"
+            value={password}
+            onValueChange={setPassword}
+          />
         </ModalBody>
         <ModalFooter>
           <Button size="sm" variant="light" onPress={onCancel}>

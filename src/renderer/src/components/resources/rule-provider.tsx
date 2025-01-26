@@ -1,7 +1,7 @@
 import {
   mihomoRuleProviders,
   mihomoUpdateRuleProviders,
-  getRuntimeConfig
+  getRuntimeConfig,
 } from '@renderer/utils/ipc'
 import { getHash } from '@renderer/utils/hash'
 import Viewer from './viewer'
@@ -21,19 +21,19 @@ const RuleProvider: React.FC = () => {
     path: '',
     type: '',
     title: '',
-    format: ''
+    format: '',
   })
   useEffect(() => {
     if (showDetails.title) {
       const fetchProviderPath = async (name: string): Promise<void> => {
         try {
-          const providers= await getRuntimeConfig()
+          const providers = await getRuntimeConfig()
           const provider = providers['rule-providers'][name]
           if (provider) {
             setShowDetails((prev) => ({
               ...prev,
               show: true,
-              path: provider?.path || `rules/${getHash(provider?.url)}`
+              path: provider?.path || `rules/${getHash(provider?.url)}`,
             }))
           }
         } catch {
@@ -89,7 +89,15 @@ const RuleProvider: React.FC = () => {
           type={showDetails.type}
           title={showDetails.title}
           format={showDetails.format}
-          onClose={() => setShowDetails({ show: false, path: '', type: '', title: '', format: '' })}
+          onClose={() =>
+            setShowDetails({
+              show: false,
+              path: '',
+              type: '',
+              title: '',
+              format: '',
+            })
+          }
         />
       )}
       <SettingItem title="规则集合" divider>
@@ -129,7 +137,7 @@ const RuleProvider: React.FC = () => {
                       path: provider.name,
                       type: provider.vehicleType,
                       title: provider.name,
-                      format: provider.format
+                      format: provider.format,
                     })
                   }}
                 >
@@ -149,7 +157,9 @@ const RuleProvider: React.FC = () => {
                   onUpdate(provider.name, index)
                 }}
               >
-                <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
+                <IoMdRefresh
+                  className={`text-lg ${updating[index] ? 'animate-spin' : ''}`}
+                />
               </Button>
             </div>
           </SettingItem>

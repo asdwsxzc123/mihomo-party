@@ -2,7 +2,13 @@ import axios from 'axios'
 import yaml from 'yaml'
 import { app, shell } from 'electron'
 import { getControledMihomoConfig } from '../config'
-import { dataDir, exeDir, exePath, isPortable, resourcesFilesDir } from '../utils/dirs'
+import {
+  dataDir,
+  exeDir,
+  exePath,
+  isPortable,
+  resourcesFilesDir,
+} from '../utils/dirs'
 import { copyFile, rm, writeFile } from 'fs/promises'
 import path from 'path'
 import { existsSync } from 'fs'
@@ -19,10 +25,10 @@ export async function checkUpdate(): Promise<IAppVersion | undefined> {
       proxy: {
         protocol: 'http',
         host: '127.0.0.1',
-        port: mixedPort
+        port: mixedPort,
       },
-      responseType: 'text'
-    }
+      responseType: 'text',
+    },
   )
   const latest = yaml.parse(res.data, { merge: true }) as IAppVersion
   const currentVersion = app.getVersion()
@@ -41,7 +47,7 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     'win32-ia32': `mihomo-party-windows-${version}-ia32-setup.exe`,
     'win32-arm64': `mihomo-party-windows-${version}-arm64-setup.exe`,
     'darwin-x64': `mihomo-party-macos-${version}-x64.pkg`,
-    'darwin-arm64': `mihomo-party-macos-${version}-arm64.pkg`
+    'darwin-arm64': `mihomo-party-macos-${version}-arm64.pkg`,
   }
   let file = fileMap[`${process.platform}-${process.arch}`]
   if (isPortable()) {
@@ -54,7 +60,9 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
     file = file.replace('windows', 'win7')
   }
   if (process.platform === 'darwin') {
-    const productVersion = execSync('sw_vers -productVersion', { encoding: 'utf8' })
+    const productVersion = execSync('sw_vers -productVersion', {
+      encoding: 'utf8',
+    })
       .toString()
       .trim()
     if (parseInt(productVersion) < 11) {
@@ -68,32 +76,35 @@ export async function downloadAndInstallUpdate(version: string): Promise<void> {
         proxy: {
           protocol: 'http',
           host: '127.0.0.1',
-          port: mixedPort
+          port: mixedPort,
         },
         headers: {
-          'Content-Type': 'application/octet-stream'
-        }
+          'Content-Type': 'application/octet-stream',
+        },
       })
       await writeFile(path.join(dataDir(), file), res.data)
     }
     if (file.endsWith('.exe')) {
       spawn(path.join(dataDir(), file), ['/S', '--force-run'], {
         detached: true,
-        stdio: 'ignore'
+        stdio: 'ignore',
       }).unref()
     }
     if (file.endsWith('.7z')) {
-      await copyFile(path.join(resourcesFilesDir(), '7za.exe'), path.join(dataDir(), '7za.exe'))
+      await copyFile(
+        path.join(resourcesFilesDir(), '7za.exe'),
+        path.join(dataDir(), '7za.exe'),
+      )
       spawn(
         'cmd',
         [
           '/C',
-          `"timeout /t 2 /nobreak >nul && "${path.join(dataDir(), '7za.exe')}" x -o"${exeDir()}" -y "${path.join(dataDir(), file)}" & start "" "${exePath()}""`
+          `"timeout /t 2 /nobreak >nul && "${path.join(dataDir(), '7za.exe')}" x -o"${exeDir()}" -y "${path.join(dataDir(), file)}" & start "" "${exePath()}""`,
         ],
         {
           shell: true,
-          detached: true
-        }
+          detached: true,
+        },
       ).unref()
       app.quit()
     }

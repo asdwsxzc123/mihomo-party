@@ -12,7 +12,14 @@ import { MdDeleteForever } from 'react-icons/md'
 
 const defaultBypass: string[] =
   platform === 'linux'
-    ? ['localhost', '127.0.0.1', '192.168.0.0/16', '10.0.0.0/8', '172.16.0.0/12', '::1']
+    ? [
+        'localhost',
+        '127.0.0.1',
+        '192.168.0.0/16',
+        '10.0.0.0/8',
+        '172.16.0.0/12',
+        '::1',
+      ]
     : platform === 'darwin'
       ? [
           '127.0.0.1',
@@ -22,7 +29,7 @@ const defaultBypass: string[] =
           'localhost',
           '*.local',
           '*.crashlytics.com',
-          '<local>'
+          '<local>',
         ]
       : [
           'localhost',
@@ -45,7 +52,7 @@ const defaultBypass: string[] =
           '172.29.*',
           '172.30.*',
           '172.31.*',
-          '<local>'
+          '<local>',
         ]
 
 const defaultPacScript = `
@@ -56,14 +63,15 @@ function FindProxyForURL(url, host) {
 
 const Sysproxy: React.FC = () => {
   const { appConfig, patchAppConfig } = useAppConfig()
-  const { sysProxy } = appConfig || ({ sysProxy: { enable: false } } as IAppConfig)
+  const { sysProxy } =
+    appConfig || ({ sysProxy: { enable: false } } as IAppConfig)
   const [changed, setChanged] = useState(false)
   const [values, originSetValues] = useState({
     enable: sysProxy.enable,
     host: sysProxy.host ?? '',
     bypass: sysProxy.bypass ?? defaultBypass,
     mode: sysProxy.mode ?? 'manual',
-    pacScript: sysProxy.pacScript ?? defaultPacScript
+    pacScript: sysProxy.pacScript ?? defaultPacScript,
   })
 
   const setValues = (v: typeof values): void => {
@@ -107,7 +115,12 @@ const Sysproxy: React.FC = () => {
       title="系统代理设置"
       header={
         changed && (
-          <Button color="primary" className="app-nodrag" size="sm" onPress={onSave}>
+          <Button
+            color="primary"
+            className="app-nodrag"
+            size="sm"
+            onPress={onSave}
+          >
             保存
           </Button>
         )
@@ -140,7 +153,9 @@ const Sysproxy: React.FC = () => {
             size="sm"
             color="primary"
             selectedKey={values.mode}
-            onSelectionChange={(key: Key) => setValues({ ...values, mode: key as SysProxyMode })}
+            onSelectionChange={(key: Key) =>
+              setValues({ ...values, mode: key as SysProxyMode })
+            }
           >
             <Tab key="manual" title="手动" />
             <Tab key="auto" title="PAC" />
@@ -161,7 +176,11 @@ const Sysproxy: React.FC = () => {
 
         {values.mode === 'auto' && (
           <SettingItem title="代理模式">
-            <Button size="sm" onPress={() => setOpenPacEditor(true)} variant="bordered">
+            <Button
+              size="sm"
+              onPress={() => setOpenPacEditor(true)}
+              variant="bordered"
+            >
               编辑 PAC 脚本
             </Button>
           </SettingItem>
@@ -172,7 +191,10 @@ const Sysproxy: React.FC = () => {
               <Button
                 size="sm"
                 onPress={() => {
-                  setValues({ ...values, bypass: defaultBypass.concat(values.bypass) })
+                  setValues({
+                    ...values,
+                    bypass: defaultBypass.concat(values.bypass),
+                  })
                 }}
               >
                 添加默认代理绕过

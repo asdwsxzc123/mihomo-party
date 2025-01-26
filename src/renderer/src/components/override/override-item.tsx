@@ -6,7 +6,7 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
-  DropdownTrigger
+  DropdownTrigger,
 } from '@nextui-org/react'
 import { IoMdMore, IoMdRefresh } from 'react-icons/io'
 import dayjs from 'dayjs'
@@ -35,8 +35,13 @@ interface MenuItem {
 }
 
 const OverrideItem: React.FC<Props> = (props) => {
-  const { info, addOverrideItem, removeOverrideItem, mutateOverrideConfig, updateOverrideItem } =
-    props
+  const {
+    info,
+    addOverrideItem,
+    removeOverrideItem,
+    mutateOverrideConfig,
+    updateOverrideItem,
+  } = props
   const [updating, setUpdating] = useState(false)
   const [openInfoEditor, setOpenInfoEditor] = useState(false)
   const [openFileEditor, setOpenFileEditor] = useState(false)
@@ -47,9 +52,9 @@ const OverrideItem: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: info.id
+    id: info.id,
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const [disableOpen, setDisableOpen] = useState(false)
@@ -60,36 +65,36 @@ const OverrideItem: React.FC<Props> = (props) => {
         label: '编辑信息',
         showDivider: false,
         color: 'default',
-        className: ''
+        className: '',
       } as MenuItem,
       {
         key: 'edit-file',
         label: '编辑文件',
         showDivider: false,
         color: 'default',
-        className: ''
+        className: '',
       } as MenuItem,
       {
         key: 'open-file',
         label: '打开文件',
         showDivider: false,
         color: 'default',
-        className: ''
+        className: '',
       } as MenuItem,
       {
         key: 'exec-log',
         label: '执行日志',
         showDivider: true,
         color: 'default',
-        className: ''
+        className: '',
       } as MenuItem,
       {
         key: 'delete',
         label: '删除',
         showDivider: false,
         color: 'danger',
-        className: 'text-danger'
-      } as MenuItem
+        className: 'text-danger',
+      } as MenuItem,
     ]
     if (info.ext === 'yaml') {
       list.splice(3, 1)
@@ -141,7 +146,7 @@ const OverrideItem: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
     >
       {openFileEditor && (
@@ -158,7 +163,9 @@ const OverrideItem: React.FC<Props> = (props) => {
           updateOverrideItem={updateOverrideItem}
         />
       )}
-      {openLog && <ExecLogModal id={info.id} onClose={() => setOpenLog(false)} />}
+      {openLog && (
+        <ExecLogModal id={info.id} onClose={() => setOpenLog(false)} />
+      )}
       <Card
         fullWidth
         isPressable
@@ -167,7 +174,12 @@ const OverrideItem: React.FC<Props> = (props) => {
           setOpenFileEditor(true)
         }}
       >
-        <div ref={setNodeRef} {...attributes} {...listeners} className="h-full w-full">
+        <div
+          ref={setNodeRef}
+          {...attributes}
+          {...listeners}
+          className="h-full w-full"
+        >
           <CardBody>
             <div className="flex justify-between h-[32px]">
               <h3
@@ -205,7 +217,12 @@ const OverrideItem: React.FC<Props> = (props) => {
 
                 <Dropdown>
                   <DropdownTrigger>
-                    <Button isIconOnly size="sm" variant="light" color="default">
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="light"
+                      color="default"
+                    >
                       <IoMdMore color="default" className={`text-[24px]`} />
                     </Button>
                   </DropdownTrigger>
@@ -227,7 +244,12 @@ const OverrideItem: React.FC<Props> = (props) => {
             <div className="flex justify-between">
               <div className={`mt-2 flex justify-start`}>
                 {info.global && (
-                  <Chip size="sm" variant="dot" color="primary" className="mr-2">
+                  <Chip
+                    size="sm"
+                    variant="dot"
+                    color="primary"
+                    className="mr-2"
+                  >
                     全局
                   </Chip>
                 )}

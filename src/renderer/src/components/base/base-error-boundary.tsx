@@ -13,7 +13,11 @@ const ErrorFallback = ({ error }: FallbackProps): JSX.Element => {
         size="sm"
         color="primary"
         variant="flat"
-        onPress={() => open('https://github.com/mihomo-party-org/mihomo-party/issues/new/choose')}
+        onPress={() =>
+          open(
+            'https://github.com/mihomo-party-org/mihomo-party/issues/new/choose',
+          )
+        }
       >
         GitHub
       </Button>
@@ -32,7 +36,9 @@ const ErrorFallback = ({ error }: FallbackProps): JSX.Element => {
         variant="flat"
         className="ml-2"
         onPress={() =>
-          navigator.clipboard.writeText('```\n' + error.message + '\n' + error.stack + '\n```')
+          navigator.clipboard.writeText(
+            '```\n' + error.message + '\n' + error.stack + '\n```',
+          )
         }
       >
         复制报错信息
@@ -53,7 +59,11 @@ interface Props {
 }
 
 const BaseErrorBoundary = (props: Props): JSX.Element => {
-  return <ErrorBoundary FallbackComponent={ErrorFallback}>{props.children}</ErrorBoundary>
+  return (
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      {props.children}
+    </ErrorBoundary>
+  )
 }
 
 export default BaseErrorBoundary

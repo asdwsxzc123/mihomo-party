@@ -9,11 +9,17 @@ interface RulesContextType {
 
 const RulesContext = createContext<RulesContextType | undefined>(undefined)
 
-export const RulesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: rules, mutate } = useSWR<IMihomoRulesInfo>('mihomoRules', mihomoRules, {
-    errorRetryInterval: 200,
-    errorRetryCount: 10
-  })
+export const RulesProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const { data: rules, mutate } = useSWR<IMihomoRulesInfo>(
+    'mihomoRules',
+    mihomoRules,
+    {
+      errorRetryInterval: 200,
+      errorRetryCount: 10,
+    },
+  )
 
   React.useEffect(() => {
     window.electron.ipcRenderer.on('rulesUpdated', () => {
@@ -24,7 +30,11 @@ export const RulesProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, [])
 
-  return <RulesContext.Provider value={{ rules, mutate }}>{children}</RulesContext.Provider>
+  return (
+    <RulesContext.Provider value={{ rules, mutate }}>
+      {children}
+    </RulesContext.Provider>
+  )
 }
 
 export const useRules = (): RulesContextType => {

@@ -1,7 +1,7 @@
 import {
   mihomoProxyProviders,
   mihomoUpdateProxyProviders,
-  getRuntimeConfig
+  getRuntimeConfig,
 } from '@renderer/utils/ipc'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import Viewer from './viewer'
@@ -21,19 +21,19 @@ const ProxyProvider: React.FC = () => {
     show: false,
     path: '',
     type: '',
-    title: ''
+    title: '',
   })
   useEffect(() => {
     if (showDetails.title) {
       const fetchProviderPath = async (name: string): Promise<void> => {
         try {
-          const providers= await getRuntimeConfig()
+          const providers = await getRuntimeConfig()
           const provider = providers['proxy-providers'][name]
           if (provider) {
             setShowDetails((prev) => ({
               ...prev,
               show: true,
-              path: provider?.path || `proxies/${getHash(provider?.url)}`
+              path: provider?.path || `proxies/${getHash(provider?.url)}`,
             }))
           }
         } catch {
@@ -48,7 +48,7 @@ const ProxyProvider: React.FC = () => {
   const providers = useMemo(() => {
     if (!data) return []
     return Object.values(data.providers)
-      .filter(provider => 'subscriptionInfo' in provider)
+      .filter((provider) => 'subscriptionInfo' in provider)
       .sort((a, b) => {
         if (a.vehicleType === 'File' && b.vehicleType !== 'File') {
           return -1
@@ -90,7 +90,9 @@ const ProxyProvider: React.FC = () => {
           path={showDetails.path}
           type={showDetails.type}
           title={showDetails.title}
-          onClose={() => setShowDetails({ show: false, path: '', type: '', title: '' })}
+          onClose={() =>
+            setShowDetails({ show: false, path: '', type: '', title: '' })
+          }
         />
       )}
       <SettingItem title="代理集合" divider>
@@ -115,7 +117,9 @@ const ProxyProvider: React.FC = () => {
                 {provider.proxies?.length || 0}
               </Chip>
             }
-            divider={!provider.subscriptionInfo && index !== providers.length - 1}
+            divider={
+              !provider.subscriptionInfo && index !== providers.length - 1
+            }
           >
             <div className="flex h-[32px] leading-[32px] text-foreground-500">
               <div>{dayjs(provider.updatedAt).fromNow()}</div>
@@ -132,7 +136,7 @@ const ProxyProvider: React.FC = () => {
                     show: false,
                     path: provider.name,
                     type: provider.vehicleType,
-                    title: provider.name
+                    title: provider.name,
                   })
                 }}
               >
@@ -151,7 +155,9 @@ const ProxyProvider: React.FC = () => {
                   onUpdate(provider.name, index)
                 }}
               >
-                <IoMdRefresh className={`text-lg ${updating[index] ? 'animate-spin' : ''}`} />
+                <IoMdRefresh
+                  className={`text-lg ${updating[index] ? 'animate-spin' : ''}`}
+                />
               </Button>
             </div>
           </SettingItem>
@@ -161,14 +167,17 @@ const ProxyProvider: React.FC = () => {
               title={
                 <div className="text-foreground-500">
                   {`${calcTraffic(
-                    provider.subscriptionInfo.Upload + provider.subscriptionInfo.Download
+                    provider.subscriptionInfo.Upload +
+                      provider.subscriptionInfo.Download,
                   )} / ${calcTraffic(provider.subscriptionInfo.Total)}`}
                 </div>
               }
             >
               <div className="h-[32px] leading-[32px] text-foreground-500">
                 {provider.subscriptionInfo.Expire
-                  ? dayjs.unix(provider.subscriptionInfo.Expire).format('YYYY-MM-DD')
+                  ? dayjs
+                      .unix(provider.subscriptionInfo.Expire)
+                      .format('YYYY-MM-DD')
                   : '长期有效'}
               </div>
             </SettingItem>

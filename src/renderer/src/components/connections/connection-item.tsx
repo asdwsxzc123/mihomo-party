@@ -8,20 +8,30 @@ interface Props {
   index: number
   info: IMihomoConnectionDetail
   selected: IMihomoConnectionDetail | undefined
-  setSelected: React.Dispatch<React.SetStateAction<IMihomoConnectionDetail | undefined>>
+  setSelected: React.Dispatch<
+    React.SetStateAction<IMihomoConnectionDetail | undefined>
+  >
   setIsDetailModalOpen: React.Dispatch<React.SetStateAction<boolean>>
   close: (id: string) => void
+  onFilterClick?: (searchKey: string) => void
 }
 
 const ConnectionItem: React.FC<Props> = (props) => {
-  const { index, info, close, selected, setSelected, setIsDetailModalOpen } = props
+  const {
+    index,
+    info,
+    close,
+    selected,
+    setSelected,
+    setIsDetailModalOpen,
+    onFilterClick,
+  } = props
 
   useEffect(() => {
     if (selected?.id === info.id) {
       setSelected(info)
     }
   }, [info])
-
   return (
     <div className={`px-2 pb-2 ${index === 0 ? 'pt-2' : ''}`}>
       <Card
@@ -30,8 +40,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
         onPress={() => {
           setSelected(info)
           setIsDetailModalOpen(true)
-        }}
-      >
+        }}>
         <div className="w-full flex justify-between">
           <div className="w-[calc(100%-48px)]">
             <CardHeader className="pb-0 gap-1">
@@ -39,8 +48,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
                 color={`${info.isActive ? 'primary' : 'danger'}`}
                 size="sm"
                 radius="sm"
-                variant="dot"
-              >
+                variant="dot">
                 {info.metadata.type}({info.metadata.network.toUpperCase()})
               </Chip>
               <div className="text-ellipsis whitespace-nowrap overflow-hidden">
@@ -59,14 +67,23 @@ const ConnectionItem: React.FC<Props> = (props) => {
               onWheel={(e) => {
                 e.currentTarget.scrollLeft += e.deltaY
               }}
-              className="overscroll-contain pt-2 flex justify-start gap-1 overflow-x-auto no-scrollbar"
-            >
+              className="overscroll-contain pt-2 flex justify-start gap-1 overflow-x-auto no-scrollbar">
               <Chip
                 className="flag-emoji text-ellipsis whitespace-nowrap overflow-hidden"
                 size="sm"
                 radius="sm"
-                variant="bordered"
-              >
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onFilterClick?.(info.chains[info.chains?.length - 1])
+                }}
+                variant="bordered">
+                {info.chains[info.chains?.length - 1]}
+              </Chip>
+              <Chip
+                className="flag-emoji text-ellipsis whitespace-nowrap overflow-hidden"
+                size="sm"
+                radius="sm"
+                variant="bordered">
                 {info.chains[0]}
               </Chip>
               <Chip size="sm" radius="sm" variant="bordered">
@@ -74,7 +91,8 @@ const ConnectionItem: React.FC<Props> = (props) => {
               </Chip>
               {info.uploadSpeed !== 0 || info.downloadSpeed !== 0 ? (
                 <Chip color="primary" size="sm" radius="sm" variant="bordered">
-                  ↑ {calcTraffic(info.uploadSpeed || 0)}/s ↓ {calcTraffic(info.downloadSpeed || 0)}
+                  ↑ {calcTraffic(info.uploadSpeed || 0)}/s ↓{' '}
+                  {calcTraffic(info.downloadSpeed || 0)}
                   /s
                 </Chip>
               ) : null}
@@ -87,9 +105,12 @@ const ConnectionItem: React.FC<Props> = (props) => {
             className="mr-2 my-auto"
             onPress={() => {
               close(info.id)
-            }}
-          >
-            {info.isActive ? <CgClose className="text-lg" /> : <CgTrash className="text-lg" />}
+            }}>
+            {info.isActive ? (
+              <CgClose className="text-lg" />
+            ) : (
+              <CgTrash className="text-lg" />
+            )}
           </Button>
         </div>
       </Card>

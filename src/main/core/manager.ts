@@ -7,7 +7,7 @@ import {
   mihomoProfileWorkDir,
   mihomoTestDir,
   mihomoWorkConfigPath,
-  mihomoWorkDir
+  mihomoWorkDir,
 } from '../utils/dirs'
 import { generateProfile } from './factory'
 import {
@@ -15,7 +15,7 @@ import {
   getControledMihomoConfig,
   getProfileConfig,
   patchAppConfig,
-  patchControledMihomoConfig
+  patchControledMihomoConfig,
 } from '../config'
 import { app, dialog, ipcMain, net } from 'electron'
 import {
@@ -27,7 +27,7 @@ import {
   stopMihomoTraffic,
   stopMihomoLogs,
   stopMihomoMemory,
-  patchMihomoConfig
+  patchMihomoConfig,
 } from './mihomoApi'
 import chokidar from 'chokidar'
 import { readFile, rm, writeFile } from 'fs/promises'
@@ -39,18 +39,23 @@ import { createWriteStream, existsSync } from 'fs'
 import { uploadRuntimeConfig } from '../resolve/gistApi'
 import { startMonitor } from '../resolve/trafficMonitor'
 
-chokidar.watch(path.join(mihomoCoreDir(), 'meta-update'), {}).on('unlinkDir', async () => {
-  try {
-    await stopCore(true)
-    await startCore()
-  } catch (e) {
-    dialog.showErrorBox('内核启动出错', `${e}`)
-  }
-})
+chokidar
+  .watch(path.join(mihomoCoreDir(), 'meta-update'), {})
+  .on('unlinkDir', async () => {
+    try {
+      await stopCore(true)
+      await startCore()
+    } catch (e) {
+      dialog.showErrorBox('内核启动出错', `${e}`)
+    }
+  })
 
 export const mihomoIpcPath =
-  process.platform === 'win32' ? '\\\\.\\pipe\\MihomoParty\\mihomo' : '/tmp/mihomo-party.sock'
-const ctlParam = process.platform === 'win32' ? '-ext-ctl-pipe' : '-ext-ctl-unix'
+  process.platform === 'win32'
+    ? '\\\\.\\pipe\\MihomoParty\\mihomo'
+    : '/tmp/mihomo-party.sock'
+const ctlParam =
+  process.platform === 'win32' ? '-ext-ctl-pipe' : '-ext-ctl-unix'
 
 let setPublicDNSTimer: NodeJS.Timeout | null = null
 let recoverDNSTimer: NodeJS.Timeout | null = null
@@ -62,11 +67,13 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     core = 'mihomo',
     autoSetDNS = true,
     diffWorkDir = false,
-    mihomoCpuPriority = 'PRIORITY_NORMAL'
+    mihomoCpuPriority = 'PRIORITY_NORMAL',
   } = await getAppConfig()
   const { 'log-level': logLevel } = await getControledMihomoConfig()
   if (existsSync(path.join(dataDir(), 'core.pid'))) {
-    const pid = parseInt(await readFile(path.join(dataDir(), 'core.pid'), 'utf-8'))
+    const pid = parseInt(
+      await readFile(path.join(dataDir(), 'core.pid'), 'utf-8'),
+    )
     try {
       process.kill(pid, 'SIGINT')
     } catch {
@@ -86,7 +93,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
       await setPublicDNS()
     } catch (error) {
       await writeFile(logPath(), `[Manager]: set dns failed, ${error}`, {
-        flag: 'a'
+        flag: 'a',
       })
     }
   }
@@ -94,11 +101,16 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
   const stderr = createWriteStream(logPath(), { flags: 'a' })
   child = spawn(
     corePath,
-    ['-d', diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(), ctlParam, mihomoIpcPath],
+    [
+      '-d',
+      diffWorkDir ? mihomoProfileWorkDir(current) : mihomoWorkDir(),
+      ctlParam,
+      mihomoIpcPath,
+    ],
     {
       detached: detached,
-      stdio: detached ? 'ignore' : undefined
-    }
+      stdio: detached ? 'ignore' : undefined,
+    },
   )
   if (process.platform === 'win32' && child.pid) {
     os.setPriority(child.pid, os.constants.priority[mihomoCpuPriority])
@@ -110,9 +122,13 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
     })
   }
   child.on('close', async (code, signal) => {
-    await writeFile(logPath(), `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`, {
-      flag: 'a'
-    })
+    await writeFile(
+      logPath(),
+      `[Manager]: Core closed, code: ${code}, signal: ${signal}\n`,
+      {
+        flag: 'a',
+      },
+    )
     if (retry) {
       await writeFile(logPath(), `[Manager]: Try Restart Core\n`, { flag: 'a' })
       retry--
@@ -134,13 +150,19 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
       }
 
       if (
-        (process.platform !== 'win32' && str.includes('RESTful API unix listening at')) ||
-        (process.platform === 'win32' && str.includes('RESTful API pipe listening at'))
+        (process.platform !== 'win32' &&
+          str.includes('RESTful API unix listening at')) ||
+        (process.platform === 'win32' &&
+          str.includes('RESTful API pipe listening at'))
       ) {
         resolve([
           new Promise((resolve) => {
             child.stdout?.on('data', async (data) => {
-              if (data.toString().includes('Start initial Compatible provider default')) {
+              if (
+                data
+                  .toString()
+                  .includes('Start initial Compatible provider default')
+              ) {
                 try {
                   mainWindow?.webContents.send('groupsUpdated')
                   mainWindow?.webContents.send('rulesUpdated')
@@ -152,7 +174,7 @@ export async function startCore(detached = false): Promise<Promise<void>[]> {
                 resolve()
               }
             })
-          })
+          }),
         ])
         await startMihomoTraffic()
         await startMihomoConnections()
@@ -171,7 +193,7 @@ export async function stopCore(force = false): Promise<void> {
     }
   } catch (error) {
     await writeFile(logPath(), `[Manager]: recover dns failed, ${error}`, {
-      flag: 'a'
+      flag: 'a',
     })
   }
 
@@ -219,9 +241,11 @@ async function checkProfile(): Promise<void> {
     await execFilePromise(corePath, [
       '-t',
       '-f',
-      diffWorkDir ? mihomoWorkConfigPath(current) : mihomoWorkConfigPath('work'),
+      diffWorkDir
+        ? mihomoWorkConfigPath(current)
+        : mihomoWorkConfigPath('work'),
       '-d',
-      mihomoTestDir()
+      mihomoTestDir(),
     ])
   } catch (error) {
     if (error instanceof Error && 'stdout' in error) {
@@ -237,7 +261,9 @@ async function checkProfile(): Promise<void> {
   }
 }
 
-export async function manualGrantCorePermition(password?: string): Promise<void> {
+export async function manualGrantCorePermition(
+  password?: string,
+): Promise<void> {
   const { core = 'mihomo' } = await getAppConfig()
   const corePath = mihomoCorePath(core)
   const execPromise = promisify(exec)
@@ -247,7 +273,9 @@ export async function manualGrantCorePermition(password?: string): Promise<void>
     await execPromise(`osascript -e '${command}'`)
   }
   if (process.platform === 'linux') {
-    await execPromise(`echo "${password}" | sudo -S chown root:root "${corePath}"`)
+    await execPromise(
+      `echo "${password}" | sudo -S chown root:root "${corePath}"`,
+    )
     await execPromise(`echo "${password}" | sudo -S chmod +sx "${corePath}"`)
   }
 }
@@ -264,7 +292,9 @@ export async function getDefaultDevice(): Promise<string> {
 async function getDefaultService(): Promise<string> {
   const execPromise = promisify(exec)
   const device = await getDefaultDevice()
-  const { stdout: order } = await execPromise(`networksetup -listnetworkserviceorder`)
+  const { stdout: order } = await execPromise(
+    `networksetup -listnetworkserviceorder`,
+  )
   const block = order.split('\n\n').find((s) => s.includes(`Device: ${device}`))
   if (!block) throw new Error('Get networkservice failed')
   for (const line of block.split('\n')) {
@@ -278,7 +308,9 @@ async function getDefaultService(): Promise<string> {
 async function getOriginDNS(): Promise<void> {
   const execPromise = promisify(exec)
   const service = await getDefaultService()
-  const { stdout: dns } = await execPromise(`networksetup -getdnsservers "${service}"`)
+  const { stdout: dns } = await execPromise(
+    `networksetup -getdnsservers "${service}"`,
+  )
   if (dns.startsWith("There aren't any DNS Servers set on")) {
     await patchAppConfig({ originDNS: 'Empty' })
   } else {

@@ -4,7 +4,7 @@ import {
   getControledMihomoConfig,
   getProfileConfig,
   patchAppConfig,
-  patchControledMihomoConfig
+  patchControledMihomoConfig,
 } from '../config'
 import icoIcon from '../../../resources/icon.ico?asset'
 import pngIcon from '../../../resources/icon.png?asset'
@@ -13,14 +13,21 @@ import {
   mihomoChangeProxy,
   mihomoCloseAllConnections,
   mihomoGroups,
-  patchMihomoConfig
+  patchMihomoConfig,
 } from '../core/mihomoApi'
 import { mainWindow, showMainWindow, triggerMainWindow } from '..'
-import { app, clipboard, ipcMain, Menu, nativeImage, shell, Tray } from 'electron'
+import {
+  app,
+  clipboard,
+  ipcMain,
+  Menu,
+  nativeImage,
+  shell,
+  Tray,
+} from 'electron'
 import { dataDir, logDir, mihomoCoreDir, mihomoWorkDir } from '../utils/dirs'
 import { triggerSysProxy } from '../sys/sysproxy'
-import { quitWithoutCore, restartCore } from '../core/manager'
-import { floatingWindow, triggerFloatingWindow } from './floatingWindow'
+import { restartCore } from '../core/manager'
 
 export let tray: Tray | null = null
 
@@ -32,14 +39,12 @@ export const buildContextMenu = async (): Promise<Menu> => {
     autoCloseConnection,
     proxyInTray = true,
     triggerSysProxyShortcut = '',
-    showFloatingWindowShortcut = '',
     showWindowShortcut = '',
     triggerTunShortcut = '',
     ruleModeShortcut = '',
     globalModeShortcut = '',
     directModeShortcut = '',
-    quitWithoutCoreShortcut = '',
-    restartAppShortcut = ''
+    restartAppShortcut = '',
   } = await getAppConfig()
   let groupsMenu: Electron.MenuItemConstructorOptions[] = []
   if (proxyInTray && process.platform !== 'linux') {
@@ -51,7 +56,9 @@ export const buildContextMenu = async (): Promise<Menu> => {
           label: group.name,
           type: 'submenu',
           submenu: group.all.map((proxy) => {
-            const delay = proxy.history.length ? proxy.history[proxy.history.length - 1].delay : -1
+            const delay = proxy.history.length
+              ? proxy.history[proxy.history.length - 1].delay
+              : -1
             let displayDelay = `(${delay}ms)`
             if (delay === -1) {
               displayDelay = ''
@@ -69,9 +76,9 @@ export const buildContextMenu = async (): Promise<Menu> => {
                 if (autoCloseConnection) {
                   await mihomoCloseAllConnections()
                 }
-              }
+              },
             }
-          })
+          }),
         }
       })
       groupsMenu.unshift({ type: 'separator' })
@@ -90,16 +97,7 @@ export const buildContextMenu = async (): Promise<Menu> => {
       type: 'normal',
       click: (): void => {
         showMainWindow()
-      }
-    },
-    {
-      id: 'show-floating',
-      accelerator: showFloatingWindowShortcut,
-      label: floatingWindow?.isVisible() ? '关闭悬浮窗' : '显示悬浮窗',
-      type: 'normal',
-      click: async (): Promise<void> => {
-        await triggerFloatingWindow()
-      }
+      },
     },
     {
       id: 'rule',
@@ -113,7 +111,7 @@ export const buildContextMenu = async (): Promise<Menu> => {
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         mainWindow?.webContents.send('groupsUpdated')
         ipcMain.emit('updateTrayMenu')
-      }
+      },
     },
     {
       id: 'global',
@@ -127,7 +125,7 @@ export const buildContextMenu = async (): Promise<Menu> => {
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         mainWindow?.webContents.send('groupsUpdated')
         ipcMain.emit('updateTrayMenu')
-      }
+      },
     },
     {
       id: 'direct',
@@ -141,7 +139,7 @@ export const buildContextMenu = async (): Promise<Menu> => {
         mainWindow?.webContents.send('controledMihomoConfigUpdated')
         mainWindow?.webContents.send('groupsUpdated')
         ipcMain.emit('updateTrayMenu')
-      }
+      },
     },
     { type: 'separator' },
     {
@@ -155,13 +153,12 @@ export const buildContextMenu = async (): Promise<Menu> => {
           await triggerSysProxy(enable)
           await patchAppConfig({ sysProxy: { enable } })
           mainWindow?.webContents.send('appConfigUpdated')
-          floatingWindow?.webContents.send('appConfigUpdated')
         } catch (e) {
           // ignore
         } finally {
           ipcMain.emit('updateTrayMenu')
         }
-      }
+      },
     },
     {
       type: 'checkbox',
@@ -172,19 +169,21 @@ export const buildContextMenu = async (): Promise<Menu> => {
         const enable = item.checked
         try {
           if (enable) {
-            await patchControledMihomoConfig({ tun: { enable }, dns: { enable: true } })
+            await patchControledMihomoConfig({
+              tun: { enable },
+              dns: { enable: true },
+            })
           } else {
             await patchControledMihomoConfig({ tun: { enable } })
           }
           mainWindow?.webContents.send('controledMihomoConfigUpdated')
-          floatingWindow?.webContents.send('controledMihomoConfigUpdated')
           await restartCore()
         } catch {
           // ignore
         } finally {
           ipcMain.emit('updateTrayMenu')
         }
-      }
+      },
     },
     ...groupsMenu,
     { type: 'separator' },
@@ -201,9 +200,9 @@ export const buildContextMenu = async (): Promise<Menu> => {
             await changeCurrentProfile(item.id)
             mainWindow?.webContents.send('profileConfigUpdated')
             ipcMain.emit('updateTrayMenu')
-          }
+          },
         }
-      })
+      }),
     },
     { type: 'separator' },
     {
@@ -213,24 +212,24 @@ export const buildContextMenu = async (): Promise<Menu> => {
         {
           type: 'normal',
           label: '应用目录',
-          click: (): Promise<string> => shell.openPath(dataDir())
+          click: (): Promise<string> => shell.openPath(dataDir()),
         },
         {
           type: 'normal',
           label: '工作目录',
-          click: (): Promise<string> => shell.openPath(mihomoWorkDir())
+          click: (): Promise<string> => shell.openPath(mihomoWorkDir()),
         },
         {
           type: 'normal',
           label: '内核目录',
-          click: (): Promise<string> => shell.openPath(mihomoCoreDir())
+          click: (): Promise<string> => shell.openPath(mihomoCoreDir()),
         },
         {
           type: 'normal',
           label: '日志目录',
-          click: (): Promise<string> => shell.openPath(logDir())
-        }
-      ]
+          click: (): Promise<string> => shell.openPath(logDir()),
+        },
+      ],
     },
     envType.length > 1
       ? {
@@ -243,9 +242,9 @@ export const buildContextMenu = async (): Promise<Menu> => {
               type: 'normal',
               click: async (): Promise<void> => {
                 await copyEnv(type)
-              }
+              },
             }
-          })
+          }),
         }
       : {
           id: 'copyenv',
@@ -253,16 +252,9 @@ export const buildContextMenu = async (): Promise<Menu> => {
           type: 'normal',
           click: async (): Promise<void> => {
             await copyEnv(envType[0])
-          }
+          },
         },
     { type: 'separator' },
-    {
-      id: 'quitWithoutCore',
-      label: '轻量模式',
-      type: 'normal',
-      accelerator: quitWithoutCoreShortcut,
-      click: quitWithoutCore
-    },
     {
       id: 'restart',
       label: '重启应用',
@@ -271,15 +263,15 @@ export const buildContextMenu = async (): Promise<Menu> => {
       click: (): void => {
         app.relaunch()
         app.quit()
-      }
+      },
     },
     {
       id: 'quit',
       label: '退出应用',
       type: 'normal',
       accelerator: 'CommandOrControl+Q',
-      click: (): void => app.quit()
-    }
+      click: (): void => app.quit(),
+    },
   ] as Electron.MenuItemConstructorOptions[]
   return Menu.buildFromTemplate(contextMenu)
 }
@@ -343,26 +335,28 @@ async function updateTrayMenu(): Promise<void> {
   }
 }
 
-export async function copyEnv(type: 'bash' | 'cmd' | 'powershell'): Promise<void> {
+export async function copyEnv(
+  type: 'bash' | 'cmd' | 'powershell',
+): Promise<void> {
   const { 'mixed-port': mixedPort = 7890 } = await getControledMihomoConfig()
   const { sysProxy } = await getAppConfig()
   const { host } = sysProxy
   switch (type) {
     case 'bash': {
       clipboard.writeText(
-        `export https_proxy=http://${host || '127.0.0.1'}:${mixedPort} http_proxy=http://${host || '127.0.0.1'}:${mixedPort} all_proxy=http://${host || '127.0.0.1'}:${mixedPort}`
+        `export https_proxy=http://${host || '127.0.0.1'}:${mixedPort} http_proxy=http://${host || '127.0.0.1'}:${mixedPort} all_proxy=http://${host || '127.0.0.1'}:${mixedPort}`,
       )
       break
     }
     case 'cmd': {
       clipboard.writeText(
-        `set http_proxy=http://${host || '127.0.0.1'}:${mixedPort}\r\nset https_proxy=http://${host || '127.0.0.1'}:${mixedPort}`
+        `set http_proxy=http://${host || '127.0.0.1'}:${mixedPort}\r\nset https_proxy=http://${host || '127.0.0.1'}:${mixedPort}`,
       )
       break
     }
     case 'powershell': {
       clipboard.writeText(
-        `$env:HTTP_PROXY="http://${host || '127.0.0.1'}:${mixedPort}"; $env:HTTPS_PROXY="http://${host || '127.0.0.1'}:${mixedPort}"`
+        `$env:HTTP_PROXY="http://${host || '127.0.0.1'}:${mixedPort}"; $env:HTTPS_PROXY="http://${host || '127.0.0.1'}:${mixedPort}"`,
       )
       break
     }

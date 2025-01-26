@@ -1,4 +1,8 @@
-import { addProfileItem, getCurrentProfileItem, getProfileConfig } from '../config'
+import {
+  addProfileItem,
+  getCurrentProfileItem,
+  getProfileConfig,
+} from '../config'
 
 const intervalPool: Record<string, NodeJS.Timeout> = {}
 
@@ -15,7 +19,7 @@ export async function initProfileUpdater(): Promise<void> {
             /* ignore */
           }
         },
-        item.interval * 60 * 1000
+        item.interval * 60 * 1000,
       )
       try {
         await addProfileItem(item)
@@ -33,7 +37,7 @@ export async function initProfileUpdater(): Promise<void> {
           /* ignore */
         }
       },
-      currentItem.interval * 60 * 1000 + 10000 // +10s
+      currentItem.interval * 60 * 1000 + 10000, // +10s
     )
     try {
       await addProfileItem(currentItem)
@@ -56,7 +60,7 @@ export async function addProfileUpdater(item: IProfileItem): Promise<void> {
           /* ignore */
         }
       },
-      item.interval * 60 * 1000
+      item.interval * 60 * 1000,
     )
   }
 }

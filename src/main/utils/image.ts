@@ -8,8 +8,8 @@ export async function getImageDataURL(url: string): Promise<string> {
     proxy: {
       protocol: 'http',
       host: '127.0.0.1',
-      port
-    }
+      port,
+    },
   })
   const mimeType = res.headers['content-type']
   const dataURL = `data:${mimeType};base64,${Buffer.from(res.data).toString('base64')}`

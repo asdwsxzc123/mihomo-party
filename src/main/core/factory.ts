@@ -6,13 +6,13 @@ import {
   getOverride,
   getOverrideItem,
   getOverrideConfig,
-  getAppConfig
+  getAppConfig,
 } from '../config'
 import {
   mihomoProfileWorkDir,
   mihomoWorkConfigPath,
   mihomoWorkDir,
-  overridePath
+  overridePath,
 } from '../utils/dirs'
 import yaml from 'yaml'
 import { copyFile, mkdir, writeFile } from 'fs/promises'
@@ -27,7 +27,10 @@ let runtimeConfig: IMihomoConfig
 export async function generateProfile(): Promise<void> {
   const { current } = await getProfileConfig()
   const { diffWorkDir = false } = await getAppConfig()
-  const currentProfile = await overrideProfile(current, await getProfile(current))
+  const currentProfile = await overrideProfile(
+    current,
+    await getProfile(current),
+  )
   const controledMihomoConfig = await getControledMihomoConfig()
   const profile = deepMerge(currentProfile, controledMihomoConfig)
   // 确保可以拿到基础日志信息
@@ -42,11 +45,13 @@ export async function generateProfile(): Promise<void> {
   }
   await writeFile(
     diffWorkDir ? mihomoWorkConfigPath(current) : mihomoWorkConfigPath('work'),
-    runtimeConfigStr
+    runtimeConfigStr,
   )
 }
 
-async function prepareProfileWorkDir(current: string | undefined): Promise<void> {
+async function prepareProfileWorkDir(
+  current: string | undefined,
+): Promise<void> {
   if (!existsSync(mihomoProfileWorkDir(current))) {
     await mkdir(mihomoProfileWorkDir(current), { recursive: true })
   }
@@ -62,16 +67,18 @@ async function prepareProfileWorkDir(current: string | undefined): Promise<void>
     copy('geoip.metadb'),
     copy('geoip.dat'),
     copy('geosite.dat'),
-    copy('ASN.mmdb')
+    copy('ASN.mmdb'),
   ])
 }
 
 async function overrideProfile(
   current: string | undefined,
-  profile: IMihomoConfig
+  profile: IMihomoConfig,
 ): Promise<IMihomoConfig> {
   const { items = [] } = (await getOverrideConfig()) || {}
-  const globalOverride = items.filter((item) => item.global).map((item) => item.id)
+  const globalOverride = items
+    .filter((item) => item.global)
+    .map((item) => item.id)
   const { override = [] } = (await getProfileItem(current)) || {}
   for (const ov of new Set(globalOverride.concat(override))) {
     const item = await getOverrideItem(ov)
@@ -94,12 +101,12 @@ async function overrideProfile(
 function runOverrideScript(
   profile: IMihomoConfig,
   script: string,
-  item: IOverrideItem
+  item: IOverrideItem,
 ): IMihomoConfig {
   const log = (type: string, data: string, flag = 'a'): void => {
     writeFileSync(overridePath(item.id, 'log'), `[${type}] ${data}\n`, {
       encoding: 'utf-8',
-      flag
+      flag,
     })
   }
   try {
@@ -116,8 +123,8 @@ function runOverrideScript(
         },
         debug(data: never) {
           log('debug', JSON.stringify(data))
-        }
-      })
+        },
+      }),
     }
     vm.createContext(ctx)
     const code = `${script} main(${JSON.stringify(profile)})`

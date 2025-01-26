@@ -10,7 +10,9 @@ let child: ChildProcess
 export async function startMonitor(detached = false): Promise<void> {
   if (process.platform !== 'win32') return
   if (existsSync(path.join(dataDir(), 'monitor.pid'))) {
-    const pid = parseInt(await readFile(path.join(dataDir(), 'monitor.pid'), 'utf-8'))
+    const pid = parseInt(
+      await readFile(path.join(dataDir(), 'monitor.pid'), 'utf-8'),
+    )
     try {
       process.kill(pid, 'SIGINT')
     } catch {
@@ -22,11 +24,15 @@ export async function startMonitor(detached = false): Promise<void> {
   await stopMonitor()
   const { showTraffic = false } = await getAppConfig()
   if (!showTraffic) return
-  child = spawn(path.join(resourcesFilesDir(), 'TrafficMonitor/TrafficMonitor.exe'), [], {
-    cwd: path.join(resourcesFilesDir(), 'TrafficMonitor'),
-    detached: detached,
-    stdio: detached ? 'ignore' : undefined
-  })
+  child = spawn(
+    path.join(resourcesFilesDir(), 'TrafficMonitor/TrafficMonitor.exe'),
+    [],
+    {
+      cwd: path.join(resourcesFilesDir(), 'TrafficMonitor'),
+      detached: detached,
+      stdio: detached ? 'ignore' : undefined,
+    },
+  )
   if (detached) {
     if (child && child.pid) {
       await writeFile(path.join(dataDir(), 'monitor.pid'), child.pid.toString())

@@ -1,7 +1,15 @@
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcMainHandlers } from './utils/ipc'
 import windowStateKeeper from 'electron-window-state'
-import { app, shell, BrowserWindow, Menu, dialog, Notification, powerMonitor } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  Menu,
+  dialog,
+  Notification,
+  powerMonitor,
+} from 'electron'
 import { addProfileItem, getAppConfig } from './config'
 import { quitWithoutCore, startCore, stopCore } from './core/manager'
 import { triggerSysProxy } from './sys/sysproxy'
@@ -17,39 +25,50 @@ import { existsSync, writeFileSync } from 'fs'
 import { exePath, taskDir } from './utils/dirs'
 import path from 'path'
 import { startMonitor } from './resolve/trafficMonitor'
-import { showFloatingWindow } from './resolve/floatingWindow'
 import iconv from 'iconv-lite'
 
 let quitTimeout: NodeJS.Timeout | null = null
 export let mainWindow: BrowserWindow | null = null
 
-if (process.platform === 'win32' && !is.dev && !process.argv.includes('noadmin')) {
+if (
+  process.platform === 'win32' &&
+  !is.dev &&
+  !process.argv.includes('noadmin')
+) {
   try {
     createElevateTask()
   } catch (createError) {
     try {
       if (process.argv.slice(1).length > 0) {
-        writeFileSync(path.join(taskDir(), 'param.txt'), process.argv.slice(1).join(' '))
+        writeFileSync(
+          path.join(taskDir(), 'param.txt'),
+          process.argv.slice(1).join(' '),
+        )
       } else {
         writeFileSync(path.join(taskDir(), 'param.txt'), 'empty')
       }
       if (!existsSync(path.join(taskDir(), 'mihomo-party-run.exe'))) {
         throw new Error('mihomo-party-run.exe not found')
       } else {
-        execSync('%SystemRoot%\\System32\\schtasks.exe /run /tn mihomo-party-run')
+        execSync(
+          '%SystemRoot%\\System32\\schtasks.exe /run /tn mihomo-party-run',
+        )
       }
     } catch (e) {
       let createErrorStr = `${createError}`
       let eStr = `${e}`
       try {
-        createErrorStr = iconv.decode((createError as { stderr: Buffer }).stderr, 'gbk')
+        createErrorStr = iconv.decode(
+          (createError as { stderr: Buffer }).stderr,
+          'gbk',
+        )
         eStr = iconv.decode((e as { stderr: Buffer }).stderr, 'gbk')
       } catch {
         // ignore
       }
       dialog.showErrorBox(
         '首次启动请以管理员权限运行',
-        `首次启动请以管理员权限运行\n${createErrorStr}\n${eStr}`
+        `首次启动请以管理员权限运行\n${createErrorStr}\n${eStr}`,
       )
     } finally {
       app.exit()
@@ -73,7 +92,7 @@ exit
   spawn('sh', ['-c', `"${script}"`], {
     shell: true,
     detached: true,
-    stdio: 'ignore'
+    stdio: 'ignore',
   })
 }
 
@@ -147,12 +166,9 @@ app.whenReady().then(async () => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-  const { showFloatingWindow: showFloating = false, disableTray = false } = await getAppConfig()
+  const { disableTray = false } = await getAppConfig()
   registerIpcMainHandlers()
   await createWindow()
-  if (showFloating) {
-    showFloatingWindow()
-  }
   if (!disableTray) {
     await createTray()
   }
@@ -179,7 +195,7 @@ async function handleDeepLink(url: string): Promise<void> {
         await addProfileItem({
           type: 'remote',
           name: profileName ?? undefined,
-          url: profileUrl
+          url: profileUrl,
         })
         mainWindow?.webContents.send('profileConfigUpdated')
         new Notification({ title: '订阅导入成功' }).show()
@@ -196,7 +212,7 @@ export async function createWindow(): Promise<void> {
   const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600,
-    file: 'window-state.json'
+    file: 'window-state.json',
   })
   // https://github.com/electron/electron/issues/16521#issuecomment-582955104
   Menu.setApplicationMenu(null)
@@ -214,22 +230,22 @@ export async function createWindow(): Promise<void> {
     titleBarOverlay: useWindowFrame
       ? false
       : {
-          height: 49
+          height: 49,
         },
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon: icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       spellcheck: false,
-      sandbox: false
-    }
+      sandbox: false,
+    },
   })
   mainWindowState.manage(mainWindow)
   mainWindow.on('ready-to-show', async () => {
     const {
       silentStart = false,
       autoQuitWithoutCore = false,
-      autoQuitWithoutCoreDelay = 60
+      autoQuitWithoutCoreDelay = 60,
     } = await getAppConfig()
     if (autoQuitWithoutCore && !mainWindow?.isVisible()) {
       if (quitTimeout) {
@@ -254,7 +270,8 @@ export async function createWindow(): Promise<void> {
   mainWindow.on('close', async (event) => {
     event.preventDefault()
     mainWindow?.hide()
-    const { autoQuitWithoutCore = false, autoQuitWithoutCoreDelay = 60 } = await getAppConfig()
+    const { autoQuitWithoutCore = false, autoQuitWithoutCoreDelay = 60 } =
+      await getAppConfig()
     if (autoQuitWithoutCore) {
       if (quitTimeout) {
         clearTimeout(quitTimeout)

@@ -9,7 +9,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Progress,
-  Tooltip
+  Tooltip,
 } from '@nextui-org/react'
 import { calcPercent, calcTraffic } from '@renderer/utils/calc'
 import { IoMdMore, IoMdRefresh } from 'react-icons/io'
@@ -47,7 +47,7 @@ const ProfileItem: React.FC<Props> = (props) => {
     mutateProfileConfig,
     updateProfileItem,
     onClick,
-    isCurrent
+    isCurrent,
   } = props
   const extra = info?.extra
   const usage = (extra?.upload ?? 0) + (extra?.download ?? 0)
@@ -64,9 +64,9 @@ const ProfileItem: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: info.id
+    id: info.id,
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const [disableSelect, setDisableSelect] = useState(false)
@@ -78,29 +78,29 @@ const ProfileItem: React.FC<Props> = (props) => {
         label: '编辑信息',
         showDivider: false,
         color: 'default',
-        className: ''
+        className: '',
       } as MenuItem,
       {
         key: 'edit-file',
         label: '编辑文件',
         showDivider: false,
         color: 'default',
-        className: ''
+        className: '',
       } as MenuItem,
       {
         key: 'open-file',
         label: '打开文件',
         showDivider: true,
         color: 'default',
-        className: ''
+        className: '',
       } as MenuItem,
       {
         key: 'delete',
         label: '删除',
         showDivider: false,
         color: 'danger',
-        className: 'text-danger'
-      } as MenuItem
+        className: 'text-danger',
+      } as MenuItem,
     ]
     if (info.home) {
       list.unshift({
@@ -108,7 +108,7 @@ const ProfileItem: React.FC<Props> = (props) => {
         label: '主页',
         showDivider: false,
         color: 'default',
-        className: ''
+        className: '',
       } as MenuItem)
     }
     return list
@@ -160,10 +160,12 @@ const ProfileItem: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
     >
-      {openFileEditor && <EditFileModal id={info.id} onClose={() => setOpenFileEditor(false)} />}
+      {openFileEditor && (
+        <EditFileModal id={info.id} onClose={() => setOpenFileEditor(false)} />
+      )}
       {openInfoEditor && (
         <EditInfoModal
           item={info}
@@ -183,7 +185,12 @@ const ProfileItem: React.FC<Props> = (props) => {
         }}
         className={`${isCurrent ? 'bg-primary' : ''} ${selecting ? 'blur-sm' : ''}`}
       >
-        <div ref={setNodeRef} {...attributes} {...listeners} className="w-full h-full">
+        <div
+          ref={setNodeRef}
+          {...attributes}
+          {...listeners}
+          className="w-full h-full"
+        >
           <CardBody className="pb-1">
             <div className="flex justify-between h-[32px]">
               <h3
@@ -194,7 +201,10 @@ const ProfileItem: React.FC<Props> = (props) => {
               </h3>
               <div className="flex">
                 {info.type === 'remote' && (
-                  <Tooltip placement="left" content={dayjs(info.updated).fromNow()}>
+                  <Tooltip
+                    placement="left"
+                    content={dayjs(info.updated).fromNow()}
+                  >
                     <Button
                       isIconOnly
                       size="sm"
@@ -217,7 +227,12 @@ const ProfileItem: React.FC<Props> = (props) => {
 
                 <Dropdown>
                   <DropdownTrigger>
-                    <Button isIconOnly size="sm" variant="light" color="default">
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      variant="light"
+                      color="default"
+                    >
                       <IoMdMore
                         color="default"
                         className={`text-[24px] ${isCurrent ? 'text-primary-foreground' : 'text-foreground'}`}
@@ -253,7 +268,9 @@ const ProfileItem: React.FC<Props> = (props) => {
                       await patchAppConfig({ profileDisplayDate: 'update' })
                     }}
                   >
-                    {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
+                    {extra.expire
+                      ? dayjs.unix(extra.expire).format('YYYY-MM-DD')
+                      : '长期有效'}
                   </Button>
                 ) : (
                   <Button
@@ -302,9 +319,15 @@ const ProfileItem: React.FC<Props> = (props) => {
               <Progress
                 className="w-full"
                 classNames={{
-                  indicator: isCurrent ? 'bg-primary-foreground' : 'bg-foreground'
+                  indicator: isCurrent
+                    ? 'bg-primary-foreground'
+                    : 'bg-foreground',
                 }}
-                value={calcPercent(extra?.upload, extra?.download, extra?.total)}
+                value={calcPercent(
+                  extra?.upload,
+                  extra?.download,
+                  extra?.total,
+                )}
               />
             )}
           </CardFooter>

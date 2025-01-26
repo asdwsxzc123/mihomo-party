@@ -8,10 +8,16 @@ interface AppConfigContextType {
   patchAppConfig: (value: Partial<IAppConfig>) => Promise<void>
 }
 
-const AppConfigContext = createContext<AppConfigContextType | undefined>(undefined)
+const AppConfigContext = createContext<AppConfigContextType | undefined>(
+  undefined,
+)
 
-export const AppConfigProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: appConfig, mutate: mutateAppConfig } = useSWR('getConfig', () => getAppConfig())
+export const AppConfigProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const { data: appConfig, mutate: mutateAppConfig } = useSWR('getConfig', () =>
+    getAppConfig(),
+  )
 
   const patchAppConfig = async (value: Partial<IAppConfig>): Promise<void> => {
     try {
@@ -33,7 +39,9 @@ export const AppConfigProvider: React.FC<{ children: ReactNode }> = ({ children 
   }, [])
 
   return (
-    <AppConfigContext.Provider value={{ appConfig, mutateAppConfig, patchAppConfig }}>
+    <AppConfigContext.Provider
+      value={{ appConfig, mutateAppConfig, patchAppConfig }}
+    >
       {children}
     </AppConfigContext.Provider>
   )

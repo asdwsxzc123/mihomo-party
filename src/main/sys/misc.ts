@@ -11,7 +11,7 @@ import {
   profilePath,
   resourcesDir,
   resourcesFilesDir,
-  taskDir
+  taskDir,
 } from '../utils/dirs'
 import { copyFileSync, writeFileSync } from 'fs'
 
@@ -19,7 +19,7 @@ export function getFilePath(ext: string[]): string[] | undefined {
   return dialog.showOpenDialogSync({
     title: '选择订阅文件',
     filters: [{ name: `${ext} file`, extensions: ext }],
-    properties: ['openFile']
+    properties: ['openFile'],
   })
 }
 
@@ -27,7 +27,11 @@ export async function readTextFile(filePath: string): Promise<string> {
   return await readFile(filePath, 'utf8')
 }
 
-export function openFile(type: 'profile' | 'override', id: string, ext?: 'yaml' | 'js'): void {
+export function openFile(
+  type: 'profile' | 'override',
+  id: string,
+  ext?: 'yaml' | 'js',
+): void {
   if (type === 'profile') {
     shell.openPath(profilePath(id))
   }
@@ -104,13 +108,16 @@ const elevateTaskXml = `<?xml version="1.0" encoding="UTF-16"?>
 
 export function createElevateTask(): void {
   const taskFilePath = path.join(taskDir(), `mihomo-party-run.xml`)
-  writeFileSync(taskFilePath, Buffer.from(`\ufeff${elevateTaskXml}`, 'utf-16le'))
+  writeFileSync(
+    taskFilePath,
+    Buffer.from(`\ufeff${elevateTaskXml}`, 'utf-16le'),
+  )
   copyFileSync(
     path.join(resourcesFilesDir(), 'mihomo-party-run.exe'),
-    path.join(taskDir(), 'mihomo-party-run.exe')
+    path.join(taskDir(), 'mihomo-party-run.exe'),
   )
   execSync(
-    `%SystemRoot%\\System32\\schtasks.exe /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`
+    `%SystemRoot%\\System32\\schtasks.exe /create /tn "mihomo-party-run" /xml "${taskFilePath}" /f`,
   )
 }
 
@@ -120,12 +127,12 @@ export function resetAppConfig(): void {
       'cmd',
       [
         '/C',
-        `"timeout /t 2 /nobreak >nul && rmdir /s /q "${dataDir()}" && start "" "${exePath()}""`
+        `"timeout /t 2 /nobreak >nul && rmdir /s /q "${dataDir()}" && start "" "${exePath()}""`,
       ],
       {
         shell: true,
-        detached: true
-      }
+        detached: true,
+      },
     ).unref()
   } else {
     const script = `while kill -0 ${process.pid} 2>/dev/null; do
@@ -138,7 +145,7 @@ exit
     spawn('sh', ['-c', `"${script}"`], {
       shell: true,
       detached: true,
-      stdio: 'ignore'
+      stdio: 'ignore',
     })
   }
   app.quit()

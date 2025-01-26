@@ -13,7 +13,12 @@ const SettingCard: React.FC<Props> = (props) => {
       <CardBody>{props.children}</CardBody>
     </Card>
   ) : (
-    <Accordion isCompact className={`${props.className} my-2`} variant="splitted" {...props}>
+    <Accordion
+      isCompact
+      className={`${props.className} my-2`}
+      variant="splitted"
+      {...props}
+    >
       <AccordionItem
         className="data-[open=true]:pb-2"
         hideIndicator

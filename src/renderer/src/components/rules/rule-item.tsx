@@ -7,7 +7,10 @@ const RuleItem: React.FC<IMihomoRulesDetail & { index: number }> = (props) => {
     <div className={`w-full px-2 pb-2 ${index === 0 ? 'pt-2' : ''}`}>
       <Card>
         <CardBody className="w-full">
-          <div title={payload} className="text-ellipsis whitespace-nowrap overflow-hidden">
+          <div
+            title={payload}
+            className="text-ellipsis whitespace-nowrap overflow-hidden"
+          >
             {payload}
           </div>
           <div className="flex justify-start text-foreground-500">

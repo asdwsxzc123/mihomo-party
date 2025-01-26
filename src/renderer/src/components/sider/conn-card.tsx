@@ -23,7 +23,11 @@ const ConnCard: React.FC<Props> = (props) => {
   const { theme = 'system', systemTheme = 'dark' } = useTheme()
   const { iconOnly } = props
   const { appConfig } = useAppConfig()
-  const { showTraffic = false, connectionCardStatus = 'col-span-2', customTheme } = appConfig || {}
+  const {
+    showTraffic = false,
+    connectionCardStatus = 'col-span-2',
+    customTheme,
+  } = appConfig || {}
   const location = useLocation()
   const navigate = useNavigate()
   const match = location.pathname.includes('/connections')
@@ -36,9 +40,9 @@ const ConnCard: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'connection'
+    id: 'connection',
   })
   const [series, setSeries] = useState(Array(10).fill(0))
   const [chartColor, setChartColor] = useState('rgba(255,255,255)')
@@ -47,7 +51,7 @@ const ConnCard: React.FC<Props> = (props) => {
     setChartColor(
       match
         ? `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-primary-foreground')})`
-        : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-foreground')})`
+        : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-foreground')})`,
     )
   }, [theme, systemTheme, match])
 
@@ -56,37 +60,40 @@ const ConnCard: React.FC<Props> = (props) => {
       setChartColor(
         match
           ? `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-primary-foreground')})`
-          : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-foreground')})`
+          : `hsla(${getComputedStyle(document.documentElement).getPropertyValue('--nextui-foreground')})`,
       )
     }, 200)
   }, [customTheme])
 
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   useEffect(() => {
-    window.electron.ipcRenderer.on('mihomoTraffic', async (_e, info: IMihomoTrafficInfo) => {
-      setUpload(info.up)
-      setDownload(info.down)
-      const data = series
-      data.shift()
-      data.push(info.up + info.down)
-      setSeries([...data])
-      if (platform === 'darwin' && showTraffic) {
-        if (drawing) return
-        drawing = true
-        try {
-          await drawSvg(info.up, info.down)
-          hasShowTraffic = true
-        } catch {
-          // ignore
-        } finally {
-          drawing = false
+    window.electron.ipcRenderer.on(
+      'mihomoTraffic',
+      async (_e, info: IMihomoTrafficInfo) => {
+        setUpload(info.up)
+        setDownload(info.down)
+        const data = series
+        data.shift()
+        data.push(info.up + info.down)
+        setSeries([...data])
+        if (platform === 'darwin' && showTraffic) {
+          if (drawing) return
+          drawing = true
+          try {
+            await drawSvg(info.up, info.down)
+            hasShowTraffic = true
+          } catch {
+            // ignore
+          } finally {
+            drawing = false
+          }
+        } else {
+          if (!hasShowTraffic) return
+          window.electron.ipcRenderer.send('trayIconUpdate', trayIconBase64)
+          hasShowTraffic = false
         }
-      } else {
-        if (!hasShowTraffic) return
-        window.electron.ipcRenderer.send('trayIconUpdate', trayIconBase64)
-        hasShowTraffic = false
-      }
-    })
+      },
+    )
     return (): void => {
       window.electron.ipcRenderer.removeAllListeners('mihomoTraffic')
     }
@@ -118,7 +125,7 @@ const ConnCard: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={`${connectionCardStatus} conn-card`}
     >
@@ -148,11 +155,15 @@ const ConnCard: React.FC<Props> = (props) => {
                   className={`p-2 w-full ${match ? 'text-primary-foreground' : 'text-foreground'} `}
                 >
                   <div className="flex justify-between">
-                    <div className="w-full text-right mr-2">{calcTraffic(upload)}/s</div>
+                    <div className="w-full text-right mr-2">
+                      {calcTraffic(upload)}/s
+                    </div>
                     <FaCircleArrowUp className="h-[24px] leading-[24px]" />
                   </div>
                   <div className="flex justify-between">
-                    <div className="w-full text-right mr-2">{calcTraffic(download)}/s</div>
+                    <div className="w-full text-right mr-2">
+                      {calcTraffic(download)}/s
+                    </div>
                     <FaCircleArrowDown className="h-[24px] leading-[24px]" />
                   </div>
                 </div>

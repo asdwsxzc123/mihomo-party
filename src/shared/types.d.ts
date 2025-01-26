@@ -221,10 +221,14 @@ interface IAppConfig {
   envType?: ('bash' | 'cmd' | 'powershell')[]
   proxyCols: 'auto' | '1' | '2' | '3' | '4'
   connectionDirection: 'asc' | 'desc'
-  connectionOrderBy: 'time' | 'upload' | 'download' | 'uploadSpeed' | 'downloadSpeed'
+  connectionOrderBy:
+    | 'time'
+    | 'upload'
+    | 'download'
+    | 'uploadSpeed'
+    | 'downloadSpeed'
   spinFloatingIcon?: boolean
   disableTray?: boolean
-  showFloatingWindow?: boolean
   connectionCardStatus?: CardStatus
   dnsCardStatus?: CardStatus
   logCardStatus?: CardStatus
@@ -236,21 +240,12 @@ interface IAppConfig {
   resourceCardStatus?: CardStatus
   ruleCardStatus?: CardStatus
   sniffCardStatus?: CardStatus
-  substoreCardStatus?: CardStatus
   sysproxyCardStatus?: CardStatus
   tunCardStatus?: CardStatus
   githubToken?: string
-  useSubStore: boolean
-  subStoreHost?: string
-  subStoreBackendSyncCron?: string
-  subStoreBackendDownloadCron?: string
-  subStoreBackendUploadCron?: string
   autoQuitWithoutCore?: boolean
   autoQuitWithoutCoreDelay?: number
-  useCustomSubStore?: boolean
-  useProxyInSubStore?: boolean
   mihomoCpuPriority?: Priority
-  customSubStoreUrl?: string
   diffWorkDir?: boolean
   autoSetDNS?: boolean
   originDNS?: string
@@ -281,7 +276,6 @@ interface IAppConfig {
   useNameserverPolicy: boolean
   nameserverPolicy: { [key: string]: string | string[] }
   showWindowShortcut?: string
-  showFloatingWindowShortcut?: string
   triggerSysProxyShortcut?: string
   triggerTunShortcut?: string
   ruleModeShortcut?: string
@@ -453,12 +447,4 @@ interface IProfileItem {
   override?: string[]
   useProxy?: boolean
   extra?: ISubscriptionUserInfo
-  substore?: boolean
-}
-
-interface ISubStoreSub {
-  name: string
-  displayName?: string
-  icon?: string
-  tag?: string[]
 }

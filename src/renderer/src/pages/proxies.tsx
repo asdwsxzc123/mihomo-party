@@ -5,7 +5,7 @@ import {
   getImageDataURL,
   mihomoChangeProxy,
   mihomoCloseAllConnections,
-  mihomoProxyDelay
+  mihomoProxyDelay,
 } from '@renderer/utils/ipc'
 import { CgDetailsLess, CgDetailsMore } from 'react-icons/cg'
 import { TbCircleLetterD } from 'react-icons/tb'
@@ -31,7 +31,7 @@ const Proxies: React.FC = () => {
     proxyDisplayOrder = 'default',
     autoCloseConnection = true,
     proxyCols = 'auto',
-    delayTestConcurrency = 50
+    delayTestConcurrency = 50,
   } = appConfig || {}
   const [cols, setCols] = useState(1)
   const [isOpen, setIsOpen] = useState(Array(groups.length).fill(false))
@@ -41,11 +41,13 @@ const Proxies: React.FC = () => {
   const { groupCounts, allProxies } = useMemo(() => {
     const groupCounts: number[] = []
     const allProxies: (IMihomoProxy | IMihomoGroup)[][] = []
-    if (groups.length !== searchValue.length) setSearchValue(Array(groups.length).fill(''))
+    if (groups.length !== searchValue.length)
+      setSearchValue(Array(groups.length).fill(''))
     groups.forEach((group, index) => {
       if (isOpen[index]) {
         let groupProxies = group.all.filter(
-          (proxy) => proxy && includesIgnoreCase(proxy.name, searchValue[index])
+          (proxy) =>
+            proxy && includesIgnoreCase(proxy.name, searchValue[index]),
         )
         const count = Math.floor(groupProxies.length / cols)
         groupCounts.push(groupProxies.length % cols === 0 ? count : count + 1)
@@ -55,11 +57,16 @@ const Proxies: React.FC = () => {
             if (b.history.length === 0) return 1
             if (a.history[a.history.length - 1].delay === 0) return 1
             if (b.history[b.history.length - 1].delay === 0) return -1
-            return a.history[a.history.length - 1].delay - b.history[b.history.length - 1].delay
+            return (
+              a.history[a.history.length - 1].delay -
+              b.history[b.history.length - 1].delay
+            )
           })
         }
         if (proxyDisplayOrder === 'name') {
-          groupProxies = groupProxies.sort((a, b) => a.name.localeCompare(b.name))
+          groupProxies = groupProxies.sort((a, b) =>
+            a.name.localeCompare(b.name),
+          )
         }
         allProxies.push(groupProxies)
       } else {
@@ -69,7 +76,6 @@ const Proxies: React.FC = () => {
     })
     return { groupCounts, allProxies }
   }, [groups, isOpen, proxyDisplayOrder, cols, searchValue])
-
   const onChangeProxy = async (group: string, proxy: string): Promise<void> => {
     await mihomoChangeProxy(group, proxy)
     if (autoCloseConnection) {
@@ -78,7 +84,10 @@ const Proxies: React.FC = () => {
     mutate()
   }
 
-  const onProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
+  const onProxyDelay = async (
+    proxy: string,
+    url?: string,
+  ): Promise<IMihomoDelay> => {
     return await mihomoProxyDelay(proxy, url)
   }
 
@@ -168,10 +177,9 @@ const Proxies: React.FC = () => {
                     ? 'delay'
                     : proxyDisplayOrder === 'delay'
                       ? 'name'
-                      : 'default'
+                      : 'default',
               })
-            }}
-          >
+            }}>
             {proxyDisplayOrder === 'default' ? (
               <TbCircleLetterD className="text-lg" title="默认" />
             ) : proxyDisplayOrder === 'delay' ? (
@@ -187,10 +195,10 @@ const Proxies: React.FC = () => {
             className="app-nodrag"
             onPress={() => {
               patchAppConfig({
-                proxyDisplayMode: proxyDisplayMode === 'simple' ? 'full' : 'simple'
+                proxyDisplayMode:
+                  proxyDisplayMode === 'simple' ? 'full' : 'simple',
               })
-            }}
-          >
+            }}>
             {proxyDisplayMode === 'full' ? (
               <CgDetailsMore className="text-lg" title="详细信息" />
             ) : (
@@ -198,8 +206,7 @@ const Proxies: React.FC = () => {
             )}
           </Button>
         </>
-      }
-    >
+      }>
       {mode === 'direct' ? (
         <div className="h-full w-full flex justify-center items-center">
           <div className="flex flex-col items-center">
@@ -226,8 +233,7 @@ const Proxies: React.FC = () => {
               }
               return groups[index] ? (
                 <div
-                  className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}
-                >
+                  className={`w-full pt-2 ${index === groupCounts.length - 1 && !isOpen[index] ? 'pb-2' : ''} px-2`}>
                   <Card
                     isPressable
                     fullWidth
@@ -237,8 +243,7 @@ const Proxies: React.FC = () => {
                         newOpen[index] = !prev[index]
                         return newOpen
                       })
-                    }}
-                  >
+                    }}>
                     <CardBody className="w-full">
                       <div className="flex justify-between">
                         <div className="flex text-ellipsis overflow-hidden whitespace-nowrap">
@@ -250,22 +255,21 @@ const Proxies: React.FC = () => {
                               src={
                                 groups[index].icon.startsWith('<svg')
                                   ? `data:image/svg+xml;utf8,${groups[index].icon}`
-                                  : localStorage.getItem(groups[index].icon) || groups[index].icon
+                                  : localStorage.getItem(groups[index].icon) ||
+                                    groups[index].icon
                               }
                             />
                           ) : null}
                           <div className="text-ellipsis overflow-hidden whitespace-nowrap">
                             <div
                               title={groups[index].name}
-                              className="inline flag-emoji h-[32px] text-md leading-[32px]"
-                            >
+                              className="inline flag-emoji h-[32px] text-md leading-[32px]">
                               {groups[index].name}
                             </div>
                             {proxyDisplayMode === 'full' && (
                               <div
                                 title={groups[index].type}
-                                className="inline ml-2 text-sm text-foreground-500"
-                              >
+                                className="inline ml-2 text-sm text-foreground-500">
                                 {groups[index].type}
                               </div>
                             )}
@@ -312,15 +316,14 @@ const Proxies: React.FC = () => {
                               }
                               i += Math.floor(
                                 allProxies[index].findIndex(
-                                  (proxy) => proxy.name === groups[index].now
-                                ) / cols
+                                  (proxy) => proxy.name === groups[index].now,
+                                ) / cols,
                               )
                               virtuosoRef.current?.scrollToIndex({
                                 index: Math.floor(i),
-                                align: 'start'
+                                align: 'start',
                               })
-                            }}
-                          >
+                            }}>
                             <FaLocationCrosshairs className="text-lg text-foreground-500" />
                           </Button>
                           <Button
@@ -331,8 +334,7 @@ const Proxies: React.FC = () => {
                             isIconOnly
                             onPress={() => {
                               onGroupDelay(index)
-                            }}
-                          >
+                            }}>
                             <MdOutlineSpeed className="text-lg text-foreground-500" />
                           </Button>
                           <IoIosArrowBack
@@ -356,13 +358,15 @@ const Proxies: React.FC = () => {
                 <div
                   style={
                     proxyCols !== 'auto'
-                      ? { gridTemplateColumns: `repeat(${proxyCols}, minmax(0, 1fr))` }
+                      ? {
+                          gridTemplateColumns: `repeat(${proxyCols}, minmax(0, 1fr))`,
+                        }
                       : {}
                   }
-                  className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}
-                >
+                  className={`grid ${proxyCols === 'auto' ? 'sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5' : ''} ${groupIndex === groupCounts.length - 1 && innerIndex === groupCounts[groupIndex] - 1 ? 'pb-2' : ''} gap-2 pt-2 mx-2`}>
                   {Array.from({ length: cols }).map((_, i) => {
-                    if (!allProxies[groupIndex][innerIndex * cols + i]) return null
+                    if (!allProxies[groupIndex][innerIndex * cols + i])
+                      return null
                     return (
                       <ProxyItem
                         key={allProxies[groupIndex][innerIndex * cols + i].name}
@@ -373,8 +377,8 @@ const Proxies: React.FC = () => {
                         group={groups[groupIndex]}
                         proxyDisplayMode={proxyDisplayMode}
                         selected={
-                          allProxies[groupIndex][innerIndex * cols + i]?.name ===
-                          groups[groupIndex].now
+                          allProxies[groupIndex][innerIndex * cols + i]
+                            ?.name === groups[groupIndex].now
                         }
                       />
                     )

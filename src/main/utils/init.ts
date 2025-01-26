@@ -11,31 +11,26 @@ import {
   profilePath,
   profilesDir,
   resourcesFilesDir,
-  subStoreDir,
-  themesDir
+  themesDir,
 } from './dirs'
 import {
   defaultConfig,
   defaultControledMihomoConfig,
   defaultOverrideConfig,
   defaultProfile,
-  defaultProfileConfig
+  defaultProfileConfig,
 } from './template'
 import yaml from 'yaml'
 import { mkdir, writeFile, copyFile, rm, readdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
-import {
-  startPacServer,
-  startSubStoreBackendServer,
-  startSubStoreFrontendServer
-} from '../resolve/server'
+import { startPacServer } from '../resolve/server'
 import { triggerSysProxy } from '../sys/sysproxy'
 import {
   getAppConfig,
   getControledMihomoConfig,
   patchAppConfig,
-  patchControledMihomoConfig
+  patchControledMihomoConfig,
 } from '../config'
 import { app } from 'electron'
 import { startSSIDCheck } from '../sys/ssid'
@@ -62,9 +57,6 @@ async function initDirs(): Promise<void> {
   if (!existsSync(mihomoTestDir())) {
     await mkdir(mihomoTestDir())
   }
-  if (!existsSync(subStoreDir())) {
-    await mkdir(subStoreDir())
-  }
 }
 
 async function initConfig(): Promise<void> {
@@ -81,7 +73,10 @@ async function initConfig(): Promise<void> {
     await writeFile(profilePath('default'), yaml.stringify(defaultProfile))
   }
   if (!existsSync(controledMihomoConfigPath())) {
-    await writeFile(controledMihomoConfigPath(), yaml.stringify(defaultControledMihomoConfig))
+    await writeFile(
+      controledMihomoConfigPath(),
+      yaml.stringify(defaultControledMihomoConfig),
+    )
   }
 }
 
@@ -102,7 +97,7 @@ async function initFiles(): Promise<void> {
     copy('geoip.metadb'),
     copy('geoip.dat'),
     copy('geosite.dat'),
-    copy('ASN.mmdb')
+    copy('ASN.mmdb'),
   ])
 }
 
@@ -110,7 +105,11 @@ async function cleanup(): Promise<void> {
   // update cache
   const files = await readdir(dataDir())
   for (const file of files) {
-    if (file.endsWith('.exe') || file.endsWith('.pkg') || file.endsWith('.7z')) {
+    if (
+      file.endsWith('.exe') ||
+      file.endsWith('.pkg') ||
+      file.endsWith('.7z')
+    ) {
       try {
         await rm(path.join(dataDir(), file))
       } catch {
@@ -136,27 +135,10 @@ async function cleanup(): Promise<void> {
 
 async function migration(): Promise<void> {
   const {
-    siderOrder = [
-      'sysproxy',
-      'tun',
-      'profile',
-      'proxy',
-      'rule',
-      'resource',
-      'override',
-      'connection',
-      'mihomo',
-      'dns',
-      'sniff',
-      'log',
-      'substore'
-    ],
     appTheme = 'system',
     envType = [process.platform === 'win32' ? 'powershell' : 'bash'],
-    useSubStore = true,
-    showFloatingWindow = false,
     disableTray = false,
-    encryptedPassword
+    encryptedPassword,
   } = await getAppConfig()
   const {
     'external-controller-pipe': externalControllerPipe,
@@ -166,12 +148,8 @@ async function migration(): Promise<void> {
     authentication,
     'bind-address': bindAddress,
     'lan-allowed-ips': lanAllowedIps,
-    'lan-disallowed-ips': lanDisallowedIps
+    'lan-disallowed-ips': lanDisallowedIps,
   } = await getControledMihomoConfig()
-  // add substore sider card
-  if (useSubStore && !siderOrder.includes('substore')) {
-    await patchAppConfig({ siderOrder: [...siderOrder, 'substore'] })
-  }
   // add default skip auth prefix
   if (!skipAuthPrefixes) {
     await patchControledMihomoConfig({ 'skip-auth-prefixes': ['127.0.0.1/32'] })
@@ -186,7 +164,9 @@ async function migration(): Promise<void> {
   }
   // add default lan allowed ips
   if (!lanAllowedIps) {
-    await patchControledMihomoConfig({ 'lan-allowed-ips': ['0.0.0.0/0', '::/0'] })
+    await patchControledMihomoConfig({
+      'lan-allowed-ips': ['0.0.0.0/0', '::/0'],
+    })
   }
   // add default lan disallowed ips
   if (!lanDisallowedIps) {
@@ -207,13 +187,13 @@ async function migration(): Promise<void> {
   // use named pipe
   if (externalControllerPipe) {
     await patchControledMihomoConfig({
-      'external-controller-pipe': undefined
+      'external-controller-pipe': undefined,
     })
   }
   if (externalController === undefined) {
     await patchControledMihomoConfig({ 'external-controller': '' })
   }
-  if (!showFloatingWindow && disableTray) {
+  if (disableTray) {
     await patchAppConfig({ disableTray: false })
   }
   // remove password
@@ -225,8 +205,12 @@ async function migration(): Promise<void> {
 function initDeeplink(): void {
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
-      app.setAsDefaultProtocolClient('clash', process.execPath, [path.resolve(process.argv[1])])
-      app.setAsDefaultProtocolClient('mihomo', process.execPath, [path.resolve(process.argv[1])])
+      app.setAsDefaultProtocolClient('clash', process.execPath, [
+        path.resolve(process.argv[1]),
+      ])
+      app.setAsDefaultProtocolClient('mihomo', process.execPath, [
+        path.resolve(process.argv[1]),
+      ])
     }
   } else {
     app.setAsDefaultProtocolClient('clash')
@@ -240,8 +224,6 @@ export async function init(): Promise<void> {
   await migration()
   await initFiles()
   await cleanup()
-  await startSubStoreFrontendServer()
-  await startSubStoreBackendServer()
   const { sysProxy } = await getAppConfig()
   try {
     if (sysProxy.enable) {

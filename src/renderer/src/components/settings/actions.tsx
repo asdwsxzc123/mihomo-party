@@ -4,15 +4,13 @@ import SettingItem from '../base/base-setting-item'
 import {
   checkUpdate,
   createHeapSnapshot,
-  quitApp,
-  quitWithoutCore,
-  resetAppConfig
+  openDevTools,
+  resetAppConfig,
 } from '@renderer/utils/ipc'
 import { useState } from 'react'
 import UpdaterModal from '../updater/updater-modal'
 import { version } from '@renderer/utils/init'
 import { IoIosHelpCircle } from 'react-icons/io'
-import { firstDriver } from '@renderer/App'
 
 const Actions: React.FC = () => {
   const [newVersion, setNewVersion] = useState('')
@@ -30,11 +28,6 @@ const Actions: React.FC = () => {
         />
       )}
       <SettingCard>
-        <SettingItem title="打开引导页面" divider>
-          <Button size="sm" onPress={() => firstDriver.drive()}>
-            打开引导页面
-          </Button>
-        </SettingItem>
         <SettingItem title="检查更新" divider>
           <Button
             size="sm"
@@ -48,7 +41,9 @@ const Actions: React.FC = () => {
                   setChangelog(version.changelog)
                   setOpenUpdate(true)
                 } else {
-                  new window.Notification('当前已是最新版本', { body: '无需更新' })
+                  new window.Notification('当前已是最新版本', {
+                    body: '无需更新',
+                  })
                 }
               } catch (e) {
                 alert(e)
@@ -91,23 +86,11 @@ const Actions: React.FC = () => {
           </Button>
         </SettingItem>
         <SettingItem
-          title="轻量模式"
-          actions={
-            <Tooltip content="完全退出软件，只保留内核进程">
-              <Button isIconOnly size="sm" variant="light">
-                <IoIosHelpCircle className="text-lg" />
-              </Button>
-            </Tooltip>
-          }
+          title="开发者工具"
           divider
         >
-          <Button size="sm" onPress={quitWithoutCore}>
-            轻量模式
-          </Button>
-        </SettingItem>
-        <SettingItem title="退出应用" divider>
-          <Button size="sm" onPress={quitApp}>
-            退出应用
+          <Button size="sm" onPress={openDevTools}>
+            开发者工具
           </Button>
         </SettingItem>
         <SettingItem title="应用版本">

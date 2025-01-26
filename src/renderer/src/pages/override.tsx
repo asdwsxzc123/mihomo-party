@@ -5,7 +5,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Input
+  Input,
 } from '@nextui-org/react'
 import BasePage from '@renderer/components/base/base-page'
 import { getFilePath, readTextFile } from '@renderer/utils/ipc'
@@ -17,7 +17,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent
+  DragEndEvent,
 } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
 import { useOverrideConfig } from '@renderer/hooks/use-override-config'
@@ -33,7 +33,7 @@ const Override: React.FC = () => {
     addOverrideItem,
     updateOverrideItem,
     removeOverrideItem,
-    mutateOverrideConfig
+    mutateOverrideConfig,
   } = useOverrideConfig()
   const { items = [] } = overrideConfig || {}
   const [sortedItems, setSortedItems] = useState(items)
@@ -50,7 +50,7 @@ const Override: React.FC = () => {
         name: name ? decodeURIComponent(name) : undefined,
         type: 'remote',
         url,
-        ext: urlObj.pathname.endsWith('.js') ? 'js' : 'yaml'
+        ext: urlObj.pathname.endsWith('.js') ? 'js' : 'yaml',
       })
     } finally {
       setImporting(false)
@@ -96,7 +96,7 @@ const Override: React.FC = () => {
               name: file.name,
               type: 'local',
               file: content,
-              ext: file.name.endsWith('.js') ? 'js' : 'yaml'
+              ext: file.name.endsWith('.js') ? 'js' : 'yaml',
             })
           } finally {
             setFileOver(false)
@@ -195,12 +195,16 @@ const Override: React.FC = () => {
                     const files = await getFilePath(['js', 'yaml'])
                     if (files?.length) {
                       const content = await readTextFile(files[0])
-                      const fileName = files[0].split('/').pop()?.split('\\').pop()
+                      const fileName = files[0]
+                        .split('/')
+                        .pop()
+                        ?.split('\\')
+                        .pop()
                       await addOverrideItem({
                         name: fileName,
                         type: 'local',
                         file: content,
-                        ext: fileName?.endsWith('.js') ? 'js' : 'yaml'
+                        ext: fileName?.endsWith('.js') ? 'js' : 'yaml',
                       })
                     }
                   } catch (e) {
@@ -211,14 +215,14 @@ const Override: React.FC = () => {
                     name: '新建YAML',
                     type: 'local',
                     file: '# https://mihomo.party/docs/guide/override/yaml',
-                    ext: 'yaml'
+                    ext: 'yaml',
                   })
                 } else if (key === 'new-js') {
                   await addOverrideItem({
                     name: '新建JS',
                     type: 'local',
                     file: '// https://mihomo.party/docs/guide/override/javascript\nfunction main(config) {\n  return config\n}',
-                    ext: 'js'
+                    ext: 'js',
                   })
                 }
               }}
@@ -231,7 +235,11 @@ const Override: React.FC = () => {
         </div>
         <Divider />
       </div>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={onDragEnd}
+      >
         <div
           className={`${fileOver ? 'blur-sm' : ''} grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 m-2`}
         >

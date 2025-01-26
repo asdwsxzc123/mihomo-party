@@ -1,4 +1,12 @@
-import { Button, Card, CardBody, CardFooter, Chip, Progress, Tooltip } from '@nextui-org/react'
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Chip,
+  Progress,
+  Tooltip,
+} from '@nextui-org/react'
 import { useProfileConfig } from '@renderer/hooks/use-profile-config'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { calcTraffic, calcPercent } from '@renderer/utils/calc'
@@ -24,7 +32,8 @@ interface Props {
 const ProfileCard: React.FC<Props> = (props) => {
   const { appConfig, patchAppConfig } = useAppConfig()
   const { iconOnly } = props
-  const { profileCardStatus = 'col-span-2', profileDisplayDate = 'expire' } = appConfig || {}
+  const { profileCardStatus = 'col-span-2', profileDisplayDate = 'expire' } =
+    appConfig || {}
   const location = useLocation()
   const navigate = useNavigate()
   const match = location.pathname.includes('/profiles')
@@ -38,15 +47,15 @@ const ProfileCard: React.FC<Props> = (props) => {
     setNodeRef,
     transform: tf,
     transition,
-    isDragging
+    isDragging,
   } = useSortable({
-    id: 'profile'
+    id: 'profile',
   })
   const transform = tf ? { x: tf.x, y: tf.y, scaleX: 1, scaleY: 1 } : null
   const info = items?.find((item) => item.id === current) ?? {
     id: 'default',
     type: 'local',
-    name: '空白订阅'
+    name: '空白订阅',
   }
 
   const extra = info?.extra
@@ -79,11 +88,13 @@ const ProfileCard: React.FC<Props> = (props) => {
         position: 'relative',
         transform: CSS.Transform.toString(transform),
         transition,
-        zIndex: isDragging ? 'calc(infinity)' : undefined
+        zIndex: isDragging ? 'calc(infinity)' : undefined,
       }}
       className={`${profileCardStatus} profile-card`}
     >
-      {showRuntimeConfig && <ConfigViewer onClose={() => setShowRuntimeConfig(false)} />}
+      {showRuntimeConfig && (
+        <ConfigViewer onClose={() => setShowRuntimeConfig(false)} />
+      )}
       {profileCardStatus === 'col-span-2' ? (
         <Card
           fullWidth
@@ -121,7 +132,10 @@ const ProfileCard: React.FC<Props> = (props) => {
                   />
                 </Button>
                 {info.type === 'remote' && (
-                  <Tooltip placement="left" content={dayjs(info.updated).fromNow()}>
+                  <Tooltip
+                    placement="left"
+                    content={dayjs(info.updated).fromNow()}
+                  >
                     <Button
                       isIconOnly
                       size="sm"
@@ -156,7 +170,9 @@ const ProfileCard: React.FC<Props> = (props) => {
                       await patchAppConfig({ profileDisplayDate: 'update' })
                     }}
                   >
-                    {extra.expire ? dayjs.unix(extra.expire).format('YYYY-MM-DD') : '长期有效'}
+                    {extra.expire
+                      ? dayjs.unix(extra.expire).format('YYYY-MM-DD')
+                      : '长期有效'}
                   </Button>
                 ) : (
                   <Button
@@ -204,8 +220,14 @@ const ProfileCard: React.FC<Props> = (props) => {
             {extra && (
               <Progress
                 className="w-full"
-                classNames={{ indicator: match ? 'bg-primary-foreground' : 'bg-foreground' }}
-                value={calcPercent(extra?.upload, extra?.download, extra?.total)}
+                classNames={{
+                  indicator: match ? 'bg-primary-foreground' : 'bg-foreground',
+                }}
+                value={calcPercent(
+                  extra?.upload,
+                  extra?.download,
+                  extra?.total,
+                )}
               />
             )}
           </CardFooter>

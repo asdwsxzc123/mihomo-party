@@ -34,13 +34,16 @@ content += `DEB：<a href="${downloadUrl}/mihomo-party-linux-${version}-amd64.de
 ">64位</a> | <a href="${downloadUrl}/mihomo-party-linux-${version}-arm64.deb">ARM64</a>\n`
 content += `RPM：<a href="${downloadUrl}/mihomo-party-linux-${version}-x86_64.rpm">64位</a> | <a href="${downloadUrl}/mihomo-party-linux-${version}-aarch64.rpm">ARM64</a>`
 
-await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-  chat_id,
-  text: content,
-  link_preview_options: {
-    is_disabled: false,
-    url: 'https://github.com/mihomo-party-org/mihomo-party',
-    prefer_large_media: true
+await axios.post(
+  `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+  {
+    chat_id,
+    text: content,
+    link_preview_options: {
+      is_disabled: false,
+      url: 'https://github.com/mihomo-party-org/mihomo-party',
+      prefer_large_media: true,
+    },
+    parse_mode: 'HTML',
   },
-  parse_mode: 'HTML'
-})
+)

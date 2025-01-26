@@ -5,7 +5,6 @@ import WebSocket from 'ws'
 import { tray } from '../resolve/tray'
 import { calcTraffic } from '../utils/calc'
 import { getRuntimeConfig } from './factory'
-import { floatingWindow } from '../resolve/floatingWindow'
 import { mihomoIpcPath } from './manager'
 
 let axiosIns: AxiosInstance = null!
@@ -18,13 +17,15 @@ let logsRetry = 10
 let mihomoConnectionsWs: WebSocket | null = null
 let connectionsRetry = 10
 
-export const getAxios = async (force: boolean = false): Promise<AxiosInstance> => {
+export const getAxios = async (
+  force: boolean = false,
+): Promise<AxiosInstance> => {
   if (axiosIns && !force) return axiosIns
 
   axiosIns = axios.create({
     baseURL: `http://localhost`,
     socketPath: mihomoIpcPath,
-    timeout: 15000
+    timeout: 15000,
   })
 
   axiosIns.interceptors.response.use(
@@ -36,7 +37,7 @@ export const getAxios = async (force: boolean = false): Promise<AxiosInstance> =
         return Promise.reject(error.response.data)
       }
       return Promise.reject(error)
-    }
+    },
   )
   return axiosIns
 }
@@ -46,7 +47,9 @@ export async function mihomoVersion(): Promise<IMihomoVersion> {
   return await instance.get('/version')
 }
 
-export const patchMihomoConfig = async (patch: Partial<IMihomoConfig>): Promise<void> => {
+export const patchMihomoConfig = async (
+  patch: Partial<IMihomoConfig>,
+): Promise<void> => {
   const instance = await getAxios()
   return await instance.patch('/configs', patch)
 }
@@ -81,15 +84,21 @@ export const mihomoGroups = async (): Promise<IMihomoMixedGroup[]> => {
   const proxies = await mihomoProxies()
   const runtime = await getRuntimeConfig()
   const groups: IMihomoMixedGroup[] = []
-  runtime?.['proxy-groups']?.forEach((group: { name: string; url?: string }) => {
-    const { name, url } = group
-    if (proxies.proxies[name] && 'all' in proxies.proxies[name] && !proxies.proxies[name].hidden) {
-      const newGroup = proxies.proxies[name]
-      newGroup.testUrl = url
-      const newAll = newGroup.all.map((name) => proxies.proxies[name])
-      groups.push({ ...newGroup, all: newAll })
-    }
-  })
+  runtime?.['proxy-groups']?.forEach(
+    (group: { name: string; url?: string }) => {
+      const { name, url } = group
+      if (
+        proxies.proxies[name] &&
+        'all' in proxies.proxies[name] &&
+        !proxies.proxies[name].hidden
+      ) {
+        const newGroup = proxies.proxies[name]
+        newGroup.testUrl = url
+        const newAll = newGroup.all.map((name) => proxies.proxies[name])
+        groups.push({ ...newGroup, all: newAll })
+      }
+    },
+  )
   if (!groups.find((group) => group.name === 'GLOBAL')) {
     const newGlobal = proxies.proxies['GLOBAL'] as IMihomoGroup
     if (!newGlobal.hidden) {
@@ -104,12 +113,15 @@ export const mihomoGroups = async (): Promise<IMihomoMixedGroup[]> => {
   return groups
 }
 
-export const mihomoProxyProviders = async (): Promise<IMihomoProxyProviders> => {
-  const instance = await getAxios()
-  return await instance.get('/providers/proxies')
-}
+export const mihomoProxyProviders =
+  async (): Promise<IMihomoProxyProviders> => {
+    const instance = await getAxios()
+    return await instance.get('/providers/proxies')
+  }
 
-export const mihomoUpdateProxyProviders = async (name: string): Promise<void> => {
+export const mihomoUpdateProxyProviders = async (
+  name: string,
+): Promise<void> => {
   const instance = await getAxios()
   return await instance.put(`/providers/proxies/${encodeURIComponent(name)}`)
 }
@@ -119,17 +131,26 @@ export const mihomoRuleProviders = async (): Promise<IMihomoRuleProviders> => {
   return await instance.get('/providers/rules')
 }
 
-export const mihomoUpdateRuleProviders = async (name: string): Promise<void> => {
+export const mihomoUpdateRuleProviders = async (
+  name: string,
+): Promise<void> => {
   const instance = await getAxios()
   return await instance.put(`/providers/rules/${encodeURIComponent(name)}`)
 }
 
-export const mihomoChangeProxy = async (group: string, proxy: string): Promise<IMihomoProxy> => {
+export const mihomoChangeProxy = async (
+  group: string,
+  proxy: string,
+): Promise<IMihomoProxy> => {
   const instance = await getAxios()
-  return await instance.put(`/proxies/${encodeURIComponent(group)}`, { name: proxy })
+  return await instance.put(`/proxies/${encodeURIComponent(group)}`, {
+    name: proxy,
+  })
 }
 
-export const mihomoUnfixedProxy = async (group: string): Promise<IMihomoProxy> => {
+export const mihomoUnfixedProxy = async (
+  group: string,
+): Promise<IMihomoProxy> => {
   const instance = await getAxios()
   return await instance.delete(`/proxies/${encodeURIComponent(group)}`)
 }
@@ -139,27 +160,33 @@ export const mihomoUpgradeGeo = async (): Promise<void> => {
   return await instance.post('/configs/geo')
 }
 
-export const mihomoProxyDelay = async (proxy: string, url?: string): Promise<IMihomoDelay> => {
+export const mihomoProxyDelay = async (
+  proxy: string,
+  url?: string,
+): Promise<IMihomoDelay> => {
   const appConfig = await getAppConfig()
   const { delayTestUrl, delayTestTimeout } = appConfig
   const instance = await getAxios()
   return await instance.get(`/proxies/${encodeURIComponent(proxy)}/delay`, {
     params: {
       url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
-      timeout: delayTestTimeout || 5000
-    }
+      timeout: delayTestTimeout || 5000,
+    },
   })
 }
 
-export const mihomoGroupDelay = async (group: string, url?: string): Promise<IMihomoGroupDelay> => {
+export const mihomoGroupDelay = async (
+  group: string,
+  url?: string,
+): Promise<IMihomoGroupDelay> => {
   const appConfig = await getAppConfig()
   const { delayTestUrl, delayTestTimeout } = appConfig
   const instance = await getAxios()
   return await instance.get(`/group/${encodeURIComponent(group)}/delay`, {
     params: {
       url: url || delayTestUrl || 'https://www.gstatic.com/generate_204',
-      timeout: delayTestTimeout || 5000
-    }
+      timeout: delayTestTimeout || 5000,
+    },
   })
 }
 
@@ -196,10 +223,9 @@ const mihomoTraffic = async (): Promise<void> => {
           '↑' +
             `${calcTraffic(json.up)}/s`.padStart(9) +
             '\n↓' +
-            `${calcTraffic(json.down)}/s`.padStart(9)
+            `${calcTraffic(json.down)}/s`.padStart(9),
         )
       }
-      floatingWindow?.webContents.send('mihomoTraffic', json)
     } catch {
       // ignore
     }
@@ -241,7 +267,10 @@ const mihomoMemory = async (): Promise<void> => {
     const data = e.data as string
     memoryRetry = 10
     try {
-      mainWindow?.webContents.send('mihomoMemory', JSON.parse(data) as IMihomoMemoryInfo)
+      mainWindow?.webContents.send(
+        'mihomoMemory',
+        JSON.parse(data) as IMihomoMemoryInfo,
+      )
     } catch {
       // ignore
     }
@@ -279,13 +308,18 @@ export const stopMihomoLogs = (): void => {
 const mihomoLogs = async (): Promise<void> => {
   const { 'log-level': logLevel = 'info' } = await getControledMihomoConfig()
 
-  mihomoLogsWs = new WebSocket(`ws+unix:${mihomoIpcPath}:/logs?level=${logLevel}`)
+  mihomoLogsWs = new WebSocket(
+    `ws+unix:${mihomoIpcPath}:/logs?level=${logLevel}`,
+  )
 
   mihomoLogsWs.onmessage = (e): void => {
     const data = e.data as string
     logsRetry = 10
     try {
-      mainWindow?.webContents.send('mihomoLogs', JSON.parse(data) as IMihomoLogInfo)
+      mainWindow?.webContents.send(
+        'mihomoLogs',
+        JSON.parse(data) as IMihomoLogInfo,
+      )
     } catch {
       // ignore
     }
@@ -327,7 +361,10 @@ const mihomoConnections = async (): Promise<void> => {
     const data = e.data as string
     connectionsRetry = 10
     try {
-      mainWindow?.webContents.send('mihomoConnections', JSON.parse(data) as IMihomoConnectionsInfo)
+      mainWindow?.webContents.send(
+        'mihomoConnections',
+        JSON.parse(data) as IMihomoConnectionsInfo,
+      )
     } catch {
       // ignore
     }

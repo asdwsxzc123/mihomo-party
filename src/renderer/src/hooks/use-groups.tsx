@@ -9,11 +9,17 @@ interface GroupsContextType {
 
 const GroupsContext = createContext<GroupsContextType | undefined>(undefined)
 
-export const GroupsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { data: groups, mutate } = useSWR<IMihomoMixedGroup[]>('mihomoGroups', mihomoGroups, {
-    errorRetryInterval: 200,
-    errorRetryCount: 10
-  })
+export const GroupsProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const { data: groups, mutate } = useSWR<IMihomoMixedGroup[]>(
+    'mihomoGroups',
+    mihomoGroups,
+    {
+      errorRetryInterval: 200,
+      errorRetryCount: 10,
+    },
+  )
 
   React.useEffect(() => {
     window.electron.ipcRenderer.on('groupsUpdated', () => {
@@ -24,7 +30,11 @@ export const GroupsProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     }
   }, [])
 
-  return <GroupsContext.Provider value={{ groups, mutate }}>{children}</GroupsContext.Provider>
+  return (
+    <GroupsContext.Provider value={{ groups, mutate }}>
+      {children}
+    </GroupsContext.Provider>
+  )
 }
 
 export const useGroups = (): GroupsContextType => {

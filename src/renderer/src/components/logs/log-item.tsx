@@ -5,7 +5,7 @@ const colorMap = {
   error: 'danger',
   warning: 'warning',
   info: 'primary',
-  debug: 'default'
+  debug: 'default',
 }
 const LogItem: React.FC<IMihomoLogInfo & { index: number }> = (props) => {
   const { type, payload, time, index } = props

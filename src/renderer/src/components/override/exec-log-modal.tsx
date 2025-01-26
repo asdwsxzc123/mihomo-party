@@ -5,7 +5,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Divider
+  Divider,
 } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import { getOverride } from '@renderer/utils/ipc'

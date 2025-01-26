@@ -9,71 +9,51 @@ import Connections from '@renderer/pages/connections'
 import Mihomo from '@renderer/pages/mihomo'
 import Sysproxy from '@renderer/pages/syspeoxy'
 import Tun from '@renderer/pages/tun'
-import Resources from '@renderer/pages/resources'
-import DNS from '@renderer/pages/dns'
-import Sniffer from '@renderer/pages/sniffer'
-import SubStore from '@renderer/pages/substore'
 const routes = [
   {
     path: '/mihomo',
-    element: <Mihomo />
+    element: <Mihomo />,
   },
   {
     path: '/sysproxy',
-    element: <Sysproxy />
+    element: <Sysproxy />,
   },
   {
     path: '/tun',
-    element: <Tun />
+    element: <Tun />,
   },
   {
     path: '/proxies',
-    element: <Proxies />
+    element: <Proxies />,
   },
   {
     path: '/rules',
-    element: <Rules />
-  },
-  {
-    path: '/resources',
-    element: <Resources />
-  },
-  {
-    path: '/dns',
-    element: <DNS />
-  },
-  {
-    path: '/sniffer',
-    element: <Sniffer />
+    element: <Rules />,
   },
   {
     path: '/logs',
-    element: <Logs />
+    element: <Logs />,
   },
   {
     path: '/connections',
-    element: <Connections />
+    element: <Connections />,
   },
   {
     path: '/override',
-    element: <Override />
+    element: <Override />,
   },
   {
     path: '/profiles',
-    element: <Profiles />
+    element: <Profiles />,
   },
   {
     path: '/settings',
-    element: <Settings />
-  },
-  {
-    path: '/substore',
-    element: <SubStore />
+    element: <Settings />,
   },
   {
     path: '/',
-    element: <Navigate to="/proxies" />
-  }
+    element: <Navigate to="/proxies" />,
+  },
 ]
 
 export default routes
