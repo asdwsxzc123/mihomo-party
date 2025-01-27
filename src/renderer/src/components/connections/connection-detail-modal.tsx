@@ -1,20 +1,20 @@
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
   Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
   DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
 } from '@nextui-org/react'
-import React from 'react'
-import SettingItem from '../base/base-setting-item'
 import { calcTraffic } from '@renderer/utils/calc'
 import dayjs from 'dayjs'
+import React from 'react'
 import { BiCopy } from 'react-icons/bi'
+import SettingItem from '../base/base-setting-item'
 
 interface Props {
   connection: IMihomoConnectionDetail
@@ -34,7 +34,7 @@ const CopyableSettingItem: React.FC<{
           .split('.')
           .map((_, i, parts) => parts.slice(i).join('.'))
           .slice(0, -1)
-  const isIPv6 = (ip: string) => ip.includes(':')
+  const isIPv6 = (ip: string): boolean => ip.includes(':')
 
   const menuItems = [
     {
@@ -124,8 +124,7 @@ const CopyableSettingItem: React.FC<{
                     : value
                   : (key as string),
               )
-            }
-          >
+            }>
             {menuItems
               .filter((item) => item !== null)
               .map(({ key, text }) => (
@@ -133,8 +132,7 @@ const CopyableSettingItem: React.FC<{
               ))}
           </DropdownMenu>
         </Dropdown>
-      }
-    >
+      }>
       {displayName || (Array.isArray(value) ? value.join(', ') : value)}
     </SettingItem>
   )
@@ -150,8 +148,7 @@ const ConnectionDetailModal: React.FC<Props> = (props) => {
       hideCloseButton
       isOpen={true}
       onOpenChange={onClose}
-      scrollBehavior="inside"
-    >
+      scrollBehavior="inside">
       <ModalContent className="flag-emoji break-all">
         <ModalHeader className="flex app-drag">连接详情</ModalHeader>
         <ModalBody>

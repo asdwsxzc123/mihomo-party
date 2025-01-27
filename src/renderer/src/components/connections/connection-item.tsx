@@ -26,7 +26,10 @@ const ConnectionItem: React.FC<Props> = (props) => {
     setIsDetailModalOpen,
     onFilterClick,
   } = props
-
+  const onShowDetail = (): void => {
+    setSelected(info)
+    setIsDetailModalOpen(true)
+  }
   useEffect(() => {
     if (selected?.id === info.id) {
       setSelected(info)
@@ -34,13 +37,7 @@ const ConnectionItem: React.FC<Props> = (props) => {
   }, [info])
   return (
     <div className={`px-2 pb-2 ${index === 0 ? 'pt-2' : ''}`}>
-      <Card
-        isPressable
-        className="w-full"
-        onPress={() => {
-          setSelected(info)
-          setIsDetailModalOpen(true)
-        }}>
+      <Card className="w-full">
         <div className="w-full flex justify-between">
           <div className="w-[calc(100%-48px)]">
             <CardHeader className="pb-0 gap-1">
@@ -69,7 +66,15 @@ const ConnectionItem: React.FC<Props> = (props) => {
               }}
               className="overscroll-contain pt-2 flex justify-start gap-1 overflow-x-auto no-scrollbar">
               <Chip
-                className="flag-emoji text-ellipsis whitespace-nowrap overflow-hidden"
+                className="flag-emoji text-ellipsis whitespace-nowrap overflow-hidden cursor-pointer hover:border-blue-500"
+                size="sm"
+                radius="sm"
+                onClick={onShowDetail}
+                variant="bordered">
+                详情
+              </Chip>
+              <Chip
+                className="flag-emoji text-ellipsis whitespace-nowrap overflow-hidden cursor-pointer hover:border-blue-500"
                 size="sm"
                 radius="sm"
                 onClick={(e) => {

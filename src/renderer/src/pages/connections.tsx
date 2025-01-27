@@ -1,9 +1,3 @@
-import BasePage from '@renderer/components/base/base-page'
-import {
-  mihomoCloseAllConnections,
-  mihomoCloseConnection,
-} from '@renderer/utils/ipc'
-import { Key, useEffect, useMemo, useState } from 'react'
 import {
   Badge,
   Button,
@@ -14,17 +8,23 @@ import {
   Tab,
   Tabs,
 } from '@nextui-org/react'
-import { calcTraffic } from '@renderer/utils/calc'
-import ConnectionItem from '@renderer/components/connections/connection-item'
-import { Virtuoso } from 'react-virtuoso'
-import dayjs from 'dayjs'
+import BasePage from '@renderer/components/base/base-page'
 import ConnectionDetailModal from '@renderer/components/connections/connection-detail-modal'
-import { CgClose, CgTrash } from 'react-icons/cg'
+import ConnectionItem from '@renderer/components/connections/connection-item'
 import { useAppConfig } from '@renderer/hooks/use-app-config'
-import { HiSortAscending, HiSortDescending } from 'react-icons/hi'
-import { includesIgnoreCase } from '@renderer/utils/includes'
-import { differenceWith, unionWith } from 'lodash'
 import { useGroups } from '@renderer/hooks/use-groups'
+import { calcTraffic } from '@renderer/utils/calc'
+import { includesIgnoreCase } from '@renderer/utils/includes'
+import {
+  mihomoCloseAllConnections,
+  mihomoCloseConnection,
+} from '@renderer/utils/ipc'
+import dayjs from 'dayjs'
+import { differenceWith, unionWith } from 'lodash'
+import { Key, useEffect, useMemo, useState } from 'react'
+import { CgClose, CgTrash } from 'react-icons/cg'
+import { HiSortAscending, HiSortDescending } from 'react-icons/hi'
+import { Virtuoso } from 'react-virtuoso'
 
 let cachedConnections: IMihomoConnectionDetail[] = []
 
@@ -129,7 +129,11 @@ const Connections: React.FC = () => {
   }
 
   const onFilterClick = (searchKey: string): void => {
-    setFilterKey(searchKey)
+    if (searchKey === filterKey) {
+      setFilterKey('all')
+    } else {
+      setFilterKey(searchKey)
+    }
   }
   useEffect(() => {
     window.electron.ipcRenderer.on(
